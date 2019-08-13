@@ -1,0 +1,538 @@
+\chapter{Neural Networks}
+
+An Artificial Neural Network is a computing system that was inspired by a biological neural network, found in every animal and humans.
+Intead of the conventional programmin approachs, where we tell the computer system how to solve a problem, these systems try to solve a problem without a human telling how to solve it.
+These systems learn to perform tasks and solve problems by considering examples, generally without being programmed with any task-specific rules.
+
+The big challenge about these systems is how to train them to solve a problem. The number of iterations and observations that the system needs used to be too computanional expensive in order for the system reach a solution.
+
+Deep Neural networks are the lastest development research at neural networks. Essencially, a deep neural network is a neural network with more intermediate layers.
+
+It is composed by simple strucutures of a function that maps a input value to an output value. These structures can be agregated and pipelined to form a neural network. Networks with a significant amount of neutrons and layers are called deep networks.
+
+This networks are caracterized by the number of parameters, layers and neurons they have.
+There are several types of this kind of networks, but more specifically for image recognition problems there has been a huge success with the Convlution Deep Neural Networks. 
+
+Deep learning is a specific subfield of machine learning. A new take on learning represeantions from data that puts an emphasis on learning successive layers of increasingly meaningful representations. 
+
+The \emph{depth} of a deep learning network represents how many layers contribute to a model of the data.
+
+Deep learning often involves tens or even hundreds of successive layers of representations - all learned automatically from exposure to training data.
+
+As presented at Figure~\ref{fig:learning_diagram}, Input X is the data and that will be forward through all the layers of representations. At the end of the network a prediction score will be infered, and based on its score, a loss fucntion is applied to measure how far the prediction is from the true labels. With this measure the weigths of each layer are updated in order to try minimize the loss score.
+
+The mechanism used to propagate the loss score and upate each layer weights is called backpropagation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Chapters/img/Learning_Diagram.pdf}
+    \caption{Learning Diagram of a neural network.}
+    \label{fig:learning_diagram}
+\end{figure}
+
+\section{Important Concepts in Neural Networks}
+
+\subsection{Input Data}
+
+\subsection{Model}
+A neural network is a directed, acyclic graph of layes (DAG). The simple example is a linear stack of layers that map a single input to a single output.
+But there is a much broader network topologies, for instance two-branch networks, multihead networks, inceptions blocks etc. In this work we made experimentes with two different topologies, Resnet and SqueezeNet networks, that will be explained further.
+
+These topology networks define a \emph{hypothesis space}, this space constrain our space of possbilities to solve a specific problem. It is within this contrained space that we try to find a useful representation of the input data that will be mapped for the desired output.
+
+\subsection{Loss Function}
+
+To be able to find this useful representation we need somehow have feedback how good this representation to solve the problem at hands. the loss function, also know as objective function gives us that feedback. A Loss function tells us "how good" our model is at making prediction for a given set of parameters.
+The choice of the right loss function is very important, because the networks take any shortcut to minimize the loss. So if this loss function is not well suited for the problem we are trying to solve, the network can end doing things we didn't pretend.
+
+For new research problems we have to develop our own loss function, but for the more common problems there are guidelines about which loss function to use:
+
+\begin{itemize}
+\item \emph{Cross-Entropy} - binary classification problems.
+\item \emph{Categorical Cross-Entropy} - many-class classification problems.
+\item \emph{Mean Square Error} - regression problems.
+\item \emph{Connectionist Temporal Classification} - sequence-learning problems
+\end{itemize}
+
+This work is trying to solve a binary classification problem, so as loss function we are using the Cross-Entropy.
+
+\subsubsection{Cross-Entropy}
+
+Cross-Entropy is a quantity from the field of Information Theory that measures the distance between probability distributions. In this case, between the ground-truth distribution and our models predictions distribution, how far is our model from correctly classifying the input data.
+
+Suprisal is the degree to which I am suprised to see the result. I will be more suprised with a outcome with lower probability in comparison with an outcome with high probability. If $y_i$ is the probability of the outcome $i$ then the suprisal ($s$) can be represented as:
+
+$$s=\log\left ( \frac{1}{y_i} \right )$$
+
+Since the suprisal of individual outcomes is known, we can estimate the suprisal for the overall event. This is defined as the Entropy ($e$), and is calculated with a weighted average of the suprisals:
+
+$$ e = \sum y_i\log\left ( \frac{1}{y_i} \right ) $$
+
+If the actual outcome of an event is $P_i$, but the estimated probability is $Q_i$, then the event will occur with a $P_i$ probability but the suprise measure will be determined by $Q_i$ since it was the estimated probability. This is the Cross-Entropy and is defined by:
+
+$$c = \sum P_i\log\left ( \frac{1}{Q_i} \right )$$
+
+\iffalse
+Entropy
+$$H\left ( P \right )=-\int P\left ( x \right )\log\left ( P\left ( x \right ) \right )$$
+
+Cross-Entropy
+
+$$H\left ( y,y{'} \right )=-\sum y*\log\left ( y{'} \right )$$
+\fi
+
+Cross-entropy loss, or log loss, measures the performance of a classification model whose output is a probability value between 0 and 1. Cross-entropy loss increases as the predicted probability diverges from the actual label. So predicting a probability of .012 when the actual observation label is 1 would be bad and result in a high loss value. A perfect model would have a log loss of 0.
+
+NOTE: 
+There still some confusion here, need more work. Describe this part as carrying information instead of suprise example.
+
+From another perspective, minimizing cross entropy is equivalent to maximizing the log likelihood of our data, which is a direct measure of the predictive power of our model.
+
+\subsection{Optimizer}
+
+The Optimizer is the mechanism that will update the network weights based on what the networks is predicting and its loss function. Progressively, the incremental updates the optimizer produce will lower the loss score, making the network prediction more accurate.
+
+The Optimizer fall into 2 types of algorithms, the first order optimization algorithms which the loss function gradient is used to minimize the network loss. They are know as Gradient Descent algorithms. And the second order algorithms where is the second derivative that is used to minimize the network loss. With second order algorithms its possible to know if the first derivative is increasing or decreasing and with that the function curvature.
+The second order derivative is much more costly to compute, therefore the first order optimizers are more used. For this work a Stochastic Gradient Descent algorithm is used. \cite{SGDS_REVIEW}
+
+\subsubsection{Gradient Descent}
+
+Gradient descent is an optimization algorithm used to minimize a loss function by iteractively updating the models parameters in the opposite direction of the loss function gradient, moving in the direction of the steepest descent as defined by the negative of the gradient.
+
+The method intuition is the following: it start at a given point $x_0$ and compute the gradient at the point $\nabla_{x_0}f(x)$. 
+
+Then a step of lenght $\eta$ is taken on the direction of the negative gradient. A new point is found $x_2 = x_1 - \alpha \nabla f(x)$ and the same procedure is performed until it reaches a minimum. This minimum can be local or global and its found by testing if the norm of the gradient is zero: $\left \| \nabla f(x) \right \| = 0$.
+
+There are several practical concerns even with this basic algorithm to ensure both that the algorithm converges, reaching a mininum and that is does so in a fast way.
+
+\begin{itemize}
+\item Learning Rate ($\alpha$) - The size of these steps is called the learning rate. With high learning rate we can conver more ground each step. but we risk overshooting the lowest point since ethe slope of the hill is contantly changing. With a very low learning rate, we can confnidently move in the direction of the negative gradient since we are recalculating it so frequently. A low learning rate is mroe precise, but calculating the gradient is time-consuming, so it will take us a very long time to get to the bottom.
+\item Stopping Criteria - Normally is not possible to reach a full convergence either because it will be too slow, or because of numerical issues, computers cannot perform exact airthmetic. The common criterias used are a maximum number of iterations. The gradient norm be smaller than a given threshold or the normalized difference in the function value be smaller than a given threshold.
+\end{itemize}
+
+The type of solver used was the Stochastic Gradient Descent (SGD). It updates the network weights ($W$) using a linear combination of the negative gradient $\triangledown L\left ( W_t \right )$ and the previous weight update $V_t$. 
+
+$$ V_{t + 1} = \mu V_t - \alpha \triangledown L\left ( W_t \right ) $$ 
+
+$$ W_{t+1}=W_t+V_{t+1} $$ 
+
+The \emph{learning rate} ($\alpha$) represents the weight of the negative gradient, and the \emph{momentum} ($\mu$) the weight of the previous update.
+
+
+\iffalse
+\begin{itemize}
+	\item Step Size $\nabla$ - A first question is how to find the step length $\nabla$. One condition is that $\eta$ should guarantee sufficient decrease in the function value. We will not cover these methods here but the most common ones are Backtracking line search or the Wolf Line Search (1999)
+	\item Descent Direction -  A second problem is that using the negative gradient as direction can lead to a very slow converge. Different methods that change the descent direction by multyplying the gradient by a matrix \textbf{B} have been proposed that guarantee a faster convergence. Two notable methods are the Conjugate Gradient and the Limitedd Memory Quasi Newton  methods.
+	\item Stopping Criteria - It will normally not be possible to reach full convergence either because it will be too slow, or because of numerical issues (computers cannot perform exact arithmetic). So normally a stopping criteria is defined for the algorithm. Three common criteria, that are normally used together are: a maximum number of iterations; the gradient norm be smaller than a given threshold or the normalized difference in the function value be smaller than a given threshold.
+\end{itemize}
+
+Batch Gradient Descent
+Stochastic Gradient Descent
+Mini-batch Gradient Descent
+\fi
+
+
+
+\section{ResNet Neural Networks}
+
+Deep networks are hard to train because of the vanishing gradient problem \cite{Glorot10understandingthe}. With the gradient being backpropagated to the first layers, repeated multiplication may make the gradient infinitively small. So the network performance starts to get worst very quickly.
+
+Several approachs were used to tackle the problem of the vanishing gradient. For instance adding an auxiliary loss in a middle layer as extra supervision, but none seemed to solve the problem at all.
+
+The ResNet network model appear to resolve this problem introducing shortcuts connections between the layers.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Chapters/img/identity_mapping.png}
+    \caption{Identity shortcut connection representation.}
+    \label{fig:learning_diagram}
+\end{figure}
+
+The authors had the premise that building deeper networks by adding more layers should not degrade the network training performance, because simply by stacking identity mappings upon the current network would make the network perform exactly the same. So this deeper model should not produce a training error higher than its shallower models. 
+
+Their hypothesis is that letting the stacked layers fit a residual mapping is easier than letting them directly fit the desired underlaying mapping. .
+
+Their paper \cite{He2016} show that these networks are easier to optimize and that a higher accuracy is reached due to the increased depth of the networks.
+
+
+\section{SqueezeNet Neural Networks}
+
+SqueezeNet network model was designed to be a model with a smaller architecture while preserving the accuracy of bigger models. Having a smaller architecture have multiple advantage:
+
+\begin{itemize}
+
+\item More efficient distributed training.
+\item Less overhead exporting new models.
+\item Be able to run on FPGAs and embedded circuits.
+
+\end{itemize}
+
+The authors of the network model accomplish this using the following strategies:
+
+\begin{itemize}
+\item Strategy 1: Replace 3x3 filters with 1x1 
+\item Strategy 2: Decrease the number of input channels to 3x3 filters
+\item Strategy 3: Downsample late in the network so that convolution layers have large activation maps.
+\end{itemize}
+
+The goal of these strategies is to reduce the number of parameters the neural network uses. With the above strategies in mind the authors orrganized the convolution filters in a \emph{Fire Module}.
+
+The Fire Module is composed by a \emph{squeeze} convolution layer which has only 1x1 filters, squeezing the incoming data.
+And an \emph{expand} convolution layer that has a mix of 1x1 and 3x3 convolution filters expanding the depth of the data again.
+
+
+
+
+
+\chapter{Models Evaluation and Improvement}
+
+Two neural network models were chosen to be evaluated for the NSFW classification task, the OpenNSFW and NsfwSqueezeNet. To perform this evaluation a ground-truth dataset was needed to be built. This dataset is needed so we can properly test the models accuracy at resolving this kind of task, identify their main limitations, and consequently try to improve them.
+
+\section{Building the Initial Evaluation Dataset}
+\label{sc:eval_dataset}
+
+The dataset built is composed by 17~655 images from Arquivo.pt manually labeled. 7~288 labeled as NSFW and 8~950 as SFW (Table ~\ref{tbl:eval_dataset}). These images were acquire from Arquivo.pt using two methods.
+
+\begin{table}[H]
+\centering
+\caption{Evaluation Dataset.}
+\label{tbl:eval_dataset}
+\begin{tabular}{|c|c|c|c|}
+\hline
+                	& SFW  & NSFW & Total   \\ \hline
+Labeled Dataset 	& 9~382 & 8~273 &	17~655    \\ \hline
+Non-Labeled Dataset &	-  &  -   & 18~626  \\ \hline
+\end{tabular}
+\end{table}
+
+One method was throught the existent Beta Images Indexes, these are Lucene indexes served by Solr platform\footnote{\url{http://lucene.apache.org/solr/}}. Each index document is an image resource with its associated metadata, for instance image width and height, URL of the origin site and text extracted from images tags properties. The Solr platform expose a REST API that was used to execute queries to return images to be manually labeled.
+ 
+The second method was throught Arquivo.pt Text Search API~\cite{ftsapi}, querying the API to retrieve web pages, and from those web pages the images contained were extracted to be manually labelled.
+
+The amount of images that belong to NSFW class is much less than the images from the SFW class. The main dificulty at this task is to find enough images from the NSFW class in order to build a dataset with a significant number of images and with both classes balanced in terms of the number of images. 
+
+Arquivo.pt Text Search API  was queried to retrieve web pages that contain the terms \emph{porn} and \emph{blowjob} or \emph{fuck}. Those terms are usually associated with this kind of contents~\cite{bannedkeywords}. It was used another keyword beside \emph{porn} to narrow down the results retrieved. Web pages that contain these two keywords are more likely to have pornographic content, increasing the amount of relevant images retrieved.
+
+With the list of the archived web pages URLs returned, each archived web page was scrapped by their HTML img tags and the available archived images downloaded. A total of 18~000 images were retrieved this way.
+
+With the Beta Images Indexes the query term \emph{porn} was used and the images manually labeled. Then it was queried from the indexes images from hosts that were identified as being related with this kind of content. The hosts were associated to NSFW contents throught the images that were labeled in the previous query.
+
+A significant number of noisy images were being returned, such as image banners and icons. To reduce the amount of this type of images, only images with resolution above 150x150 pixels were accepted firstly.
+Later, 1040 of samples of SFW images and 451 samples of NSFW images with resolutions bellow 150x150 were labeled in order to be able to test the models at this kind of images.
+
+
+\section{Evaluation Hardware Specifications}
+\label{sc:eval_hw}
+
+The available hardware to evalute these models is a laptop class Lenovo Y50 with 8 GB RAM, a GeForce GTX 860M as GPU and a Intel(R) Core(TM) i7-4710HQ CPU @ 2.50GHz.
+
+The models were also tested using server class hardware available at Arquivo.pt Infrastructure, the server is a Dell PowerEdge R730xd model with 256 GB RAM and an Intel(R) Xeon(R) CPU E5-2620 v3 @ 2.40GHz.
+
+%\begin{table}[]
+%\centering
+%\caption{My caption}
+%\label{my-label}
+%\begin{tabular}{|c|c|c|c|}
+%\cline{2-4}
+%               			& Memory RAM & nºCPU & nºGPU \\ \hline
+%Lenovo Y50     			&            &     &     \\ \hline
+%Dell PowerEdge R730xd 	&            &     &     \\ \hline
+%\end{tabular}
+%\end{table}
+
+
+\section{Models Evaluation}
+
+One of the evaluation metrics to compare the models was the Area Under the Receiver Operating Characteristic Curve (AUC) established by the Receiver Operating Characteristic  (ROC). This is a common evaluation metric used on binary classifiers, and it evaluates the classifier varying a cut-off threshold \cite{Ling2003}. Using the Area under the ROC gives us a broader sense about the model classification performance. It is useful to evaluate the models before a threshold value were not chosen as cut-off. Also, the common classification metrics such as Accuracy were used. 
+
+Another metric used as evaluation is the amount of images a model can classify per second with a specific hardware. 
+The use of this metric show us the cost of the model in terms of computation resources. With limited resources a model with better speed classifying images can be used as trade off for choosing a model with less accuracy, for instance when the model needs to be used online. 
+
+The models were evaluated using the dataset described at Section~\ref{sc:eval_dataset}. For each model all the images were preprocessed and passed through the network and the AUC was plotted.
+
+\subsubsection{Image Preprocessing}
+
+Before each image is passed throught the network a preprocessing phase must be performed. This preprocessing depends on several factors depending on the library used to read the images and the underlying model and how it was trained.
+
+The models are using as input a 1x3x256x256 vector where the first index correspond to the batch size, the second index is the number of images channels and the last two the images width and height. Depending on the library used to read the images, the input vector must be arranged to match the neural network models input.
+
+On this evaluation test, the Pillow library~\cite{wiredfool_2016_44297} was used. Caffe natively expects the colors channel ordered as BGR instead of RGB, so a transposition is needed to switch the channels.
+
+Also the mean of the training dataset where the models were pre-trained is subtracted, and the values scaled from [0,1] to [0,255].
+
+At last, a bilinear image resizing to 256x256 is performed.
+
+\subsubsection{Initial Evaluation Results}
+
+Figures \ref{fig:roc_opennsfw} and \ref{fig:roc_nsfwsqueeze} show the ROC curve for each model. OpenNSFW has the highest AUC with 0.98 and the NsfwSqueezeNet with 0.77, being the model with the best score.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Chapters/img/ROC_OpenNSFW.pdf}
+    \caption{ROC Curve evaluation of OpenNSFW.}
+    \label{fig:roc_opennsfw}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Chapters/img/ROC_NsfwSqueeze.pdf}
+    \caption{ROC Curve evaluation of NsfwSqueezeNet.}
+    \label{fig:roc_nsfwsqueeze}
+\end{figure}
+
+
+Other evaluation metrics were calculated such as \emph{precision}, \emph{recall}, and \emph{accuracy}. Tables~\ref{tbl:metrics_open_nsfw} and \ref{tbl:cm_opennsfw} present the results for the OpenNSFW model. Table~\ref{tbl:metrics_nsfw_squeeze} and \ref{tbl:cm_nsfwsqueeze} report the corresponding results for the NsfwSqueezeNet.
+As expected, the OpenNSFW have the best scores with 0.93 accuracy in comparison to the 0.72 from NsfwSqueezeNet.
+
+The models were also tested with different hardware described at~\ref{sc:eval_hw}. Also, and using different math subroutines backends and Caffe distributions.
+
+\begin{table}[]
+\centering
+\caption{Evaluation Metrics for Open NSFW model.}
+\label{tbl:metrics_open_nsfw}
+\begin{tabular}{c|c|c|c|c|c|}
+\cline{2-6}
+                                      & Precision & Recall & F1-Score & Support & Accuracy \\ \hline
+\multicolumn{1}{|c|}{NSFW}            & 0.92      & 0.93   & 0.93     & 8273    & -        \\ \hline
+\multicolumn{1}{|c|}{SFW}             & 0.94      & 0.93   & 0.93     & 9382    & -        \\ \hline
+\multicolumn{1}{|c|}{Average / Total} & 0.93      & 0.93   & 0.93     & 17655   & 0.93     \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\centering
+\caption{Confusion Matrix of OpenNsfw Model.}
+\label{tbl:cm_opennsfw}
+\begin{tabular}{c|c|c|}
+\cline{2-3}
+                           & NSFW' & SFW' \\ \hline
+\multicolumn{1}{|c|}{NSFW} & 7706  & 567  \\ \hline
+\multicolumn{1}{|c|}{SFW}  & 652   & 8730 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\centering
+\caption{Confusion Matrix of NsfwSqueezeNet Model.}
+\label{tbl:cm_nsfwsqueeze}
+\begin{tabular}{c|c|c|}
+\cline{2-3}
+                           & NSFW' & SFW' \\ \hline
+\multicolumn{1}{|c|}{NSFW} & 3697  & 4576  \\ \hline
+\multicolumn{1}{|c|}{SFW}  & 333   & 9049 \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[]
+\centering
+\caption{Evaluation Metrics for NsfwSqueezeNet model.}
+\label{tbl:metrics_nsfw_squeeze}
+\begin{tabular}{c|c|c|c|c|c|}
+\cline{2-6}
+                                      & Precision & Recall & F1-Score & Support & Accuracy \\ \hline
+\multicolumn{1}{|c|}{NSFW}            & 0.92      & 0.45   & 0.60     & 8273    & -        \\ \hline
+\multicolumn{1}{|c|}{SFW}             & 0.66      & 0.96   & 0.79     & 9382    & -        \\ \hline
+\multicolumn{1}{|c|}{Average / Total} & 0.78      & 0.72   & 0.70     & 17655   & 0.72     \\ \hline
+\end{tabular}
+\end{table}
+
+
+There are several Basic Linear Algebra Subprograms (BLAS) libraries that can be used as backend to Caffe. These libraries optimize linear algebra routines such as vector additions, multiplication, matrix multiplication and fast Fourier transforms.
+
+Choosing a library that improves these operations to a specific hardware can give a huge performance boost to classification speed. The libraries used to evaluate the performance of classification were OpenBLAS~\cite{openblas} and MKL~\cite{intelmkl}.
+
+It was also evaluated using a Intel Caffe distribution, a fork from
+Berkeley Vision and Learning Center~\footnote{\url{https://github.com/BVLC}} (BVLC) Caffe dedicated to improve the framework performance when running on CPU, particulary, Intel Xeon processors with architectures equal or more recent than Haskwell and Intel Xeon Phi processores~\footnote{\url{https://www.intel.com/content/www/us/en/products/processors/xeon-phi/xeon-phi-processors.html}}.
+
+\begin{table}[]
+\centering
+\caption{Classification speed performance with different hardware and backends setups.}
+\label{tbl:hweval}
+\begin{tabular}{ccc}
+\hline
+\multicolumn{1}{|c|}{}                           & \multicolumn{1}{c|}{OpenNsfw} & \multicolumn{1}{c|}{NsfwSqueezeNet} \\ \hline
+\multicolumn{1}{|c|}{BVLC Caffe i7 + OpenBLAS}   & \multicolumn{1}{c|}{7 img/sec}        & \multicolumn{1}{c|}{17 img/sec}             \\ \hline
+\multicolumn{1}{|c|}{BVLC Caffe GTX860M CUDA}    & \multicolumn{1}{c|}{40 img/sec}       & \multicolumn{1}{c|}{77 img/sec}             \\ \hline
+%\multicolumn{1}{|c|}{BVLC Caffe Xeon + OpenBLAS} & \multicolumn{1}{c|}{21 img/sec}       & \multicolumn{1}{c|}{}               \\ \hline
+\multicolumn{1}{|c|}{Intel Caffe CPU Xeon + MKL} & \multicolumn{1}{c|}{9 img/sec}        & \multicolumn{1}{c|}{28 img/sec}               \\ \hline          
+\end{tabular}
+\end{table}
+
+Table~\ref{tbl:hweval} reports the classification speed obtained with different setups. The NsfwSqueezeNet model has the best classification speed, being able to classify 77 images per second in comparison with the OpenNsfw model 40 images per second, both using the GPU GTX860M setup.
+
+
+\section{Analyzing False Positives and False Negatives}
+
+In order to understand what type of images the OpenNSFW is classifying wrongly, so we could try to improve it, the false positives images and false negatives were analysed. There could be some common patterns on the type of images that it tends to wrongly classify. For instance, could the image's resolution be a main source of classification error? To answers this at Figure~\ref{fig:images_resolution_comparison} was plotted the normalized histogram representing the images resolution distribution and the images resolution normalized histogram of the wrongly classified images. The wrongly classified images resolution distribution matches the images dataset resolution distribution, so there is no evidence of the image's size being problematic.
+
+\begin{figure}[]
+	\centering
+	\subfigure[All images resolution distribution.]  {
+        \includegraphics[width=0.4\textwidth]{Chapters/img/images_resolution_distribution.pdf}
+	}
+	\qquad\qquad
+	\subfigure[Misclassified images resolution resolution distribution.]{
+        \includegraphics[width=0.4\textwidth]{Chapters/img/falses_images_resolution_distribution.pdf}
+	}
+    \caption{Images resolution distribution comparison between the dataset and the misclassified images.}
+    \label{fig:images_resolution_comparison}
+\end{figure}
+
+
+%\begin{figure}[H]
+%  \centering
+%  \includegraphics[width=0.8\linewidth]{Chapters/img/images_resolution_distribution.pdf}
+%  \caption{All images resolution distribution.}
+%  \label{fig:images_resolution_hist}
+%\end{figure}
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=0.8\linewidth]{Chapters/img/falses_images_resolution_distribution.pdf}
+%	\caption{Misclassified images resolution resolution distribution.}
+%	\label{fig:false_images_resolution_hist}
+%\end{figure}
+
+% NOTE: There is some bad labeled images identified on the dataset, some iterations should be done to clean it.
+
+Some patterns were identified manually inspecting the wrongly classified images, as false positives the most typical error are images with women with a significant amount of nudity, but not explicit. At false negatives samples common occurrences are sexual acts with animals, and sexual explicit animations. This is expected since the model was trained to filter pornography.
+
+%Its very hard to build a representive dataset for this problem, instead a very large dataset is being used, what makes a very large human work to label all this images. A technique used to try to improve the quality of the dataset is using Image Augmentations techniques. This could be used to augmentante the current dataset.
+
+
+\section{Data Augmentation}
+
+In the area of computer vision and artificial intelligence (AI) oftenly there is not enough data to train algorithms to properly handle tasks such as classification. Usually models trained on small datasets do not generalize well enough. To overtake this problem, techniques of data augmentation can be applied to increase the available dataset and consequently improve the algorithms accuracy on those tasks. It is demonstrated that applying simple data augmentation techniques such as cropping, rotating and flipping input images reduces the overfitting and class imbalance problems typically presented in small datasets~\cite{Wong2016}. More complex techniques such elastic distortions are also used for data augmentation~\cite{Simard2003}.
+More recently, Generative Adversarial Networks (GAN) have been proposed to generate images of different styles~\cite{Creswell2018, DBLP:journals/corr/abs-1712-04621}.
+
+\begin{figure}[H]
+\centering
+	\subfigure[Original image.]  {
+    	\includegraphics[width=0.3\linewidth]{Chapters/img/original_image.jpg}
+	}
+	\qquad\qquad
+	\subfigure[Augmented image.]  {
+  		\includegraphics[width=0.3\linewidth]{Chapters/img/transformed_image.jpg}
+	}
+\caption{Image augmentation technique.}
+\label{fig:image_augmentation}
+\end{figure}
+
+
+Augmentator~\cite{DBLP:journals/corr/abs-1708-04680}, a image data augmentation library for machine learning was used to generate new images by applying transformations such as mirror, shearing and flipping. Figure~\ref{fig:image_augmentation} presents an example of this type of transformations.
+
+
+% NOTE colocar exemplo com imagens de tipos de data augmentation
+% NOTE GOOGLE PAPER com eficácia
+
+
+
+\section{Improving the Models}
+
+Transfer Learning is a technique where a neural network is first trained on a base dataset and task, different from the task that is trying to be solved, and then previously learned features are transferred to a second neural network to be trained on new dataset and task. When the dataset available for the new task is much smaller than the base dataset, this technique can be very efficient to train a large neural network without overfitting~\cite{DBLP:journals/corr/YosinskiCBL14}. The authors of the NsfwSqueezenet and OpenNSFW trained these networks using this technique, using a pre-trained model on the ImageNet dataset and then applied to this specific task.
+
+These models can continually be improved through fine-tuning, a process were some parameters are adjusted to better perform on the given task. There are several methods to fine tune a neural network model, for instance, training the network with our labeled data but performing only small adjusts to the last layer, or adjusting more layers, for instance, the last 3 layers. All the network layers can also be retrained, using the network weights from a pre-trained model. These weights usually are very good initial weights to start training a network instead of using other weights initialization techniques~\cite{Masood2016}.
+
+% The amount of layers updated while retraining a network usually depend how different the task is from the models pretrained task. The first layers usually are associated with more general features so they dont need to be changed, or if they need, the learning rate at this layers is lower.
+
+\iffalse
+At Caffe framework the training is accomplish using a solver which is responsible to optimize the models weights to minimize the classification loss, it coordinates the network's forward inference and backward gradient to update the weights and accomplish that goal.
+
+The type of solver used was the Stochastic Gradient Descent (SGD). It updates the network weights ($W$) using a linear combination of the negative gradient $\triangledown L\left ( W_t \right )$ and the previous weight update $V_t$. 
+
+$$ V_{t + 1} = \mu V_t - \alpha \triangledown L\left ( W_t \right ) $$ 
+
+$$ W_{t+1}=W_t+V_{t+1} $$ 
+
+The \emph{learning rate} ($\alpha$) represents the weight of the negative gradient, and the \emph{momentum} ($\mu$) the weight of the previous update.
+\fi
+
+Experiments to evaluate if a model can improve its accuracy and loss had been made. Both models were retrained using a 4-fold methodology on the dataset built and the following heuristics were applied:
+
+\begin{itemize}
+%\item Retraining each model for 1 epoch with the base dataset.
+\item Retraining each model for 1 epoch and augmenting the dataset.
+\item Retraining each model for 5 epoch and augmenting the dataset.
+\end{itemize}
+
+One epoch means one pass of the full training set, it contains several iterations where each iteration is a training image being pass forward through the network.
+
+\subsection{NsfwSqueezeNet Improving}
+
+% NOTE PUBLISH train_val.prototxt Appendice?
+To improve the NsfwSqueezeNet model, all network model layers were updated using the SGD solver with the following training parameters:
+
+\begin{itemize}
+\item learning rate policy: poly
+\item power: 1.0
+\item momentum: 0.9
+\item base learning rate ($\alpha$): 0.001
+\item weight decay: 0.0000001
+\end{itemize}
+
+During the network model training, the learning rate parameter was updated following a polinomial decay: 
+
+$$\alpha * \left ( 1 - \frac{iter}{max\_iter} \right ) ^{power}$$
+
+\begin{table}[H]
+\centering
+\caption{NsfwSqueezeNet fine-tuning accuracy and loss.}
+\label{tbl:finetune_squeezenet}
+\begin{tabular}{|c|c|c|}
+\hline
+Model                                                	& 4-Fold Accuracy  		& 4-Fold Loss      		\\ \hline
+%NsfwSqueezeNet 1 Epoch                               	& 0.85	$\pm$ x	   		& 0.34 $\pm$ x 			\\ \hline
+NsfwSqueezeNet 1 Epoch Augmented 10K 					& 0.88  $\pm$ 0.002		& 0.28 $\pm$ 0.004		\\ \hline
+NsfwSqueezeNet 5 Epoch Augmented 10K 					& 0.89  $\pm$ 0.002 	& 0.27 $\pm$ 0.006  	\\ \hline
+\end{tabular}
+\end{table}
+
+There was a significant accuracy improvement, from the initial model accuracy of 72\% to 89\% accuracy. The training network configuration, solver configuration and training logs available online~\footnote{\url{https://github.com/arquivo/SafeImage/tree/master/training/SqueezeNet}}.
+
+
+\subsection{OpenNSFW Improving}
+
+This model is more computational expensive to train. With the limited hardware available and time constraints, an attempt to improve it was made, freezing all the network layers and retraining just the last fully-connected network layer and the softmax layer.
+
+The solver used was also a SGD with the same learning parameters as the model above.
+\begin{itemize}
+\item lr\_policy: poly
+\item power: 1.0
+\item momentum: 0.9
+\item base\_lr: 0.001
+\item weight\_decay: 0.0000001
+\end{itemize}
+
+There was a very small model's accuracy improvement, not significant because the accuracy number are being rounded by 2 decimal numbers.
+
+% NAO DEVERIA PELO MENOS MANTER-SE? Teorias? Preprocessamento das imagens? Dropout layers?
+% Link para os repositorios com o solver e o train
+
+\begin{table}[]
+\centering
+\caption{OpenNsfw fine-tuning accuracy and loss.}
+\label{tbl:finetune_resnet}
+\begin{tabular}{|c|c|c|}
+\hline
+Model                                                	& 4-Fold Accuracy  	& 4-Fold Loss   	\\ \hline
+%OpenNsfw 1 Epoch                               			& -            		& -             	\\ \hline
+OpenNsfw 1 Epoch Augmented 10K							& 0.92 $\pm$ 0.003	& 0.20 $\pm$ 0.006 	\\ \hline
+OpenNsfw 5 Epoch Augmented 10K 						& 0.94 $\pm$ 0.004	& 0.16 $\pm$ 0.007 	\\ \hline
+\end{tabular}
+\end{table}
+
+The training network configuration, solver configuration and training logs available online~\footnote{\url{https://github.com/arquivo/SafeImage/tree/master/training/Resnet}}.
+
+\iffalse
+\section{Notes}
+\begin{itemize}
+\item  Should i include images from the live web also to increase the dataset? 6493 SFW e 573 NSFW
+\item Try using google image with the same query, one time with Safe Search enable and other time disable. The diference between the images returned will label them.
+\item Author of the NsfwSqueezeNet says that the model gives a lot of false positives with nudity images. Its
+\item Data Agumentation Techniques datase is composed by ~40K for each class.
+\item https://arxiv.org/pdf/1510.00149v5.pdf
+
+\end{itemize}
+
+\fi

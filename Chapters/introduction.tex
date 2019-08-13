@@ -1,0 +1,100 @@
+\chapter{Introduction}
+\label{cha:introduction}
+
+Web Archiving~\cite{Masans2006} is a research field about how to collect portions of the World Wide Web to ensure that information is preserved in an archive for future researchers, historians and the general public.
+
+The most common way used by Web Archives to collect this information for preservation means is through web crawlers such as Heritrix~\cite{heritrix04}, specialized at archiving the web that automates the process of harvesting web pages and preserving their contents. These contents include any resource type, such as Hyper Text Markup Language (HTML), style sheets, JavaScript, images, videos and metadata about these resources such as access times, resource mime-types and content length.
+
+Choosing what to be preserved is a hard challenge, since there isn't enough storage space to keep everything and the amount of data available on the web is permanently growing.
+
+There are several Web Archiving initiatives worldwide that try to preserve the Web. Some Web Archives have more narrow scopes, preserving just some very specific kind of pages such as institutional web pages (European Commission Historical Archives\footnote{\url{http://ec.europa.eu/historical_archives/index_en.htm}}), while others try to preserve the entire national top-level domain (UK Web Archive\footnote{\url{https://www.webarchive.org.uk/ukwa/}}), or the entire web (Internet Archive)\footnote{\url{https://archive.org/}}.
+
+%Arquivo.pt\footnote{\url{http://arquivo.pt}} is one of those initiatives and it preserves the Portuguese \emph{.pt} top-level domain and all web pages that publish Portuguese related important information.
+
+\href{http://www.arquivo.pt}{Arquivo.pt}\footnote{\url{http://arquivo.pt}} is one of those initiatives. Its main goal is to preserve web pages from the Portuguese national web domain (\emph{.pt}) and web pages that publish Portuguese related important information.
+
+It also acts as a research infrastructure making its contents searchable and available in open access to researchers and to the general public.
+
+It is important to make available and discoverable this unique and historically valuable information. Without the tools for users to find the desired information, the usefulness of Web Archives is hampered.
+
+To accomplish this, Arquivo.pt provides a full-text search system to all its data. 
+There are significant studies and efforts to improve the Web Archiving Information Retrieval (WAIR) capabilities. For instance, Miguel Costa tries to improve the information search on Web Archives exploring the temporal information that is intrinsic to them \cite{Costa:InformationSearchIn:2014}.
+
+Based on this pursuit to provide better searching capabilities to this important information, Arquivo.pt is developing an Image Search service. This service enables image retrieval capabilities to Arquivo.pt preserved contents, presenting an interface in which users can perform queries and the service will try to retrieve images related to the user query.
+
+\begin{figure}[!b] 
+    \centering
+    \includegraphics[width=0.7\linewidth]{Chapters/img/search_system_merkel.png}
+    \caption{Example of Arquivo.pt Image Search.}
+    \label{fig:image_search}
+\end{figure}
+
+Figure~\ref{fig:image_search} presents the prototype of the Image Search service. A text box is available for users to fill with query terms like \emph{Merkel} and the service displays images related to the user query. On this specific use case, the service retrieves images about \emph{Angela Merkel}. Each image is clickable, and when a click is performed, the service presents the Archived Web Page from where the images were found.
+
+\section{The Problem}
+
+There are huge amounts of visual content on the Web, some part of this visual content is Not Suitable For Work (NSFW) for most users, because it contains offensive or explicit images of violence or pornography. The access to these types of content is particularly critical for children.
+
+The Image Search service retrieves images based on the filename, anchor text and the surrounding text of an image presented on a web page. Therefore, due to the nature of the web, there are no guarantees that the images retrieved to answer a search query will not retrieve an offensive image, even with an apparently not problematic query. For instance, a website that got hacked for web spam can show this behaviour.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{Chapters/img/image_search_nsfw.png}
+    \caption{Example of Arquivo.pt Image Search problematic content.}
+    \label{fig:image_search_nsfw}
+\end{figure}
+
+An example of this problem using the Image Search service is shown in Figure~\ref{fig:image_search_nsfw} where an apparently not offensive query term \emph{angela} was fulfilled on the system and the retrieved results have content that can be considered offensive to the users.
+
+There are several types of NSFW content, but the type that Arquivo.pt is trying to identify and filter out is pornography.
+
+Detection of NSFW content on the preserved web pages from Internet is challenging because of the scale (billions of images) and diversity (small to very large images, graphic, color images, etc.) of image content.
+
+\section{Solution Goals}
+
+The solution under development needs to automatically identify this kind of contents, classifying the contents has NSFW or Suitable for Work (SFW).
+
+%For instance, providing a score from 0.0 to 1.0. Close to 0.0 means SFW content and close to 1.0 NSFW content.
+This classification can then be used by the Image Search service to filter out the content, for instance providing an option of 'Safe Search' or 'Not Safe Search' to the users searching at Arquivo.pt. This is similar to how Google and other Search Engines work.
+%Another approach is, for example, to blur the thumbnails of this type of content.
+
+Providing image content analysis capabilities to Arquivo.pt would also enable extraction of other information from the images, providing better tools and retrieve results based on this extra information.
+
+The application must be able to perform classification of the image contents in a reasonably time frame. The number of contents available at Arquivo.pt for each collection can be very large. Today, one broad crawl to the top-level domain \emph{.pt} can collect a total amount of 13 Terabytes of compressed information.
+
+The proposed system needs to be modular enough to be used for other use cases by switching the underlying model, for instance, get other type of information from the images. A Web Service interface for real time classification should also be implemented.
+
+This workflow in Figure~\ref{fig:nsfw_workflow} represents the generic logic the solution that need to be developed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Chapters/img/nsfw_workflow.png}
+    \vspace*{-10mm}
+    \caption{Workflow of the classification system.}
+    \label{fig:nsfw_workflow}
+\end{figure}
+
+Arquivo.pt WARC files have diferent types of content, from this WARCS the images to be classified need to extracted, then after these images be extracted, they need to be analysed in order to get a feature vector from every single images that will be used by a classifier to discriminate if a image is NSFW or SFW, and finally the results will be stored.
+
+% LINK TO SECTIONS
+
+\section{Document Structure}
+
+This document will be composed by the following chapters: Chapter 1 presents the motivation behind this work, the solution goals and how the document is structured. 
+
+At Chapter 2 is described the related work and previous research that try to solve similar Image Recognition problems.
+
+The Chapter 3 presents an overview about the Arquivo.pt infrastructure and how is the data characterized. This section will provide the context to understand how Arquivo.pt gets its data and what type of data needs to be processed. Also it gives an infrastructure context to understand how and where the solution will be integrated.
+
+%At Chapter 4 some general theoric fundamentals about the DNNs will be presented, and more specifically an introduction how the ResNet DNNs and SqueezeNet DNNs work.
+
+At Chapter 4 is explained how it works each neural network model that are used at the evalutions and improvement experiments.
+
+Chapter 5 describes how the evaluation dataset was built, this dataset will be the basis for the classification models evaluations and improvements. At this section is presented the results obtained with each model such as classification accuracy. Also an evaluation about classification speed (images/second) of each model was measured using different math libraries as the backend and different types of hardware that were available at Arquivo.pt.
+
+The integration of the classification system at Arquivo.pt is presented at Chapter 6 and at Chapter 7 a brief analysis of the ongoing work.
+
+
+
+
+

@@ -1,0 +1,62 @@
+\chapter{Solution Integration}
+
+The solution developed to classify images content as NSFW or SFW needs to be integrated on the Arquivo.pt Image Search indexing workflow. 
+The Image Search indexing workflow extracts from the WARCs files the images and the related metadata. The NSFW classification score will be an extra metadata field to be added to this information.
+
+The Image Search indexing workflow is composed by one Hadoop job that processes each WARC file and splits each one in smaller units named WARC Records. Each WARC Record contains a Web resource representation and its processed by a Hadoop map. The Hadoop maps extract the text and images available at those WARC Records and build an index record with the image and its metadata derived.
+
+There are two possible solutions to integrate the images classification step at this workflow. 
+
+The first one would be a complete new phase at the Image Search indexing workflow. At the first phase of the Image Search indexing logic, all the images and related information would be extracted from the WARC Records and kept in an intermediate data structure for classification. Then a new Hadoop job would be launched to classify those images and store the classification results in a persistent dictionary where the key would be the image URL, and the value would be the classification score.
+
+The final indexing phase would be to use the classification scores information with the metadata extracted from each record and produce the final Solr index.
+
+% TODO colocar workflow ilustrativo
+
+This solution has the problem that the classification step needs to be done in Hadoop nodes with specific resources such as GPU for this type of workload. The Hadoop version available at Arquivo.pt don't have any possibilities to declare what kind of resources a Hadoop job needs, this kind of feature is only available with Hadoop 3.0.0 through the YARN~\cite{Vavilapalli:2013:AHY:2523616.2523633} resource manager. There are some alternatives, for instance CaffeOnSpark~\cite{caffeonspark} developed by Yahoo in order to handle this type of problem. But to implement it, the indexing logic would need to be rewritten to use Spark instead of Hadoop, and the lack of documentation and the complexity to use this custom solution could be a problem.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5,width=0.8\linewidth]{Chapters/img/solution_integration.pdf}
+    \caption{Integration of the classification system with the Image Search Indexing phase.}
+    \label{fig:solution_integration}
+\end{figure}
+
+The second solution would be to use a message queue to classify images and provision workers nodes with the required hardware resources such as GPU to fetch from this queue the images to be classified.
+
+The advantages of this solution is that it completely decouples the dependency between the indexing system and the classification system. With this decouplement other Deep Learning backends like Tensorflow~\cite{DBLP:journals/corr/AbadiABBCCCDDDG16} can be used, changing only the type of worker being used.
+
+This solution can also be scaled horizontally by adding more workers, and eventually, more message queues with a load balancing solution. 
+
+The solution adopted was using a message queue. It was chosen because of its decoupling properties and the current available resources at Arquivo.pt. 
+
+It was used a Redis~\cite{redis} instance as the message broker to handle all the classification requests~\cite{indeximages}. Then multiple workers are polling from Redis images queued to be classified~\cite{safeimages}.
+
+Figure~\ref{fig:solution_integration} presents a diagram of this solution and each step to classify a image:
+
+\begin{enumerate}
+\item Images being processed by the Hadoop job map that need to be classified are sent to Redis.
+\item Workers are polling the Redis queue for images and fecth the available images.
+\item Workers classify the fetched images and set the classification result back at Redis.
+\item The Hadoop maps get the classification score from Redis and proceed with the indexing workflow.
+\end{enumerate}
+
+This solution, can also handle requests that come from the Web API using the same Redis Queue.
+
+% Also much of the complexity of this distirbuted deep learning solutions are for training, and at these case the workload is inference not training.
+
+% The ImageSearch system also will is not made currently to process all this information offline. The bottleneck will not be here.
+
+\section{Classifying Images with Multiple Frames}
+
+Altougth not being the mime-type with the most number of URLs at Arquivo.pt data, GIF images pose an extra problem to the classification system because some of them can be composed of multiple frames. Classifying only the first frame is not enough with this type of images. Any of the consequent frames within the GIF image can have  NSFW content.
+To solve this problem before classifying those images with a final score, each individual frame need to be classified, and then the classification score given to that image is the biggest one observerd among all frames (Figure~\ref{fig:gif_classification}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.5,width=0.8\linewidth]{Chapters/img/gif_classification.pdf}
+    \caption{Classification of a GIF image.}
+    \label{fig:gif_classification}
+\end{figure}
+
+

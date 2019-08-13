@@ -1,0 +1,24 @@
+\chapter{Related Work}
+
+% TODO NSFW classification videos
+The problem of automatically identify Not Suitable for Work content is not new, along the years there had been a significant amount of research to provide and improve methods that can accurately identify these contents.
+
+The first methods~\cite{Zheng2004} that tried to solve this problem were based at skin-detection algorithms in order to identify regions of interest, then they analyzed the features of these skin regions to decide whether they were pornographic or not. An implementation of this method is the POESIA filter~\cite{poesia}, an open source implementation of a skin-color-based filter. The performance of those methods relies on the accuracy of the skin detection algorithm and the extracted features, usually hand made. They present high false positive rates in images like beach and sports.
+
+Other techniques that showed better image classification results was through \emph{bag-of-visual-words} models (BoVW)~\cite{4761366}. These techniques extract from an image a set of visual features represented as words, similar to the \emph{bag-of-words} to document classification, building a vocabulary vector with the number of occurrences of these visual words representing local image features.  A classifier that uses this representation is then trained to classify the image content as pornographic or not.
+
+Recently, Deep Learning has showed state of the art results in almost all tasks of image recognition, more specifically, Convolutional Neural Networks (CNN) has been used widely on image recognition tasks \cite{Krizhevsky2012}. New CNN architectures have continuously been published with improved accuracy of the standard ImageNet~\cite{imagenet} classification challenge. 
+
+%Examples of these architectures are AlexNet (2012), GoogLeNet (2013), VGG (2013) and Residual Networks (2015).
+
+The application of Deep Learning combines both feature extraction and classification, so there is less involvement of a designer in terms of selecting the features or the classifier.
+
+The downside of these techniques is the amount of training data and infrastructure that they require. Nowadays improved training datasets are available, such as ImageNet. Pre-trained models have been published openly to be used by people without the need to train a Neural Network from scratch.
+An example of this kind of initiatives is Yahoo! release of an open source model to identify NSFW images, specifically, pornographic images~\cite{opennsfw}.
+
+OpenNSFW is a Deep Neural Network (DNN) solution released by Yahoo! for classification of NSFW images. The model is published openly to be used for classification by developers, but the image dataset that Yahoo! applied for training is not available, due to the nature of its contents.
+
+They have trained a Residual Network architecture model~\cite{He2016} with ImageNet 1000 classes dataset first. Then they replaced the last neural network layer, a 1000 node fully-connected (FC) layer, with a 2 node FC layer and fine-tuned the model to the specific task of NSFW classification using their NSFW images dataset. This model can be reused and fine-tuned for each specific use case and dataset. The model is published using Caffe~\cite{jia2014caffe}, an open source deep learning framework developed by Berkeley AI Research\footnote{\url{http://bair.berkeley.edu/}}.
+
+Inspired by Open NSFW, other models are being published openly to solve this problem but focusing in architectures that can keep a good accuracy with less hardware resources. An example is NsfwSqueezenet~\cite{nsfwsqueezenet} that uses a SqueezeNet~\cite{Iandola2016} architecture that is designed to use a small number of parameters and memory, so it can be used with more common hardware.
+
