@@ -35,7 +35,40 @@ The variables registered in the dataset are:
 
 
 \end{itemize}
+
+
+In Table \ref{table:vms_records} we can see the summary of the data used in this project. The number of occurrences is 769928. 
+Some cells of the table are with \textit{\-} because its not applicable for qualitative data.
+The \textit{Quar} stands for Quartile and \textit{SD} stands for Standard deviation.
+
+\begin {table}[h]
+\small
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c|c|c}
+             & Minimum & Maximum & Average & 1 \textsuperscript{st} Quar & Median &  3\textsuperscript{rd} Quar & SD\\
+\hline
+Lon     & -52.706 & 35.965 & -4.493 &-9.811&-9.115&-7.986&21.156\\
+Lat         & -35.243 &76.064&25.933&33.038&38.423&40.21&25.916\\
+Sog         &  0 &42&4.183&1.634&3.012&7.399&3.211\\
+Cog        &   0&360&166.31&68.89&173.125&255.69&108.64\\
+utc        &  \begin{tabular}{@{}c@{}} 2008-10-30 \\ 21:50:58\end{tabular} &-&-&-&-&-\\
+gps\_ id        & 0&1&-&-&-&-&-\\
+fix        &   1&3&-&-&-&-&-\\
+Fix2       &  0&2&-&-&-&-&-\\
+Lon2        &   -52.706&155.977&-3.702&-9.726&-8.991&0&20.933\\
+Lat2         &   -35.24&76.064&23.663&0&37.595&40.191&26.383\\
+VesselId        & 1&38&-&-&-&-&-
+           
+\label{table:vms_records}
+\end{tabular}
+\caption {VMS Records}
+\end{center}
+\end {table}
+
+
 % section vms_records (end)
+\newpage 
+
 
 \section{VMS Vessels} % (fold)
 \label{sub:vms_vessels}
@@ -52,7 +85,34 @@ The variables registered in the dataset are:
 \item	PriGearCode: FOA code of the principal fishery device;
 \item	SecGearCode: FOA code of the secondary fishery device.
 \end{itemize}
-In Appendix A a detailed descriptive analysis of these variables is provided.
+%In Appendix A a detailed descriptive analysis of these variables is provided.
+
+In Table \ref{table:vms_vessels} we can see the summary of the data regarding the vessels in the table VMS Records. This data was filtered from 56 occurrences to 38. The deleted data was referred to Vessels that haven’t data in the table VMS Records, so this vessels information’s was superfluous to ours needs. 
+
+
+\begin {table}[H]
+\small
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c|c|c}
+            &  Minimum & Maximum & Average & 1 \textsuperscript{st} Quar & Median & 3\textsuperscript{rd} Quar & SD \\
+\hline
+ID     & 1&38&-&-&-&-&-\\
+Name         &-&-&-&-&-&-&-\\
+Loa         & 11.95&84.94&23.48&16.93&19.35&23.70&15.49\\
+GT        &22251&18.99&200.28&27.98&57.15&110.34&473.78\\
+HP        & 3600&130&539&230&350&497&689.56\\
+KW        &2684.50&95.62&396.52&172.84&259.21&367.91&498.54\\
+License        &-&-&-&-&-&-&-\\
+PriGC       &-&-&-&-&-&-&-\\
+SecGC        &-&-&-&-&-&-&-
+
+
+           
+\label{table:vms_vessels}
+\end{tabular}
+\caption {VMS Vessels}
+\end{center}
+\end {table}
 
 % section vms_vessels (end)
 

@@ -178,14 +178,71 @@ The elbow method is a visual method. The idea is that Start with K=2, and keep i
 \label{sub:dsa_library}
 
 
-It was created a software application called DSALib for (Decision Support Alerts Library). In this application it was applied the solutions described in this chapter to help with the elaboration and tests for this project. For a market solution this library could be used by the main application of MONICAP to send alerts to support decision making.
-\\
+It was created a software application called DSALib for (Decision Support Alerts Library). In this application it was applied the solutions described in this chapter to help with the elaboration and tests for this project. For a market solution this library could be used by the main application of MONICAP to send alerts to support decision making or to simply classify each VMS data entry as if fishing and if fishing in a new area for future analysis .
+
+\newpage
+
+
+\subsection{Functionality} % (fold)
+\label{sub:functionality}
+
+This application makes it possible to:
+\begin{itemize}
+\item Test new data \\ Send vms data and recive if is considred to be fishing and if is in new area.
+\item Test new velocity \\ Send sog data and recive true if is considred to be fishing.
+\item Test new location \\ Send GPS data and recive true if is in new area.
+\item Restart models \\ Request to create new models. Can be used if the object is running for a long time and want to renew models with new data. 
+\item Get limits \\ Request the velocity limits. Receve a tuple with two doubles (item1 = low speed limit, item2 = high speed limit). Can be used for analisys like in chapter 5.
+\end{itemize}
+
+To make this possible is necessary to configure the data access layer to get the vms data from the local data repository.
+Correnlty, the application supports conection to SQL Server \cite{WEBSITE:SqlServer} and PostgreSQL \cite{WEBSITE:Postgresql}.
+
+
+% subsection functionality (end)
+
+
+\subsection{Architecture and Implementation} % (fold)
+\label{sub:architecturee_implementation}
+To develop the software, I decided to use Java 8 \cite{WEBSITE:OraJava8} because it is a powerful, full object-oriented and cross-platform programming language. MONICAP uses Linux so using a JRE (Java Runtime Environment) application is a good choice.
+The architeture is depiced in \ref{fig:DSALib_Prof}. In this architeture is possible to distiguish three main modules: One that is the core of the DSALib, create the modules and use them. Other one is WEKA \cite{WEBSITE:Weka} that create de cluster modules for locations and kernel density for velocity. The last one is the data access layer that is responsible to get the vms data from the local repository so DSALib can create the modules.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\linewidth]{Chapters/img/DSALib_Prof.png}
+    \caption{Representation of the DSALib architecture.}
+    \label{fig:DSALib_Prof}
+\end{figure}
+
+
+
+\textbf{Core module} \\The core module is responsible to initialize the models and use them the way discribed in this chapter. It starts by creting an instace of ProcessVelocity to create de first model and then create an instece of ProcessNewArea that uses the velocity limits previously obtained to get the locations data form when the vessel was fishing to create the module.
+
+\textbf{WEKA module} \\Weka is a collection of machine learning algorithms for data mining tasks. It contains tools for data preparation, classification, regression, clustering, association rules mining, and visualization. In this application, WEKA is used as a tool to create the modules.
+
+\textbf{DAL module} \\The data access module was implemented in an way not only to get data but also to filter data in the database engine. Filtering data (where) is optimized on the database engine and so we gain some performance.
+
+
+
+
 The application starts by initializing two objects:
 \begin{enumerate}
 \item	ProcessVelocity: This object is responsible to do the process explained in the point 4.2 of this document. This object will request to the static class ImportData to retrieve all SOG (Speed Over Ground) data from the database. Then the process will end with the limits (minimal speed of fishing and the maximal speed of fishing).
 \item	ProcessNewArea: This object is responsible to do the process explained in the point 4.3 of this document. This object is only initialized after ProcessVelocity because it needs the velocity fishing limits to only create the clusters of the fishing areas. With these limits the object request to ImportData only the Lat and Lon where the vessel was in between the velocity limits. With this the object ends up with the clusters of the fishing areas.
 \end{enumerate}
-To use we start by instantiate DSA with the doubles limitVelociry and limitArea. This doubles range between 0 and 1:
+
+
+Output newData(Input input);
+boolean isFishing(double velocity);
+boolean isNewArea(GPS gps);
+void restart();
+Limits GetLimit(); 
+% subsection architecturee_implementation (end)
+
+\subsection{Usage} % (fold)
+\label{sub:usage}
+To use we start by instantiate DSALib with the doubles limitVelociry and limitArea. This doubles range between 0 and 1:
 \begin{itemize}
 \item	limitVelociry: used to get the maximum and minimum speed by reducing the speed range. This limit will reduce de maximum speed and increase the minimum speed by setting the maximum velocity as the velocity that as (1-limit) percentage of the cumulative karnel distribution and the minimum velocity as the velocity that as (limit) percentage of the cumulative karnel distribution.
 \item	limitArea: used to compare with the probability to belong in a cluster given to the new points. If the limit is smaller that the given probability, then the vessel is classified as fishing in a new area.
@@ -194,15 +251,11 @@ These limits are important so we can configure if we prefer to have more false p
 A false positive (type I error) is when the classifier reject a true hypothesis.
 A false negative (type II error) is when the classifier accept a false hypothesis.
 
-After to have the two objects ready we need to send a new velocity data and GPS coordinates to receive an object with an “isFishing” as true if the vessel is fishing and an “isNewArea” as true if the vessel is in an area that is not a normal fishing area and it’s in a fishing velocity. In Appendix B there is more information about the software developed.
+After we have the DSALib ready we need to send a new velocity data and GPS coordinates to receive an object with an “isFishing” as true if the vessel is fishing and an “isNewArea” as true if the vessel is in an area that is not a normal fishing area and it’s in a fishing velocity. In Appendix B there is more information about the software developed.
 
-To develop the software, I decided to use Java because it is a powerful, full object-oriented and cross-platform programming language. MONICAP uses Linux so using a JRE (Java Runtime Environment) application is a good choice.
-
+% subsection usage (end)
 
 % section dsa_library (end)
-
-
-
 % chapter blue_box (end)
 
 
