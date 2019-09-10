@@ -58,6 +58,7 @@
 % Beautiful simple tables
 \usepackage{booktabs}
 \usepackage[bottom]{footmisc}
+\DeclareUnicodeCharacter{2212}{-}
 
 % Use colors in background of table cells
 %\usepackage{colortbl}
@@ -176,7 +177,6 @@
 % Text appendixes. Comment if not needed
 % sintax: \appendixfile{file}
 \appendixfile{appendix1}
-\appendixfile{appendix2}
 
 %%============================================================
 %%
@@ -270,7 +270,7 @@
 %%
 \cleardoublepage
 \setcounter{page}{1} \pagenumbering{roman}
-%\printappendixes 
+\printappendixes 
 \cleardoublepage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -17,7 +17,7 @@ The first objective is to develop a locally implemented tool that informs whethe
 One of the solutions developed to meet this objective consists in a machine learning application to analyze data in real time, in order to determine whether the vessel is fishing, and if so, whether it is fishing in its fishing zone or in new location.\\
 This solution must be implemented by vessel, therefore each vessel will only have access to its own data that is, each vessel only will know it’s one data.
 The fact that this analysis is done by vessel allows avoiding bias in results, in fact each vessel has different power, size and its suitable for certain fishing activity.\\
-This solution could be implemented and used as a library by the MONICAP system shown in \ref{fig:monicap} .\cite{WEBSITE:MonicapXsealence}.
+This solution could be implemented and used as a library by the MONICAP system shown in Figure \ref{fig:monicap} .\cite{WEBSITE:MonicapXsealence}.
 
 \begin{figure}[H]
     \centering
@@ -32,9 +32,9 @@ As MONICAP systems are installed on ships, they can, in real time, send alerts t
 
 \section{Fishing Velocity Patterns} % (fold)
 \label{sub:fishing_velocity_patterns}
-In order to know whether a vessel is fishing, we can use it’s velocity patterns, given that the speed of the vessel differs where it is travelling or when it is fishing. We can verify this fact in the plot shown in \ref{fig:histogram_vessel2} , corresponding to vessel with identification number 2.
+In order to know whether a vessel is fishing, we can use it’s velocity patterns, given that the speed of the vessel differs where it is travelling or when it is fishing. We can verify this fact in the plot shown in Figure \ref{fig:histogram_vessel2} , corresponding to vessel with identification number 2.
 
-On \ref{fig:histogram_vessel2} the histogram allows us to recognize two different velocity patterns, identified by two distinct distributions that are visible when we graphically represent the velocity’s data of each of the vessels. The distribution characterized by lower average speeds corresponds to fishing activity and the other speed distribution corresponds to the movement of the vessel between the port and the fishing sites.\\
+On Figure \ref{fig:histogram_vessel2} the histogram allows us to recognize two different velocity patterns, identified by two distinct distributions that are visible when we graphically represent the velocity’s data of each of the vessels. The distribution characterized by lower average speeds corresponds to fishing activity and the other speed distribution corresponds to the movement of the vessel between the port and the fishing sites.\\
 So, it is needed to isolate the first distribution’s range to be able to classify the upcoming future velocity’s as fishing associated or not.
  
 \begin{figure}[H]
@@ -44,14 +44,14 @@ So, it is needed to isolate the first distribution’s range to be able to class
     \label{fig:histogram_vessel2}
 \end{figure}
 
-In \ref{fig:histogram_vessel2} we have the speed in x axes in nautical knots and in the y axes the quantity of records per speed value.
+In Figure \ref{fig:histogram_vessel2} we have the speed in x axes in nautical knots and in the y axes the quantity of records per speed value.
 
 
 To isolate the first distribution, it was used the Hill Climbing algorithm \cite{Kvasnicka1995HillCW}.  This algorithm is a local optimization algorithm which provides a direct search. The Stochastic Hill Climbing algorithm works supported in an iterate process of randomly selecting a neighbor for a candidate solution. The acceptance of the solution is conditioned by a criterion of improvement with respect to the previous solution.\\
 The implementation used was altered in a way that when the algorithm converges to the maximum, it will continue to find the limit of the distribution.
 To obtain this solution, the algorithm searches for the first local maximum that does not have a higher value in the following three points (current key + 0.5, current key + 1 and current key + 2), in this way we can find the maximum value of the fishing speed range. \\
 To find the end of the fishing speed range, the algorithm continues to sweep the histogram until the next three points are not lower than the current point.
-This way we can end up with a histogram of the intended distribution as we can observe in  \ref{fig:sog_hill_climbing}.
+This way we can end up with a histogram of the intended distribution as we can observe in Figure  \ref{fig:sog_hill_climbing}.
 
 \begin{figure}[H]
     \centering
@@ -77,8 +77,8 @@ The used procedure was performed in two parts:  it starts by using the method ba
 \begin{enumerate}
 
 
-\item	\textbf{Filter:} In the first step it retrieves all velocity data from the database to create a histogram like is shown in the \ref{fig:histogram_vessel2} . In the next step it uses the hill climbing algorithm to get the minimum and the maximum value of the first distribution. The velocity 0 is removed because we don’t want to consider when the vessel is completely stopped. 
-\item	\textbf{Kernel:} It was applied a kernel distribution method in the filtered histogram to have the distribution represented in orange on \ref{fig:hist_kernel}. The it was created a dictionary with the velocity’s and the cumulative percentage of velocity. This way we end up with a histogram like \ref{fig:hist_comulative}.  
+\item	\textbf{Filter:} In the first step it retrieves all velocity data from the database to create a histogram like is shown in the Figure \ref{fig:histogram_vessel2} . In the next step it uses the hill climbing algorithm to get the minimum and the maximum value of the first distribution. The velocity 0 is removed because we don’t want to consider when the vessel is completely stopped. 
+\item	\textbf{Kernel:} It was applied a kernel distribution method in the filtered histogram to have the distribution represented in orange on \ref{fig:hist_kernel}. The it was created a dictionary with the velocity’s and the cumulative percentage of velocity. This way we end up with a histogram like Figure \ref{fig:hist_comulative}.  
 Then a range across quantiles is defined for some probability. As in the estimation of confidence intervals, a confidence level is also defined here, to which will be associated the two speed limits that correspond to the fishing activity.
 \end{enumerate}  
 
@@ -117,7 +117,7 @@ Fishing in a new zone may mean that the vessel has change its type of fishing or
     \label{fig:gps_vessel2}
 \end{figure}
 
-In \ref{fig:gps_vessel2} we can see the GPS points of a vessel. Using methods based in clustering it is possible to identify several areas by vessel that are the normal fishing zones of the vessel. When the vessel is outside that zone, a flag should occur.
+In Figure \ref{fig:gps_vessel2} we can see the GPS points of a vessel. Using methods based in clustering it is possible to identify several areas by vessel that are the normal fishing zones of the vessel. When the vessel is outside that zone, a flag should occur.
 
 Using the fishing velocity range encountered in the previous point, we get the GPS points of the vessel within that range, so we can work only with the positions where the vessel was fishing. The next step is to use a clustering algorithm to define the fishing areas, so we can compare with the new GPS points. 
 
@@ -205,7 +205,7 @@ Correnlty, the application supports conection to SQL Server \cite{WEBSITE:SqlSer
 \subsection{Architecture and Implementation} % (fold)
 \label{sub:architecturee_implementation}
 To develop the software, I decided to use Java 8 \cite{WEBSITE:OraJava8} because it is a powerful, full object-oriented and cross-platform programming language. MONICAP uses Linux so using a JRE (Java Runtime Environment) application is a good choice.
-The architeture is depiced in \ref{fig:DSALib_Prof}. In this architeture is possible to distiguish three main modules: One that is the core of the DSALib, create the modules and use them. Other one is WEKA \cite{WEBSITE:Weka} that create de cluster modules for locations and kernel density for velocity. The last one is the data access layer that is responsible to get the vms data from the local repository so DSALib can create the modules.
+The architecture is depicted in Figure \ref{fig:DSALib_Prof}. In this architecture is possible to distinguish three main modules: One that is the core of the DSALib, create the modules and use them. Other one is WEKA \cite{WEBSITE:Weka} that create de cluster modules for locations and kernel density for velocity. The last one is the data access layer that is responsible to get the VMS data from the local repository so DSALib can create the modules.
 
 
 \begin{figure}[h]
