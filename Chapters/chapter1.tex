@@ -1,3 +1,5 @@
+
+
 % 
 %  chapter1.tex
 %  ThesisISEL
@@ -17,14 +19,14 @@ This chapter introduces the motivation, context and the goals of this work. Fina
 \subsection{Fishing Activity} % (fold)
 \label{sub:fishing_activity}
 The increased fishing activities mankind imposed on the marine ecosystems is a threat for the future sea economy and for the marine ecosystem’s integrity \cite{AgardyEffects}.\\
-Fisheries mapping is needed for implementing a better ecosystem management and to secure a healthy marine population \cite{AlfredImperative}.
-Fishing Activity represents an important activity for the Portuguese economy. In European Union, Portugal is the country that has the highest consumption of fish per person and the third world wide needing 55,6 kg (per capita/year), \cite{WEBSITE:ConsumoPescasPortugal}. Portugal is a country connected to the sea by its great coast all along its continental territory, almost all the coastal villages has a fishing community.
-Another issue of concern to the authorities is the occurrence of tax evasion that continues to cause damage to the Portuguese economy. In Portugal the estimated tax evasion represents 21,9\% of its Gross Domestic Product (GDP) \cite{BOOK:EsbocoFraude}.
-The use of statistical pattern recognition techniques to analyse the data, makes possible to identify who operates in the margin of the law in a more rapid and methodical way \cite{ShuklaBigData}. Reducing tax evasion will allow strong gains and potentially will develop the economy, making the fishing activity more just for everyone involved in this activity.
+Fisheries mapping is needed for implementing better ecosystem management and to secure a healthy marine population \cite{AlfredImperative}.
+The fishing activity represents an important activity for the Portuguese economy. In the European Union, Portugal is the country that has the highest consumption of fish per person and the third worldwide needing 55,6 kg (per capita/year), \cite{WEBSITE:ConsumoPescasPortugal}. Portugal is a country connected to the sea by its great coast all along with its continental territory, almost all the coastal villages have a fishing community.
+An important issue of concern to the authorities is the occurrence of tax evasion that continues to cause damage to the Portuguese economy. In Portugal, the estimated tax evasion in all economic activities represents 21,9\% of it's Gross Domestic Product (GDP) \cite{BOOK:EsbocoFraude}.
+The use of statistical pattern recognition techniques to analyze the data makes possible to identify who operates in the margin of the law more rapidly and methodically \cite{ShuklaBigData}. Reducing tax evasion will allow strong gains and potentially will develop the economy, making the fishing activity more just for everyone involved in this activity.
 
-MONICAP is a monitoring system for the inspection of fishing using the Global Positioning System (GPS) for vessel location and Inmarsat-C technology for satellite communications between ships and a ground control center. MONICAP was successfully introduced on the market by Xsealence (www.xsealence.pt) and is currently installed or currently being installed on about 800 fishing vessels operating under the control of the authorities of Portugal, Spain, France, Ireland and Angola. Within the scope of this Master's thesis it is proposed to use Portuguese fishing data from the Vessel Monitoring Systems (VMS) with the objective of extracting patterns of behavior related to the fishing zones, times, speeds and directions of the course performed by the ships. The descriptive statistical analysis of these makes possible to identify patterns of fishing activity. 
+MONICAP \cite{WEBSITE:MonicapXsealence} is a monitoring system for the inspection of fishing using the Global Positioning System (GPS) for vessel location and Inmarsat-C \cite{WEBSITE:inmarsatC} technology for satellite communications between ships and a ground control center. MONICAP was successfully introduced on the market by Xsealence \cite{WEBSITE:Xsealence}) and is currently installed or currently being installed on about 800 fishing vessels operating under the control of the authorities of Portugal, Spain, France, Ireland, and Angola. Within the scope of this Master's thesis, it is proposed to use Portuguese fishing data from the Vessel Monitoring Systems (VMS) to extract patterns of behavior related to the fishing zones, times, speeds and directions of the course performed by the ships. The descriptive statistical analysis of these makes possible to identify patterns of fishing activity that can be used for different proposes like, sustainable fishing, models for fuel efficiency of models to detect illegal activities.
 
-VMS provides an unique and independent method to derive patterns of spatially and temporally explicit fisheries activity. Such information may feed into ecosystem management plans seeking to achieve sustainable fisheries, while minimizing potential risk to non-target species (e.g. cetaceans, seabirds and elasmobranchs) and habitats of conservation concern. With multilateral collaboration VMS technologies may offer an important solution to quantifying and managing ecosystem disturbance, particularly on the high-seas.
+VMS provides a unique and independent method to derive patterns of spatially and temporally explicit fisheries activity. Such information may feed into ecosystem management plans seeking to achieve sustainable fisheries while minimizing potential risk to non-target species (e.g. cetaceans, seabirds and elasmobranchs) and habitats of conservation concern. With multilateral collaboration, VMS technologies may offer an important solution to quantifying and managing ecosystem disturbance, particularly on the high-seas.
 
 
 % section fishing_activity (end)
@@ -33,11 +35,11 @@ VMS provides an unique and independent method to derive patterns of spatially an
 \subsection{Analytics} % (fold)
 \label{sub:analytucs}
 The concept of Analytics refers to the ability to use data, perform predictive analytics, and systematic reasoning to improve performance in key business domains and lead to a more efficient decision-making process.
-There is a extensive use of mathematics and statistics, like descriptive techniques and predictive models which allow to gain valuable knowledge from the data.
-The insights from data are used to recommend action or to guide decision making rooted in business context.
+There is extensive use of mathematics and statistics, like descriptive techniques and predictive models which allow gaining valuable knowledge from the data.
+The insights from data are used to recommend action or to guide decision making rooted in a business context.
 
 
-% section analytucs (end)
+% section analytics (end)
 
 \subsection{Data mining} % (fold)
 \label{sub:data_mining}
@@ -49,45 +51,44 @@ Data mining is the process of discovering actionable information from large sets
 
 % section introduction (end)
 
-\section{Objectives} % (fold)
+\section{Goals} % (fold)
 \label{sec:objectives}
-This project proposes two methods to better map the fishing activities. 
 
  \textbf{Objective 1: Local tool} \\
-In real time, will be developed an application to be installed in the MONICAP which allow to describe better the fishing zones. At each one of the vessels this application will work with the data from the fishing activity of this vessel. This tool will be local and will be used unsupervised techniques of automatic learning.
+In real-time, will be developed an application to be installed in the MONICAP which allows better describing the fishing zones. At each one of the vessels, this application will work in real-time with the data from the fishing activity of this vessel. This tool will be local and will be used unsupervised techniques of automatic learning.
 The derived application should be able to identify patterns in two strands:
-Speed: Identify if the vessel is in fishing activity or not;
-Location: Identify the usual fishing spots. Use these spots to cross check in real time if the current location of fishing is new to the vessel.
+Speed: identify if the vessel is in fishing activity or not;
+Location: identify the usual fishing spots. These spots knowledge to cross-check in real-time if the current location of fishing is new to the vessel.
 
  \textbf{Objective 2: Centralized tool} \\
-Using VMS data and information on fishing licenses per vessel, our goal is to design models that are capable of classifying vessels by type of fishing only using VMS data. These models could be used to classify vessels by fishing activity and compare with the license of the vessel. 
+Using VMS data and information on fishing licenses per vessel, our goal is to design models that are capable of classifying vessels by type of fishing only using VMS data. These models could be used to classify vessels by fishing activity allowing to cross this classification with the information corresponding to the vessel license.
 
 % section objectives (end)
 
-\section{Work Structure} % (fold)
+\section{Document Structure} % (fold)
 \label{sec:work_structure}
-The work is divided into four main chapters. Chapter 2 gives an overview of the State of the Art concerning the usage of technologies in the fishing industry to detect outliers’ behaviors such activity. In Chapter 3 we focus on the data analysis, pre-processed treatment needed to find possible solutions for the goals described previously. The data are divided into two categories:
+This document is divided into four main chapters. Chapter 2 gives an overview of the State of the Art concerning the usage of technologies in the fishing industry to detect outliers’ behaviors such as activity. In Chapter 3 we focus on the data description and analysis, as well as, the needed data pre-processing treatment to find possible solutions for the goals described previously. The data are divided into two categories:
 \begin{itemize}
 \item VMS Records: data generated by MONICAP system;
 \item VMS Vessels: data coming from the vessel’s captains, manually inserted.
 \end{itemize}
-In Chapter 4 were presented two possible processes to classify the data in real time, only using the available data by the Blue Box:
+In Chapter 4 were presented two possible processes to classify the data in real-time, only using the available data by the Blue Box:
 \begin{itemize}
-\item	Using velocity data, to classify if the vessel is fishing;
-\item	Using location data, to classify if the vessel is in activity in a new area;
+\item    Using velocity data, to classify if the vessel is fishing;
+\item    Using location data, to classify if the vessel is in activity in a new area;
 \end{itemize}
-In Chapter 5 is presented an approach to answer to the second objective: using the data from all the vessels, how to identify fishing activities that are not in accordance with the vessel’s fishing license. Data mining methodologies will ve user to obtain the predictive models.
-The Chapter 6 conteins a description of the software developed for the purpose presented in the chapters 4 and 5.
+Chapter 5 is presented as an approach to answer the second objective: using the data from all the vessels, how to identify fishing activities that are not under the vessel’s fishing license. Data mining methodologies will be used to obtain predictive models.
+Chapter 6 contains the conclusions obtained during the elaboration of this work.
 
 % section work_structure (end)
 
 \section{Publications} % (fold)
 \label{sec:publications}
 
-\subsection{U. C. report to final project of course (FPC)} % (fold)
+\subsection{U. C. report to the final project of course (FPC)} % (fold)
 \label{sub:fpc}
 My FPC entitled “Análise de Padrões para Encontrar Fraude nas Pescas” was developed in the same data analysis context. In that work I tried to solve an analogous problem with data coming from the VMS file, but with a different approach.\\
-FPC work was focused on abnormalities regarding the declaration of fish caught, by quantities and type of fish, it was used the data provided by the Capitan with  quantities caught per type of fish and used VMS Records data to consider standards as time of the year and fishing positions.
+FPC work was focused on abnormalities regarding the declaration of fish caught, by quantities and type of fish. It was used the data provided by the Capitan with quantities caught per type of fish and used VMS Records data to consider standards, as the time of the year and fishing positions.
 
 % section fpc (end)
 
