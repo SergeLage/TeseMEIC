@@ -186,25 +186,32 @@ Now we can create data mining models with location and velocity parameters.
 
 
 % section data_preparation (end)
-
+\newpage
 \section{Modeling} % (fold)
 \label{sub:modeling}
 Several data mining algorithms were used to create the necessary models to classify the license type with the VMS data.
 \begin{itemize}
 \item \textbf{ KMeans:} This model was used in the previous step with the GPS data, so it was classified in well-defined clusters to improve the operation of the data mining algorithms. The operation of this algorithm is described in chapter 4.3.
 
-\item \textbf{ DecisionTrees: }
+\item \textbf{ Decision Trees: }
 While in data mining a decision tree is a predictive model that can be used to represent both classifiers and regression models, in operations research decision trees refer to a hierarchical model of decisions and their consequences. The decision-maker employs decision trees to identify the strategy which will most likely reach its goal. When a decision tree is used for classification tasks, it is most commonly referred to as a classification tree. When it is used for regression tasks, it is called a regression tree \cite{Rokach2014}.
 Algorithms for constructing decision trees usually work top-down, by choosing a variable at each step that best splits the set of items \cite{ApplicationsReviews}.\\
 In this work it will be used to measure the quality of a split "gini" for the Gini impurity (CART)\cite{DTAnalysis} and "entropy" for the information gain (C4.5)\cite{DTAnalysis}.
 
+\item \textbf{ Random Forests: }
+Random forests are a combination of tree predictors such that each tree depends on the values of a random vector sampled independently and with the same distribution for all trees in the forest\cite{Breiman2001}. The generalization error for forests converges a.s. to a limit as the number of trees in the forest becomes large. The generalization error of a forest of tree classifiers depends on the strength of the individual trees in the forest and the correlation between them.
+A random forest is a classifier consisting of a collection of tree-structured
+classifiers \(\{h(\textbf{x}, \theta \textsubscript{k} ), k = 1,...\}\) where the  \( \{ \theta \textsubscript{k} \}\) are independent identically distributed
+random vectors and each tree casts a unit vote for the most popular class at input \textbf{x}\cite{Breiman2001}.
+
+
 \item \textbf{Neural Network: }
-Neural networks are a bio-inspired mechanism of data processing, that enables computers to learn technically similar to a brain and even generalize once solutions to enough problem instances are tough \cite{Kriesel2007NeuralNetworks}. A technical neural network consists of simple processing units, the neurons, and directed, weighted connections between those neurons. A neural network is a sorted triple $(N, V, \varpi )$ with two sets N, V and a  function $\varpi$, where N is the set of neurons and V a set $\{ (i, j) i, j \in \mathbb{N} \}$  whose elements are called connections between neuron i and neuron j. The function $ \varpi : V \rightarrow \mathbb{R}$ defines the weights, where $\varpi((i, j))$, the weight of the connection between neuron $i$ and neuron $j$, is shortened to $\varpi \textsubscript{ i,j}$ . Depending on the point of view it is either undefined or 0 for connections that do not exist in the network \cite{Kriesel2007NeuralNetworks}.  \\
+Neural networks are a bio-inspired mechanism of data processing, that enables computers to learn technically similar to a brain and even generalize once solutions to enough problem instances are tough \cite{Kriesel2007NeuralNetworks}. A technical neural network consists of simple processing units, the neurons, and directed, weighted connections between those neurons. A neural network is a sorted triple \((N, V, \varpi )\) with two sets N, V and a  function \(\varpi\), where N is the set of neurons and V a set \(\{ (i, j) i, j \in \mathbb{N} \}\)  whose elements are called connections between neuron i and neuron j. The function \( \varpi : V \rightarrow \mathbb{R}\) defines the weights, where \(\varpi((i, j))\), the weight of the connection between neuron \(i$ and neuron \(j$, is shortened to \(\varpi \textsubscript{ i,j}\) . Depending on the point of view it is either undefined or 0 for connections that do not exist in the network \cite{Kriesel2007NeuralNetworks}.  \\
 In this work we will train models with different hidden layer sizes. The solver for weight optimization used is BFGS\cite{Dai2013} and Adam\cite{adamNN} for large sizes of hidden layers.
 
 \item \textbf{Support Vector Machine: }
-The folklore view of SVM is that they find a \"optimal\" hyperplane as the solution to the learning problem. The simplest formulation of SVM is the linear one, where the hyperplane lies in the space of the input data $x$. In this case, the hypothesis space is a subset of all hyperplanes of the form:
-$f(x) = w \cdotp x +b$.
+The folklore view of SVM is that they find a \"optimal\" hyperplane as the solution to the learning problem. The simplest formulation of SVM is the linear one, where the hyperplane lies in the space of the input data \(x\). In this case, the hypothesis space is a subset of all hyperplanes of the form:
+\(f(x) = w \cdotp x +b\).
 In their most general formulation, SVM finds a hyperplane in a space different from that of the input data x. It is a hyperplane in a feature space induced by a kernel K (the kernel defines a dot product in that space)\cite{SVMEvgeniou}.\\
 In this work we will create models using the following kernel algorithms: Linear\cite{SVMTraining}, Polynomial\cite{SVMTraining} and RBF\cite{SVMTraining}.  
 \end{itemize}
@@ -248,9 +255,9 @@ For the propose of this work, the classes are:
 The model's test results are:
 \newpage
 \begin{itemize}
-\item \textbf{ DecisionTrees: }
+\item \textbf{ Decision Trees: }
 
-We can observe in Table \ref{table:cross_val_decision_trees} the usage of velocity parameters (SogMin, SogAVG, and SogMax) and location (clustering result of K-Means) have the best result. The algorithm with the best result is Entropy(C4.5) with a precision of 0.7781 and an accuracy of 0.1501. In Figure \ref{table:cross_val_decision_trees} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate.
+We can observe in Table \ref{table:cross_val_decision_trees} the usage of velocity parameters (SogMin, SogAVG, and SogMax) and location (clustering result of K-Means) have the best result. The algorithm with the best result is Entropy(C4.5) with a precision of 0.7776 and an accuracy of 0.1459. In Figure \ref{table:cross_val_dt} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. The max depth of the trees was tested as 200, 300 and 400 with 300 giving the best results.
 
 
 \begin {table}[H]
@@ -259,9 +266,9 @@ We can observe in Table \ref{table:cross_val_decision_trees} the usage of veloci
 \multicolumn{1}{c|}{\textbf{Algorithm } }   &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
 &Precision & Accuracy & Precision & Accuracy \\
 \hline
-Gini &0.7748&0.1468   &0.7205 &0.1404\\
-Entropy   & 0.7781&0.1501   &0.7303 &0.126
-\label{table:cross_val_decision_trees}
+Gini   &0.774&0.1481&0.7236&0.1349\\
+Entropy&0.7776&0.1459&0.73&0.1319
+\label{table:cross_val_dt}
 \end{tabular}
 \caption {Cross-Validation results for Decision Trees models}
 \end{center}
@@ -275,11 +282,44 @@ Entropy   & 0.7781&0.1501   &0.7303 &0.126
 \end{figure}
 
 
+\newpage
+\item \textbf{ Random Forest: }
+
+In this models it was trained with the algorithms of Gini and Entropy(C4.5) with the same result of Decision trees, the Entropy was a better precision. So the results mentioned in this document for Random Forest models are using Entropy(C4.5) as the algorithm to measure the quality of a split. The max depth of the trees was tested as 200, 300 and 400 with 300 giving the best results. In table \ref{table:cross_val_rf} we can see that the best result was given by the model with 200 estimators.In Figure \ref{table:cross_val_rf} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. 
+
+
+\begin {table}[H]
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+\multicolumn{1}{c|}{\textbf{No. of estimators } }   &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
+&Precision & Accuracy & Precision & Accuracy \\
+\hline
+50  &0.8097&0.1355 &0.7649 &0.1315\\
+100 &0.8082&0.1332 &0.7684 &0.133\\
+200 &0.8101&0.1436 &0.767  &0.1337 \\
+300 &0.8075&0.1458 &0.771 &0.1339 
+\label{table:cross_val_rf}
+\end{tabular}
+\caption {Cross-Validation results for Random Forest models}
+\end{center}
+\end {table}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{Chapters/img/CM_RF.png}
+    \caption{Confusion Matrix for Random Forest using 200 estimators}
+    \label{fig:cm_rf}
+\end{figure}
 
 
 \newpage
-\item \textbf{Neural Network: }
-\textbf{TODO: Descrever resultados}
+\item \textbf{Neural Network: }\\
+For this models it was trained various configurations of hidden layers. It was used from 1 to 8 hidden layers with 11, 250, 500 and 750 neurons. Some of the results are in Table \ref{table:cross_val_nn}. The best result as we can observe in Table \ref{table:cross_val_nn} as 5 layers with 500 neurons with the confusion matrix represented in Figure \ref{fig:cm_nn}.
+For some models it was used the Adam solver and BFGS, but with BFGS having better results. So all results demonstrated are using BFGS solver.
+As in Decision Trees models, the usage of locations have a good impact in the results of the Neural Network models.
+
+
 \begin {table}[H]
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
@@ -301,14 +341,17 @@ None &0.6293&0.147   &0.5984 &0.1359\\
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{Chapters/img/CM_NN.png}
-    \caption{Confusion Matrix for Neural Network using 6x500 hidden layers}
+    \caption{Confusion Matrix for Neural Network using 5x500 hidden layers}
     \label{fig:cm_nn}
 \end{figure}
 
 
 \newpage
-\item \textbf{Support Vector Machine: }
-\textbf{TODO: Descrever resultados}
+\item \textbf{Support Vector Machine: }\\
+For the built of support vector machine models it was used the kernel coefficient of Polynomial, RBF and linear. With the best result as we can observe in Table \ref{table:cross_val_svm} is the Polynomial, with its confusion matrix represented in Figure \ref{fig:cm_cvm}.  
+
+
+
 \begin {table}[H]
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
@@ -335,17 +378,10 @@ Linear  &0.6018&0.0746  & 0.5192&0.0263
 
 
 \newpage
+The model with best result was Random Forest with 200 estimators with a precision of 81.01\% (accuracy of the evaluation is 0.1436).
+With this we can determine that it is possible to create a good model to classify the VMS data as the fishing license. \\
+As seen in Figure \ref{fig:cm_rf}, the classes 0 and 7 have a low true positive rate. The usage of more data and data that are certified that the VMS data of a vessel is only for the propose of the fishing license can improve the precision of the model.
 
-
-%Evaluate Results
-%Assessment of Data
-%Business Success
-%Criteria
-%Approved Models
-
-
-%Review Process
-%Review of Process
 
 %Determine Next Steps
 %List of Possible Actions
