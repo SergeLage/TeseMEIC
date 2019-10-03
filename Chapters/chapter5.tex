@@ -7,13 +7,15 @@
 % ================
 % = Introduction =
 % ================
-\chapter{Server}
+\chapter{Joined Fishery Analysis}
 \label{cha:server}
 This chapter explains the approach used to reach the second goal of this work. 
 
-\section{Introduction} % (fold)
-\label{sec:introduction}
+
 Data mining is the process of discovering interesting and useful patterns and relationships in large volumes of data. The field combines tools from statistics and artificial intelligence (such as neural networks and machine learning) with database management to analyze large digital collections, known as data sets. Data mining is widely used in business (insurance, banking, retail), science research (astronomy, medicine), and government security (detection of criminals and terrorists) \cite{Okonkwo2011COMBATINGCA}. 
+
+\section{CRISP-DM} % (fold)
+\label{sub:crisp_dm}
 
 In this work, it will be used the CRISP-DM (Cross Industry Standard Process for Data Mining) methodology \cite{CRISPDM}.
 The CRISP-DM project proposed a comprehensive process model for carrying out data mining projects. The process model is independent of both the industry sector and the technology used \cite{CRISPDM}. 
@@ -72,11 +74,12 @@ data analyst, who will carry out the deployment steps. In any case, it is import
 understand upfront what actions will need to be carried out to actually make use of
 the created models.
 \end{itemize}
+% section crisp_dm (end)
 
+\section{Implementation} % (fold)
+\label{sub:implementation}
 
-% section introduction (end)
-
-\section{Business Understanding} % (fold)
+\subsection{Business Understanding} % (fold)
 \label{sub:business_understanding}
 
 In the fishing industry, vessels must have licenses to use fishing techniques.
@@ -89,7 +92,7 @@ In this way, we can try to confirm if each boat is carrying out the type of fish
 % section business_understanding (end)
 
 
-\section{Data Understanding} % (fold)
+\subsection{Data Understanding} % (fold)
 \label{sub:data_understanding}
 
 The data we use for this objective are the same VMS Records as used in chapter 4 and VMS Vessels explained in chapter 3.2.
@@ -99,7 +102,7 @@ Let us focus on the use of speed, but not discriminating any of the remaining co
 
 
 
-\section{Data Preparation} % (fold)
+\subsection{Data Preparation} % (fold)
 \label{sub:data_preparation}
 To use data mining models, we need a dataset with all the data needed to feed the models. So, I created a dataset from VMS Vessels and VMS Records to end with Table \ref{table:vms_dataset}. 
 
@@ -187,7 +190,7 @@ Now we can create data mining models with location and velocity parameters.
 
 % section data_preparation (end)
 \newpage
-\section{Modeling} % (fold)
+\subsection{Modeling} % (fold)
 \label{sub:modeling}
 Several data mining algorithms were used to create the necessary models to classify the license type with the VMS data.
 \begin{itemize}
@@ -223,7 +226,7 @@ In this work we will create models using the following kernel algorithms: Linear
 
 % section modeling (end)
 
-\section{Evaluation} % (fold)
+\subsection{Evaluation} % (fold)
 \label{sub:evaluation}
 Cross \textendash validation \cite{CrossValidatory} provides a simple and effective method for both model selection and performance evaluation, widely employed by the machine learning community. Under k \textendash fold cross \textendash validation the data are randomly partitioned to form k disjoint subsets of approximately equal size. In the ith fold of the cross-validation procedure, the ith subset is used to estimate the generalization performance of a model trained on the remaining k \textendash 1 subset. The average of the generalization performance observed overall k folds provides an estimate (with a slightly pessimistic bias) of the generalization performance of a model trained on the entire sample.
 The k used to test these models is 10.
@@ -257,7 +260,7 @@ The model's test results are:
 \begin{itemize}
 \item \textbf{ Decision Trees: }
 
-We can observe in Table \ref{table:cross_val_decision_trees} the usage of velocity parameters (SogMin, SogAVG, and SogMax) and location (clustering result of K-Means) have the best result. The algorithm with the best result is Entropy(C4.5) with a precision of 0.7776 and an accuracy of 0.1459. In Figure \ref{table:cross_val_dt} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. The max depth of the trees was tested as 200, 300 and 400 with 300 giving the best results.
+We can observe in Table \ref{table:cross_val_dt} the usage of velocity parameters (SogMin, SogAVG, and SogMax) and location (clustering result of K-Means) have the best result. The algorithm with the best result is Entropy(C4.5) with a precision of 0.7776 and an accuracy of 0.1459. In Figure \ref{table:cross_val_dt} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. The max depth of the trees was tested as 200, 300 and 400 with 300 giving the best results.
 
 
 \begin {table}[H]
@@ -390,8 +393,10 @@ As seen in Figure \ref{fig:cm_rf}, the classes 0 and 7 have a low true positive 
 % section evaluation (end)
 
 
-\section{Deployment} % (fold)
+\subsection{Deployment} % (fold)
 \label{sub:deployment}
+Joined Fishery Analysis
+
 %Plan Deployment Deployment Plan
 
 %Plan Monitoring andMaintenance

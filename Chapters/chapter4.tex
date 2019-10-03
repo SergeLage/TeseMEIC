@@ -7,15 +7,14 @@
 % ================
 % = Blue Box =
 % ================
-\chapter{Blue Box}
-\label{cha:blue_box}
+\chapter{Standalone Fishery Analysis}
+\label{cha:standalone_fishery_analysis}
 This chapter explains the approach used to reach the first goal of this work. It describes an application that implements the work done in this chapter with respect to its functionality, architecture, implementation details and usage.  
 
-\section{Introduction} % (fold)
-\label{sec:introduction}
-The first objective is to develop a locally implemented tool that informs whether the vessel is engaged in fishing, and if so, whether the fishing area is new or is habitual.\\
-One of the solutions developed to meet this objective consists in a machine learning application to analyze data in real-time, to determine whether the vessel is fishing, and if so, whether it is fishing in its fishing zone or a new location.\\
-This solution must be implemented by vessel, therefore each vessel will only have access to its data that is, each vessel only will know it’s one data.
+
+The first objective is to develop a locally implemented tool that registers whether the vessel is engaged in fishing, and if so, whether the fishing area is new or is habitual. This solution must be implemented by vessel, therefore each vessel will only have access to its data that is, each vessel only will know it’s one data. This data consists of VMS data described in Section 3.1 VMS Records.
+
+The solution developed to meet this objective consists of a machine learning application to analyze data in real-time, to determine whether the vessel is fishing, and if so, whether it is fishing in its fishing zone or a new location.
 The fact that this analysis is done by vessel allows avoiding bias in results, in fact, each vessel has different power, size and its suitable for certain fishing activity.\\
 This solution could be implemented and used as a library by the MONICAP system shown in Figure \ref{fig:monicap} .\cite{WEBSITE:MonicapXsealence}.
 
@@ -26,65 +25,65 @@ This solution could be implemented and used as a library by the MONICAP system s
     \label{fig:monicap}
 \end{figure}
 
-As MONICAP systems are installed on ships, they can, in real-time, send alerts to the authorities, whenever an abnormal change is detected in relation to the standard.
+As MONICAP systems are installed on ships, they can, in real-time, send alerts to the authorities, whenever an abnormal change is detected concerning the standard.
 
-% section introduction (end)
 
 \section{Fishing Velocity Patterns} % (fold)
 \label{sub:fishing_velocity_patterns}
-To know whether a vessel is fishing, we can use it’s velocity patterns, given that the speed of the vessel differs where it is traveling or when it is fishing. We can verify this fact in the plot shown in Figure \ref{fig:histogram_vessel2}, corresponding to vessel with identification number 2.
+
+To know whether a vessel is fishing, we can use it’s velocity patterns, given that the speed of the vessel differs where it is traveling or when it is fishing. We can verify this fact in the histogram shown in Figure \ref{fig:histogram_vessel2}, corresponding to a vessel velocity.
 
 In Figure \ref{fig:histogram_vessel2} the histogram allows us to recognize two different velocity patterns, identified by two distinct distributions. They are visible when we graphically represent the velocity’s data of each of the vessels. The distribution characterized by lower average speeds corresponds to fishing activity and the other speed distribution corresponds to the movement of the vessel between the port and the fishing sites.\\
 So, it is needed to isolate the first distribution’s range to be able to classify the upcoming future velocity’s as fishing associated or not.
  
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Chapters/img/hist_vessel2.png}
+    \includegraphics[trim=0 50 0 50, width=0.8\linewidth]{Chapters/img/hist_vessel2.pdf}
     \caption{SOG Histogram vessel 2.}
     \label{fig:histogram_vessel2}
 \end{figure}
 
-In Figure \ref{fig:histogram_vessel2} we have the speed in x-axes in nautical knots and the y-axes the number of records per speed value.
 
+For the propose of isolating the first distribution was considered three optional procedures:
+\begin{itemize}
+\item    \textbf{Standard deviation:}
+This solution assumes that the velocity distribution is normal.   Using the distribution of the fishing velocity we find the fishing velocity with more occurrences and with the standard deviation we can choose a distance from mean and so we can get the minimum population desired (explained by Chebyshev’s inequality \cite{Chebyshevinequality}) to be within the fishing range. \\
+Pros and cons: This solution is simple and fast to implement but we are not working with a normal distribution.
 
-To isolate the first distribution, it was used the Hill-Climbing algorithm \cite{Kvasnicka1995HillCW}.  This algorithm is a local optimization algorithm which provides a direct search. The Stochastic Hill-Climbing algorithm works supported in an iterate process of randomly selecting a neighbor for a candidate solution. The acceptance of the solution is conditioned by a criterion of improvement concerning the previous solution.\\
+\item    \textbf{Kernel Density Estimation:}
+Kernel Density Estimation method estimates the probability density function by imposing a model function on every data point and then adding them together. The function applied to each data point is called a kernel function \cite{KernelDensityEstimation}.
+Pros and cons: This solution gives us a way to configure the threshold for the fishing distribution limits. This solution will not work because the density distribution for the velocity will differ from vessel to vessel. 
+
+\item    \textbf{Filter:}
+Use a Hill-Climbing algorithm\cite{Kvasnicka1995HillCW}. This algorithm is a local optimization algorithm which provides a direct search. The Stochastic Hill-Climbing algorithm works supported in an iterate process of randomly selecting a neighbor for a candidate solution. The acceptance of the solution is conditioned by a criterion of improvement concerning the previous solution. With this algorithm find the fist maximum and then find the next minimum.
+Then remove all the velocity occurrences that happen less than 10 \% of the maximum occurrence and isolating the occurrences that are fallowed we can retrieve a clean distribution of the fishery speed of that vessel.  With this, we can use the first and last values to classify the new inputs. 
+Pros and cons: Solution that is independent of fishing type distribution. Needs to organize the velocity data for the Hill-Climbing algorithm. Create a version that finds the local maximum and then finds the next minimum.
+\end{itemize}
+
+The selected procedure can be described in two steps:  it starts by using the method based on the \textbf{Filter} to isolate the fishery speed from the remain. Then the Kernel distribution method was applied.
+\begin{enumerate}
+\item    \textbf{Filter:} In the first step it retrieves all velocity data from the database to create a histogram like is shown in Figure \ref{fig:histogram_vessel2}. In the next step, it uses the hill-climbing algorithm to get the minimum and the maximum value of the first distribution. 
 The implementation used was altered in a way that when the algorithm converges to the maximum, it will continue to find the limit of the distribution.
-To obtain this solution, the algorithm searches for the first local maximum that does not have a higher value in the following three points (current key + 0.5, current key + 1 and current key + 2), in this way we can find the maximum value of the fishing speed range. \\
+To obtain this solution, the algorithm searches for the first local maximum that does not have a higher value in the following three points, in this way we can find the maximum value of the fishing speed range. \\
 To find the end of the fishing speed range, the algorithm continues to sweep the histogram until the next three points are not lower than the current point.
+The velocity 0 is removed because we don't want to consider when the vessel is completely stopped. 
 This way we can end up with a histogram of the intended distribution, as we can observe in Figure  \ref{fig:sog_hill_climbing}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Chapters/img/sog_hill_climbing.png}
+    \includegraphics[trim=0 50 0 50,width=0.8\linewidth]{Chapters/img/sog_hill_climbing.pdf}
     \caption{Velocity distribution of vessel 2 after the application to the Hill Climbing algorithm}
     \label{fig:sog_hill_climbing}
 \end{figure}
 
-Once the distribution corresponding to the fishing speeds has been identified the next step is to define a range to classify the new data, minimum speed, and maximum speed.
-Inside this range, we classify the vessel as fishing. With this purpose were considered three optional procedures:
-\begin{itemize}
-\item    \textbf{Standard deviation:}
-This solution assumes that the velocity distribution is a normal distribution.   Using the distribution of the fishing velocity we find the fishing velocity with more occurrences and with the standard deviation we can choose a distance from mean and so we can get the minimum population desired (explained by Chebyshev’s inequality \cite{Chebyshevinequality}) to be within the fishing range. 
 
-\item    \textbf{Kernel Density Estimation:}
-Kernel Density Estimation method estimates the probability density function by imposing a model function on every data point and then adding them together. The function applied to each data point is called a kernel function \cite{KernelDensityEstimation}.
-
-\item    \textbf{Filter:}
-Using a filter that removes all the velocity occurrences that happen less than 10 \% of the maximum occurrence and isolating the occurrences that are fallowed we can retrieve a clean distribution of the fishery speed of that vessel.  With this, we can use the first and last values to classify the new inputs. To isolate the fishery speed, I use a hill climb algorithm, assuming that the first distribution is the fishery speed.
-\end{itemize}
-
-After several experiences, the selected procedure can be described in two steps:  it starts by using the method based on the \textbf{Filter} to isolate the fishery speed from the remain. Then the Kernel distribution method was applied.
-\begin{enumerate}
-
-
-\item    \textbf{Filter:} In the first step it retrieves all velocity data from the database to create a histogram like is shown in Figure \ref{fig:histogram_vessel2}. In the next step, it uses the hill-climbing algorithm to get the minimum and the maximum value of the first distribution. The velocity 0 is removed because we don’t want to consider when the vessel is completely stopped. 
 \item    \textbf{Kernel:} It was applied a kernel distribution method in the filtered histogram to have the distribution represented in orange on \ref{fig:hist_kernel}. Then it was created a dictionary with the velocities and the cumulative percentage of velocity. This way we end up with a histogram like the one represented in Figure \ref{fig:hist_comulative}.  
 Then a range across quantiles is defined for some probability. As in the estimation of confidence intervals, a confidence level is also defined here, which will be associated with the two-speed limits that correspond to the fishing activity.
 \end{enumerate}  
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Chapters/img/hist_kernel.png}
+    \includegraphics[trim=0 50 0 50,width=0.8\linewidth]{Chapters/img/hist_kernel.pdf}
     \caption{Kernel density distribution filtered data}
     \label{fig:hist_kernel}
 \end{figure}
@@ -94,11 +93,12 @@ Now we can compare the new data with the established limits. If the new data is 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{Chapters/img/hist_comulative.png}
+    \includegraphics[trim=0 50 0 50,width=0.8\linewidth]{Chapters/img/hist_comulative.pdf}
     \caption{Filtred histogram with cumulative kernel distribution}
     \label{fig:hist_comulative}
 \end{figure}
 
+In Appendix B is presented the functionality of this algorithm, step by step. 
 
 % section fishing_velocity_patterns (end)
 
@@ -118,7 +118,7 @@ Fishing in a new zone may mean that the vessel has changed its type of fishing o
     \label{fig:gps_vessel2}
 \end{figure}
 
-In Figure \ref{fig:gps_vessel2} we can see the GPS points of a vessel. Using methods based on clustering it is possible to identify several areas by vessel that are the normal fishing zones of the vessel. When the vessel is outside that zone, a flag should occur.
+In Figure \ref{fig:gps_vessel2} we can see the GPS points of a vessel. Using methods based on clustering it is possible to identify several areas by a vessel that are the normal fishing zones of the vessel. When the vessel is outside that zone, a flag should occur.
 
 Using the fishing velocity range encountered in the previous point, we get the GPS points of the vessel within that range, so we can work only with the positions where the vessel was fishing. The next step is to use a clustering algorithm to define the fishing areas, so we can compare it with the new GPS points. 
 
@@ -131,11 +131,11 @@ K-means clustering algorithm \cite{HitchcockKmeans} is a method of cluster analy
  
 \item    \textbf{Density Based Cluster:}
 Density-based clustering algorithms \cite{WekaCC} try to find clusters based on the estimation of the density of data points in a region.
-It can find arbitrarily shaped clusters and handles noises and yet is a one-scan algorithm that needs to examine the raw data only once. In density-based clustering algorithms, dense areas of objects in the data space are considered as clusters, which are segregated by low-density area (noise). The basic idea of density-based clustering is clusters are dense regions in the data space, separated by regions of lower object density \cite{WEKATalankiDensity}.
+It can find arbitrarily shaped clusters and handles noises and yet is a one-scan algorithm that needs to examine the raw data only once. In density-based clustering algorithms, dense areas of objects in the data space are considered as clusters, which are segregated by low-density area (noise). The basic idea of density-based clustering is that clusters are dense regions in the data space, separated by regions of lower object density \cite{WEKATalankiDensity}.
 The key idea of density-based clustering is that for each instance of a cluster the neighborhood of a given radius (Eps) must contain at least a minimum number of instances (Min Pts).
 
 \item    \textbf{DBSCAN:}
-DBSCAN (for density-based spatial clustering of applications with noise) is a data clustering algorithm proposed by Martin Ester, Hans-Peter Kriegel, Jorge Sander and Xiaowei Xu in 1996 It is a density-based clustering algorithm because it finds a number of clusters starting from the estimated density distribution of corresponding nodes. DBSCAN \cite{Kisilevich2010PDBSCANAD} is one of the most common clustering algorithms and most cited in the scientific literature.
+DBSCAN (for density-based spatial clustering of applications with noise) is a data clustering algorithm proposed by Martin Ester, Hans-Peter Kriegel, Jorge Sander and Xiaowei Xu in 1996 It is a density-based clustering algorithm because it finds several clusters starting from the estimated density distribution of corresponding nodes. DBSCAN \cite{Kisilevich2010PDBSCANAD} is one of the most common clustering algorithms and most cited in the scientific literature.
 \end{itemize}
 
 After some tests, it was decided that Density-Based Cluster is the best approach for this case. It was excluded DBSCAN, because as we can observe in \ref{table:mill_per_moodle}, this model needs a lot of processing power to estimate the clusters. These values were retrieved using a computer with an Intel i5 (2.5 GHz) and 8 GB of RAM. Considering that the Blue Box as a lot less processing power it was decided that this model is not a good solution for this problem.
@@ -175,13 +175,11 @@ The elbow method is a visual method. The idea is to Start with K=2 and keep incr
 
 
 
-\section{DSA Library} % (fold)
-\label{sub:dsa_library}
+\section{SFA Library} % (fold)
+\label{sub:sfa_library}
 
+It was created a software application called SFALib for (Standalone Fishery Analysis Library. In this application, it was applied to the solutions described in this chapter to help with the elaboration and tests for this project. For a market solution, this library could be used by the main application of a Blue Box to send alerts to support decision making or to simply classify each VMS data entry as if fishing and if fishing in a new area for future analysis.
 
-It was created a software application called DSALib for (Decision Support Alerts Library). In this application, it was applied to the solutions described in this chapter to help with the elaboration and tests for this project. For a market solution, this library could be used by the main application of MONICAP to send alerts to support decision making or to simply classify each VMS data entry as if fishing and if fishing in a new area for future analysis.
-
-\newpage
 
 
 \subsection{Functionality} % (fold)
@@ -206,14 +204,14 @@ Correnlty, the application supports conection to SQL Server \cite{WEBSITE:SqlSer
 \subsection{Architecture and Implementation} % (fold)
 \label{sub:architecturee_implementation}
 To develop the software, I decided to use Java 8 \cite{WEBSITE:OraJava8} because it is a powerful, full object-oriented and cross-platform programming language. MONICAP uses Linux so using a JRE (Java Runtime Environment) application is a good choice.
-The architecture is depicted in Figure \ref{fig:DSALib_Prof}. In this architecture is possible to distinguish three main modules: One that is the core of the DSALib, create the modules and use them. Another one is WEKA \cite{WEBSITE:Weka} that creates the cluster modules for locations and kernel density for velocity. The last one is the data access layer that is responsible to get the VMS data from the local repository so DSALib can create the modules.
+The architecture is depicted in Figure \ref{fig:SFALib_Prof}. In this architecture is possible to distinguish three main modules: One that is the core of the SFALib, create the modules and use them. Another one is WEKA \cite{WEBSITE:Weka} that creates the cluster modules for locations and kernel density for velocity. The last one is the data access layer that is responsible to get the VMS data from the local repository so SFALib can create the modules.
 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\linewidth]{Chapters/img/DSALib_Prof.png}
-    \caption{Representation of the DSALib architecture.}
-    \label{fig:DSALib_Prof}
+    \includegraphics[width=1.0\linewidth]{Chapters/img/SFALib_Prof.pdf}
+    \caption{Representation of the SFALib architecture.}
+    \label{fig:SFALib_Prof}
 \end{figure}
 
 
@@ -234,16 +232,12 @@ The application starts by initializing two objects:
 \end{enumerate}
 
 
-Output newData(Input input);
-boolean isFishing(double velocity);
-boolean isNewArea(GPS gps);
-void restart();
-Limits GetLimit(); 
 % subsection architecturee_implementation (end)
 
-\subsection{Usage} % (fold)
-\label{sub:usage}
-We start by initializing DSALib with the doubles limitVelocity and limitArea. This doubles range between 0 and 1:
+\subsection{Deployment} % (fold)
+\label{sub:deployment}
+
+We start by initializing SFALib with the doubles limitVelocity and limitArea. This doubles range between 0 and 1:
 \begin{itemize}
 \item limitVelocity: used to get the maximum and minimum speed by reducing the speed range. This limit will reduce de maximum speed and increase the minimum speed by setting the maximum velocity as the velocity that as (1-limit) percentage of the cumulative kernel distribution and the minimum velocity as the velocity that as a (limit) percentage of the cumulative kernel distribution.
 \item limitArea: used to compare with the probability to belong in a cluster given to the new points. If the limit is smaller than the given probability, then the vessel is classified as fishing in a new area.
@@ -252,12 +246,22 @@ These limits are important so we can configure if we prefer to have more false p
 A false positive (type I error) is when the classifier rejects a true hypothesis.
 A false negative (type II error) is when the classifier accepts a false hypothesis.
 
-After we have the DSALib ready we need to send a new velocity data and GPS coordinates to receive an object with an “isFishing” as true if the vessel is fishing and an “isNewArea” as true if the vessel is in an area that is not a normal fishing area and it’s in a fishing velocity. In Appendix B there is more information about the software developed.
+After we have the SFALib ready we need to send a new velocity data and GPS coordinates to receive an object with an “isFishing” as true if the vessel is fishing and an “isNewArea” as true if the vessel is in an area that is not a normal fishing area and it’s in a fishing velocity.
 
+The methods that can be used are:
+\begin{itemize}
+\item newData method that receive VMS data and return isFishing(boolean) and isNewArea(boolean).
+\item isFishing: method with SOG(double) as input and a boolean as output with, True = is fishing, False = not fishing.
+\item isNewArea:  method with GPS(double longitude, double latitude) as input and a boolean as output with, True = is fishing in a new area, False = not fishing in a new area.
+\item restart: this method restart the models. It can be used to create models with new data.
+\item GetLimit: the method used to get SOG limits used by the SFALib to classify velocity. As Limits(double min, double max) as output.
+\end{itemize}
+ 
 % subsection usage (end)
 
-% section dsa_library (end)
+% section SFA_library (end)
 % chapter blue_box (end)
+
 
 
 
