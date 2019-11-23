@@ -395,20 +395,24 @@ As seen in Figure \ref{fig:cm_rf}, the classes 0 and 7 have a low true positive 
 
 \subsection{Deployment} % (fold)
 \label{sub:deployment}
-Joined Fishery Analysis
 
 %Plan Deployment Deployment Plan
+To deploy the trained model, we separated JFA into 4 steps:
+\begin{enumerate}
+\item \textbf{ Receive VMS data and register in a BD.} JFA needs to be able to receive VMS data so it can classify it, but it is also important to persist the data in a way that we can update the model with more recent data. 
 
-%Plan Monitoring andMaintenance
-%Monitoring and Maintenance Plan
+\item \textbf{Pre process the data.} If SFA is installed in the blue box that is filling the VMS data, the data entries can be already classified as fishing or not fishing. If not, JFA needs to collect data and run its local SFA for each vessel that does not have SFA. If the data is received in one time when the vessel arrives at the port, convert all the data received as explained in subchapter \ref{sub:data_preparation}. If the blue box is transiting data when the vessel is on activity, we can classify the data as fishing or not (if JFA not installed in the blue box) and have a subsystem that detects when a vessel fails to send data or have stooped fishing for more than some defined time. This will allow time as the competent authorities will prepare an inspection as marked vessels even before reaching the port.\\
 
-%Produce Final Report
-%Final Report
-%Final Presentation
+\item \textbf{Use the model to classify.} With the data obtained in the last step use the model tested chosen in subchapter \ref{sub:evaluation}.
 
-%Review Project
-%Experience
-%Documentation
+\item \textbf{Validate vessel license comparison, send an alert.} Compare the class attributed by the model with the license of the vessel and if different register and send a message to the designated authority.
+
+\end{enumerate}
+
+%Plan Monitoring and Maintenance
+To keep the model up to date it is important to train a new model with recent data from time to time. If possible to know that data is verified by a competent authority, when training the model gives more relevance to this verified data. This is important because the train data that is not verified can be given by vessels that are not respecting there fishing license and this way corrupting the model.
+
+
 % section deployment (end)
 
 % chapter server (end)
