@@ -1,10 +1,10 @@
 
 
 % 
-%  chapter2.tex
-%  ThesisISEL
-%  
-%  Created by Serge Lage on 2019/07/30.
+% chapter2.tex
+% ThesisISEL
+% 
+% Created by Serge Lage on 2019/07/30.
 %
 % ================
 % = State of the Art =
@@ -13,7 +13,7 @@
 \label{cha:state_of_the_art}
 
 \begin{quotation}
-There exists a desire amongst the world’s fisheries managers to coordinate their efforts so that the world’s fish stocks - which recognize no national or regional boundaries - can be saved. \hfill (Food and Agriculture Organization of the United Nations, Rome, 1998)
+There exists a desire amongst the world's fisheries managers to coordinate their efforts so that the world's fish stocks - which recognize no national or regional boundaries - can be saved. \hfill (Food and Agriculture Organization of the United Nations, Rome, 1998)
 \end{quotation}
 
 
@@ -23,25 +23,25 @@ If an international standard exists, the fisheries managers from all regions of 
 
 There is some work being done using VMS data to reach very different objectives like:
 \begin{itemize}
-\item    Illegal fishing: “Fishing Gear Recognition from VMS data to Identify Illegal Fishing Activities in Indonesia”, \cite{MarzukiIllegalFishing};
-\item    Fuel efficiency: “Effects of fishing effort allocation scenarios on energy efficiency and profitability: An individual-based model applied to Danish fisheries”,\cite{BastardieFishingEfficiency};
-\item    Sustainable fishing: “The importance of scale for fishing impact estimations”,\cite{QuirijnsImportanceImpact};
+\item Illegal fishing: "Fishing Gear Recognition from VMS data to Identify Illegal Fishing Activities in Indonesia", \cite{MarzukiIllegalFishing};
+\item Fuel efficiency: "Effects of fishing effort allocation scenarios on energy efficiency and profitability: An individual-based model applied to Danish fisheries",\cite{BastardieFishingEfficiency};
+\item Sustainable fishing: "The importance of scale for fishing impact estimations",\cite{QuirijnsImportanceImpact};
 \end{itemize}
 
 In terms of tools developed to analyze VMS data, we have two applications (VMStools and VMSbase).
 \begin{itemize}
-\item    VMStools: is a package of open-source software, build using the freeware environment R, specifically developed for the processing, analysis, and visualization of landings (logbooks with information of the caught fish) and vessel location data (VMS) from commercial fisheries. Embedded functionality handles erroneous data point detection and removal, linking logbook and VMS data together to distinguish fishing from other activities, provide high-resolution maps of both fishing effort and landings, interpolate vessel tracks, calculate indicators of fishing impact as listed under the Data Collection Framework at different Spatio-temporal scales \cite{DeporteVMStools}.
+\item VMStools: is a package of open-source software, build using the freeware environment R, specifically developed for the processing, analysis, and visualization of landings (logbooks with information of the caught fish) and vessel location data (VMS) from commercial fisheries. Embedded functionality handles erroneous data point detection and removal, linking logbook and VMS data together to distinguish fishing from other activities, provide high-resolution maps of both fishing effort and landings, interpolate vessel tracks, calculate indicators of fishing impact as listed under the Data Collection Framework at different Spatio-temporal scales \cite{DeporteVMStools}.
 
 
-\item    VMSbase: is an R package derived to manage, process and visualize information about fishing vessel activity (provided by the vessel monitoring system - VMS) and catches/landings (as reported in the logbooks).
+\item VMSbase: is an R package derived to manage, process, and visualize information about fishing vessel activity (provided by the vessel monitoring system - VMS) and catches/landings (as reported in the logbooks).
 Standard analyses comprise: 1) tier identification (using a modified CLARA clustering approach on Logbook data or Artificial Neural
-Networks on VMS data); 2) linkage between VMS and Logbook records, with the former organized into fishing trips; 3)discrimination between steaming and fishing points; 4) computation of spatial effort with respect to user-selected grids; 5)calculation of standard fishing effort indicators within Data Collection Framework; 6) a variety of mapping tools, including an interface for Google viewer; 7) estimation of trawled area\cite{RussoVMSbase}.
+Networks on VMS data); 2) linkage between VMS and Logbook records, with the former organized into fishing trips; 3)discrimination between steaming and fishing points; 4) computation of spatial effort concerning user-selected grids; 5)calculation of standard fishing effort indicators within Data Collection Framework; 6) a variety of mapping tools, including an interface for Google viewer; 7) estimation of trawled area\cite{RussoVMSbase}.
 \end{itemize}
 
 
-The main difference between my work and this previously mentioned is that they combine VMS data with the logbooks (data of the type of fish captured and quantity).
+The main difference between this work, and this previously mentioned is that they combine VMS data with the logbooks (data of the type of fish captured and quantity).
 In this work, it will only be used VMS data. 
-The main advantage is that VMS data is less subject to malicious changes that logbooks taking into account that logbooks are filled by the shipowner and so they are subject to misrepresentation of the truth. VMS data is generated automatically in a closed system like a black box. 
+The main advantage is that VMS data is less subject to malicious changes that logbooks taking into account that logbooks are filled by the shipowner. So they are subject to misrepresentation of the truth. VMS data is generated automatically in a closed system like a black box. 
 
 %% section how_to_write_using_latex (end)
 
