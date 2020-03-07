@@ -68,7 +68,7 @@ To find the end of the fishing speed range, the algorithm continues to sweep the
 Velocity 0 is removed because we do not want to consider when the vessel is completely stopped. 
 This way, we can end up with a histogram of the intended distribution, as we can observe in Figure \ref{fig:sog_hill_climbing}.
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[trim=0 50 0 50,width=0.8\linewidth]{Chapters/img/sog_hill_climbing.pdf}
 \caption{Velocity distribution of vessel 2 after the application to the Hill Climbing algorithm}
@@ -81,7 +81,7 @@ Then a range across quantiles is defined for some probability. Considering this 
 
 \end{enumerate} 
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[trim=0 50 0 50,width=0.8\linewidth]{Chapters/img/hist_kernel.pdf}
 \caption{Kernel density distribution filtered data}
@@ -91,7 +91,7 @@ Then a range across quantiles is defined for some probability. Considering this 
 
 Now, we can compare the new data with the established limits. If the new data is within limits, we classify as fishing, and if not, we classify as not fishing.
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[trim=0 50 0 50,width=0.8\linewidth]{Chapters/img/hist_comulative.pdf}
 \caption{Filtred histogram with cumulative kernel distribution}
@@ -111,7 +111,7 @@ the vessel is fishing in its fishing zone, or in a new location, the history of 
 Fishing in a new zone may mean that the vessel has changed its type of fishing or is engaging in an activity that is not licensed.
 
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/gps_vessel2.png}
 \caption{Vessel 2 GPS points}
@@ -140,7 +140,7 @@ DBSCAN (for density-based spatial clustering of applications with noise) is a da
 After some tests, it was decided that Density-Based Cluster is the best approach for this case. It was excluded DBSCAN, because as we can observe in Table \ref{table:mill_per_moodle}, this model needs much processing power to estimate the clusters. These values were retrieved using a computer with an Intel i5 (2.5 GHz) and 8 GB of RAM. Considering that the Blue Box as a lot less processing power, it was decided that this model is not a good solution for this problem.
 \\
 
-\begin {table}[H]
+\begin {table}[]
 \begin{center}
 \begin{tabular}{c|c|c|c}
 & \textbf{K-Means} & \textbf{Density Based Cluster} & \textbf{DBSCAN} \\
@@ -161,7 +161,7 @@ The elbow method is visual. The idea is to start with K=2 and keep increasing it
 In Figure \ref{fig:elbow_method} were the GPS points of all vessels. As we can observe that six clusters are a good number as the error is not decreasing much as the number of clusters increases. 
 
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/elbow_method.png}
 \caption{Sum of squared error by number of clusters}
@@ -198,7 +198,7 @@ This application allows to:
 \end{itemize}
 
 To make this possible is necessary to configure the data access layer to get the VMS data from the local data repository.
-Correnlty, the application supports conection to SQL Server \cite{WEBSITE:SqlServer} and PostgreSQL \cite{WEBSITE:Postgresql}.
+Currently, the application supports conection to SQL Server \cite{WEBSITE:SqlServer} and PostgreSQL \cite{WEBSITE:Postgresql}.
 
 
 % subsection functionality (end)
@@ -207,10 +207,10 @@ Correnlty, the application supports conection to SQL Server \cite{WEBSITE:SqlSer
 \subsection{Architecture and Implementation} % (fold)
 \label{sub:architecturee_implementation}
 To develop the software, it was decided to use Java 8 \cite{WEBSITE:OraJava8} because it is a powerful, full object-oriented, and cross-platform programming language. MONICAP uses Linux, so using a JRE (Java Runtime Environment) application is a good choice.
-The architecture is depicted in Figure \ref{fig:SFALib_Prof}. In this architecture is possible to distinguish three main modules: One that is the core of the SFALib, create the modules and use them. Another one is WEKA \cite{WEBSITE:Weka} that creates the cluster modules for locations and kernel density for velocity. The last one is the data access layer that is responsible for getting the VMS data from the local repository so SFALib can create the modules.
+The architecture is depicted in Figure \ref{fig:SFALib_Prof}. In this architecture is possible to distinguish three main modules: One that is the core of the SFALib, create the modules and use them. Another one is WEKA \cite{WEBSITE:Weka} that creates the cluster modules for locations and implements the Kernel density estimation  for velocity. The last one is the data access layer that is responsible for getting the VMS data from the local repository so SFALib can create the modules.
 
 
-\begin{figure}[h]
+\begin{figure}[]
 \centering
 \includegraphics[width=1.0\linewidth]{Chapters/img/SFALib_Prof.pdf}
 \caption{Representation of the SFALib architecture.}
@@ -219,9 +219,9 @@ The architecture is depicted in Figure \ref{fig:SFALib_Prof}. In this architectu
 
 
 
-\textbf{Core module} \\The core module is responsible for initializing the models and using them the way described in this chapter. It starts by creating an instance of ProcessVelocity to create the first model and then create an instance of ProcessNewArea that uses the velocity limits previously obtained to get the locations data to form where the vessel was fished to create the model.
+\textbf{Core module} \\The core module is responsible for initializing the models and using them the way described in this chapter.The procedure starts with the creation of an instance, called  "ProcessVelocity", whose objective is to use the historical speed data of the ship to classify whether or not it is fishing. After that is created another instance called, "ProcessNewArea", whose objective is to identify if a new data (GPS point) is or is not in a usual fishing location for that vessel, using for that purpose the history of the vessel's GPS locations.
 
-\textbf{WEKA module} \\Weka is a collection of machine learning algorithms for data mining tasks. It contains tools for data preparation, classification, regression, clustering, association rules mining, and visualization. In this application, WEKA is used as a tool to create the modules.
+\textbf{WEKA module} \\WEKA is a collection of machine learning algorithms for data mining tasks. It contains tools for data preparation, classification, regression, clustering, association rules mining, and visualization. In this application, WEKA is used as a tool to create the modules.
 
 \textbf{DAL module} \\The data access module was implemented in a way not only to get data but also to filter data in the database engine. Filtering data (where) is optimized on the database engine, and so we gain some performance.
 
@@ -231,7 +231,7 @@ The architecture is depicted in Figure \ref{fig:SFALib_Prof}. In this architectu
 The application starts by initializing two objects:
 \begin{enumerate}
 \item ProcessVelocity: This object is responsible for doing the process explained in point 4.2 of this document. This object will request to the static class ImportData to retrieve all SOG (Speed Over Ground) data from the database. Then the process will end with the limits (minimum speed of fishing and the maximal speed of fishing).
-\item ProcessNewArea: This object is responsible for doing the process explained in point 4.3 of this document. This object is only initialized after ProcessVelocity because it needs the velocity fishing limits necessary to create the clusters of the fishing areas. With these limits, the object request to ImportData the Lat and Lon where the vessel was in between the velocity limits. With this, the object ends up with the clusters of the fishing areas.
+\item ProcessNewArea: This object is responsible for doing the process explained in point 4.3 of this document. This object is only initialized after ProcessVelocity because it needs the velocity fishing limits necessary to create the clusters of the fishing areas. With these limits, the object requests to the instance ImportData to obtain the latitude and longitude values where the vessel was in between the velocity limits. With this, the object ends up with the clusters of the fishing areas.
 \end{enumerate}
 
 

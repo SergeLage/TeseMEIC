@@ -2,35 +2,40 @@
 %%% thesisisel.cls
 %%% ISEL/IPL Dissertation document class
 %%%
-%%% By Matilde Pós-de-Mina Pato (mpato@deq.isel.pt)
+%%% By Matilde Pós-de-Mina Pato (matilde.pato@isel.pt)
 %%% Version of October 2012
 %%% Version v1.1:  July 2013 
 %%% Version v2.0: March 2015
 %%% Version v2.3: December 2017
-%%%
+%%% Version v2.4: January 2019
+%%% Version v2.5: December 2019
+%%% Version v2.5.1.: February 2020
+%%% Version v2.5.2.: March 2020
+%%% 
 %%% This template is vaguely based on a template from the
 %%%     Universidade Nova de Lisboa (NOT OFFICIAL)
 %%%
-%%% BUGS and SUGGESTIONS: please send email to "mpato@deq.isel.pt"
+%%% BUGS and SUGGESTIONS: please send email to "matilde.pato@isel.pt"
 %%%     or sumit a ticket in the the project web page at
 %%%     https://github.com/matpato/thesisisel
 %%%
-%%% CONTRIBUTERS are welcome. Please contact "mpato@deq.isel.pt"
+%%% CONTRIBUTERS are welcome. Please contact "matilde.pato@isel.pt"
 %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Thanks to: Carolina Neves (ISEL)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{thesisisel}[2012/10/09 ISEL thesis template]
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % == Languages ===
-\DeclareOption{pt}{%
+\DeclareOption{pt}{% 		//PORTUGUESE
   \let\@language=0%
   \PassOptionsToPackage{portuguese,english}{babel}}
 
-\DeclareOption{en}{%
+\DeclareOption{en}{%		//ENGLISH
   \let\@language=1%
   \PassOptionsToPackage{portuguese,english}{babel}}
 
@@ -58,8 +63,7 @@
 
 \DeclareOption{12pt}{%
 	\PassOptionsToClass{12pt}{book}}
-
-
+			
 % == Text Encoding ===
 \let\@utf=1
 \DeclareOption{latin1}{\let\@utf=0}
@@ -67,12 +71,12 @@
 
 % == Type of Document ===
 %
-% \@degreetype=0	BSc preliminary report
-% \@degreetype=1	BSc report
-% \@degreetype=2	MSc preliminary report
-% \@degreetype=3	MSc dissertation
+% \@degreetype=0	BSc preliminary report	: prepbsc
+% \@degreetype=1	BSc report							: bsc
+% \@degreetype=2	MSc preliminary report	: prepmsc
+% \@degreetype=3	MSc dissertation				: msc
 %
-
+			
 %\let\@degreetype=4
 \DeclareOption{prepbsc}{
 	\let\@degreetype=0
@@ -95,16 +99,55 @@
 	\def\@dissertationtype{\@mscdissertationtstr}
 }
 
+% == Printable or On Screen  Document ===
+%
+% \@printable=1		Format your thesis in a way that presents on paper: onpaper
+% \@printable=0		Format your thesis in a way that presents on screen: onscreen 
+%\let\@degreetype=4
+\DeclareOption{onpaper}{
+	\let\@printable=1
+}
+\DeclareOption{onscreen}{
+	\let\@printable=0
+}
 
 % == Default Options ===
-\ExecuteOptions{pt,msc}
+\ExecuteOptions{
+	pt,
+	msc,
+	onpaper
+}
 \ProcessOptions
 
 \LoadClass{book}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%====================================================================
+% PACKAGE hyperref
+%====================================================================
+% Set links for references and citations in document
+% Some MiKTeX distributions have faulty PDF creators in which case this package will not work correctly
+% Long live Linux :D
+%% Title of Report + author(s) + professor + date
+%\hypersetup{ a4paper=true,
+%%             pdftitle={ },
+%%             pdfauthor={ },
+%%             pdfsubject={ },
+% %            pdfcreator={Matilde P.M. Pato},
+% %            pdfkeywords={ }
+%             }
+\RequirePackage[
+			breaklinks = true,
+			hidelinks,
+			colorlinks,
+			pdfdisplaydoctitle,
+			citecolor=mydarkblue,
+			linkcolor=black,
+			urlcolor=mydarkblue
+			]{hyperref} 
+			
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PACKAGES
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Latin1
 \if\@utf0
 \RequirePackage[latin1]{inputenc}
@@ -114,6 +157,7 @@
 \fi\fi
 
 \RequirePackage[T1]{fontenc}
+
 
 %====================================================================
 % PACKAGE amsmath, amsthm, amssymb, amsfonts:
@@ -129,18 +173,23 @@
   \let\iiiint\relax 
   \let\idotsint\relax 
 \usepackage{amsmath, amssymb, amsfonts, verbatim, mathabx}
+\usepackage{spverbatim}
+% underline  
+\usepackage{ulem}
 
-\usepackage{paralist} % Provides the inparaenum environment (with an optional formatting specification in square brackets)
-
+% Provides the inparaenum environment (with an optional formatting specification in square brackets)
+\usepackage{paralist} 
+  
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+% Beautiful simple tables
+\usepackage{booktabs}
 \RequirePackage{csquotes}
 \RequirePackage{babel}
-
 \RequirePackage[toc]{appendix}
 
-% \RequirePackage{tabularx}
-
 \RequirePackage{ifthen}
-
 \RequirePackage{titlesec}           % To format the headings
 \RequirePackage{fancyhdr}        % Headings configuration
 
@@ -148,58 +197,71 @@
 \RequirePackage{setspace}           % One-and-half spacing
 \onehalfspacing
 
+%======================================================================
+% General styles
 %\RequirePackage{mathptmx}
 \RequirePackage[scaled]{helvet}
 \RequirePackage{courier}
 \RequirePackage{palatino}
+\usepackage{xmpincl}
+%\usepackage[a-1b]{pdfx}
+
+%======================================================================
+\RequirePackage[]{xcolor}
+\definecolor{mydarkblue}{rgb}{0.0,0.08,0.45}
 \usepackage{ifpdf}		% This is now the recommended way for checking for PDFLaTeX:
 \ifpdf
 	\RequirePackage[pdftex]{graphicx}
-	\DeclareGraphicsExtensions{.pdf, .png, .jpg, .tif}
-	\RequirePackage[pdftex,usenames,dvipsnames]{color}
-	\definecolor{mydarkblue}{rgb}{0.0,0.08,0.45}
-	\RequirePackage[pdftex,
-		breaklinks = true,
-		colorlinks,
-		pdfdisplaydoctitle,
-		citecolor=mydarkblue,
-		linkcolor=black,
-		urlcolor=mydarkblue,
-		pagebackref]{hyperref} %or, pagebackref
+	\DeclareGraphicsExtensions{.pdf, .png, .jpg, .tif}	
 	\else
 		\RequirePackage{graphicx}
 		\DeclareGraphicsExtensions{.eps, .png, .jpg}
-		\RequirePackage[usenames]{color}
-		\definecolor{mydarkblue}{rgb}{0.0,0.08,0.45}
-		\RequirePackage[
-			breaklinks = true,
-			colorlinks,
-			pdfdisplaydoctitle,
-			citecolor=mydarkblue,
-			linkcolor=black,
-			urlcolor=mydarkblue,
-			pagebackref]{hyperref} %or, pagebackref
 \fi
 
-%====================================================================
-% PACKAGE hyperref
-%====================================================================
-% Set links for references and citations in document
-% Some MiKTeX distributions have faulty PDF creators in which case this package will not work correctly
-% Long live Linux :D
-\hypersetup{ a4paper=true,
-             pdftitle={ },
-             pdfauthor={ },
-             pdfsubject={ },
-             pdfcreator={Matilde P.M. Pato},
-             pdfkeywords={ }
-             }
-%
+% \def\PDF@FinishDoc{%
+%  \Hy@UseMaketitleInfos
+%  \pdfinfo{
+%     /Title(\xmpTitle)%
+%     /Author(\xmpAuthor)%
+%	 /Creator(\xmpProducer)%
+%     \ifx\@pdfcreationdate\@empty
+%    \else
+%      /CreationDate(\@pdfcreationdate)%
+%    \fi
+%    \ifx\@pdfmoddate\@empty
+%    \else
+%      /ModDate(\@pdfmoddate)%
+%    \fi
+%      /Producer(\xmpProducer)%
+%     /Trapped /False
+%     /GTS_PDFA1Version (PDF/A-1b:2005)%
+%  }%
+%  \Hy@EnableOption{pdfauthor}%
+%  \Hy@DisableOption{pdftitle}%
+%  \Hy@DisableOption{pdfsubject}%
+%  \Hy@DisableOption{pdfcreator}%
+%  \Hy@DisableOption{pdfcreationdate}%
+%  \Hy@DisableOption{pdfmoddate}%
+%  \Hy@DisableOption{pdfproducer}%
+%  \Hy@DisableOption{pdfkeywords}
+%  %\Hy@DisableOption{backref}
+%  }
+%  
+
+% Print on paper
+\if\@printable1
 \RequirePackage[top=3cm,
 	bottom=3cm,
 	inner=3.5cm,
-	outer=2.5cm]{geometry}[2012/10/09]
-% \setlength{\marginparwidth}{2cm}
+	outer=2.5cm]{geometry}[2010/09/12]
+% Print on screen
+\else\if\@printable0
+\RequirePackage[top=3cm,
+	bottom=3cm,
+	inner=2.5cm,
+	outer=2.5cm]{geometry}[2010/09/12]
+\fi\fi
+	
 
 \RequirePackage{tikz}	%Tikz is probably the most complex and powerful tool to create graphic elements in LATEX. 
 
@@ -232,19 +294,28 @@
 % First load the package in the preamble. The makenomenclature command is required for the generation of the nomenclature file (.nlo). Commenting it out is a convenient way to “switch it off”.
 %
 \usepackage[printonlyused,withpage]{acronym}
+%\usepackage[
+%	intoc]               % show listings as entries in table of contents      
+%	{nomencl}
+%\makenomenclature
 \usepackage[
-	intoc]               % show listings as entries in table of contents      
-	{nomencl}
-\makenomenclature
-\usepackage[
+	nogroupskip,
+	sort=use,
 	translate=babel,
 	%nonumberlist, % do not show page numbers
-	acronym,        % generate acronym listing
-	toc,                % show listings as entries in table of contents
-	section]          % use section level for toc entries
+	acronym,        	% generate acronym listing
+	toc                	% show listings as entries in table of contents
+	]          				% use section level for toc entries
 	{glossaries}
 \glsdisablehyper
 \makenoidxglossaries
+
+
+\setglossarystyle{long} %long3colheader
+% style=long,header=none,border=none,cols=2 &
+\addtolength{\glspagelistwidth}{1cm}
+\addtolength{\glsdescwidth}{2.5cm}
+\renewcommand*{\glsnamefont}[1]{\bfseries #1}%
 
 %====================================================================
 % PACKAGE pdfpages and pdflscape
@@ -253,9 +324,9 @@
 % The pdflscape package adds PDF support to the landscape environment of package lscape, by setting the PDF/Rotate page attribute.
 \usepackage{pdflscape}
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% GENERAL PURPOSE MACROS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  \let\origcleardoublepage=\cleardoublepage
  \def\cleardoublepage{%
    \newpage{\pagestyle{empty}\origcleardoublepage}
@@ -271,38 +342,12 @@
 % For use with the pseudocode package
  \def\@lopcchapterspace{\relax}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% DEFINE LOGO AND IMAGE IN FRONTPAGE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Add ISEL's logo and image in frontpage
-\newcommand{\logo}[2]{
-\parbox[t][0.15\paperheight]{0.1\paperwidth}{%
-\vfill
-\centering
-\includegraphics[scale=#2]{#1}%
-\vfill
-}}
-
-\newcommand{\image}[1]{
-\parbox[t][6cm][c]{12cm}{%
-\vfill
-\centering
-\includegraphics[height=6cm,width=12cm]{#1}%
-\vfill
-}}
-
-\newcommand{\noimage}{
-\parbox[t][6cm][c]{12cm}{%
-}}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% LABELS
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Some relevant strings
-
 \gdef\@mbachelordegreestr{Licenciado}
 \gdef\@fbachelordegreestr{Licenciada}
 \gdef\@mmastersdegreestr{Mestre}
@@ -328,7 +373,7 @@
 \gdef\@bscdissertationtstr{Relatório final realizado no âmbito de
  \@coursefield, \\ do curso de licenciatura em \@majorfield\\
  Semestre de Verão \@scholaryear}
-\gdef\@prepmscdissertationtstr{Relatório intercalar para obtenção do Grau 
+\gdef\@prepmscdissertationtstr{Relatório preliminar para obtenção do Grau 
 de Mestre \\em \@majorfield}
 \gdef\@mscdissertationtstr{\@thesistype~ para obtenção do Grau 
 de Mestre \\em \@majorfield}
@@ -344,64 +389,33 @@ de Mestre \\em \@majorfield}
 \gdef\@keywordsnameEN{Keywords}
 
 
-% Portuguese
-\if\@language0
-  	\gdef\@notdefined{NÃO DEFINIDO}
-  	\gdef\acknowledgementsname{Agradecimentos} 
-  	
-  	\addto{\captionsportuguese}{%	
-  		\renewcommand{\contentsname}{Índice}
-  	}
-  	\def\appendixname{Anexos}
-  	\addto{\captionsportuguese}{%
-  		\renewcommand{\bibname}{Referências}
-  	}
-  	\renewcommand*{\nomname}{Abreviaturas e símbolos}
- 
-	\def\lstlistlistingname{Listagens}
-	  	\addto{\captionsportuguese}{%
-			%\renewcommand*{\lstlistingname}{Listagem}%
-			\renewcommand*{\lstlistingname}{Listagem}% Listing -> Algorithm
-			\renewcommand{\lstlistlistingname}{Lista de Listagens}% List of Listings -> List of Algorithms
-	}
-	
-	\renewcommand{\algorithmicrequire}{\textbf{Dados: }}
-	\renewcommand{\algorithmicensure}{\textbf{Resultado: }}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DEFINE LOGO AND IMAGE IN FRONTPAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ADD ISEL's LOGO and IMAGE in frontpage
+\newcommand{\logo}[2]{
+\parbox[t][0.15\paperheight]{0.1\paperwidth}{%
+\vfill
+\centering
+\includegraphics[scale=#2]{#1}%
+\vfill
+}}
 
-	\def\backrefbrazil{%
-		\def\backrefpagesname{p\'aginas}%
-		\def\backrefsectionsname{se\c c\~oes}%
-		\def\backrefsep{, }%
-		\def\backreftwosep{ e~}%
-		\def\backreflastsep{, e~}%
-	}
-	
-% English
-\else\if\@language1
-  	\gdef\@notdefined{UNDEFINED}
-  	\gdef\acknowledgementsname{Acknowledgments}
-  	\def\appendixname{Appendix}
+\newcommand{\image}[1]{
+\parbox[t][6cm][c]{12cm}{%
+\vfill
+\centering
+\includegraphics[height=6cm,width=12cm]{#1}%
+\vfill
+}}
 
-	\def\lstlistlistingname{Listings}
-	  	\addto{\captionsportuguese}{%
-			%\renewcommand*{\lstlistingname}{Listagem}%
-			\renewcommand*{\lstlistingname}{Listing}% Listing -> Algorithm
-			\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
-	}
-	  	
-  	\def\backrefenglish{%
-		\def\backrefpagesname{pages}%
-		\def\backrefsectionsname{sections}%
-		\def\backrefsep{, }%
-		\def\backreftwosep{ and~}%
-		\def\backreflastsep{, and~}%
-		}
-\fi\fi
+\newcommand{\noimage}{
+\parbox[t][6cm][c]{12cm}{%
+}}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% CREATING A TITLE PAGE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  \def\universitylogo#1{%
    \gdef\@universitylogo{#1}}
  \def\@universitylogo{~universitylogo \@notdefined}
@@ -470,23 +484,6 @@ de Mestre \\em \@majorfield}
     {\@pauthor[]}%
     {\@pauthor[][m]}}
 
-%\if\@degreetype=2
-	
-%  	\else
-%  	\typeout{^^J%
-%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
-%!  Please specify author gender using [m] or [f] as the first^^J%
-%!  argument of the "author" macro.  See the template! ;)^^J%
-%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!^^J%
-%	}
-%   	\errhelp{Please be gentle and follow the template recommendations.}
-%   	\errmessage{Please specify author gender!}
-%  	\fi\fi
-%  	\gdef\@author{#2}
-%  	\hypersetup{pdfauthor={\@author}}
-%  	}
-%\else
-  	
 % #1 = [] 
 % #2 = [m] or [f]
 % #3 = {name}
@@ -533,8 +530,11 @@ de Mestre \\em \@majorfield}
 	\fi
 }
 
-%% Advisors identification (at most 4 of each)
+% ADVISORS IDENTIFICATION (at most 4 of each)
+%% ---------------------------------------------------%%
 %% \adviser[m|f]{Category}{Name}
+%% ---------------------------------------------------%%
+
 %% where N i a number from 1 to 4
 \def\@theadvisergender{f}	% default for female advisers
 \newcount\@theadvisercount	% number of advisers
@@ -593,8 +593,7 @@ de Mestre \\em \@majorfield}
 	\fi
 	}
 
-%% Work identification
-
+%% WORK IDENTIFICATION
 \def\@
 \def\title#1{%
   \gdef\@title{#1}
@@ -628,9 +627,11 @@ de Mestre \\em \@majorfield}
 \fi\fi\fi\fi}
 
 
-% Jury identification (at most 5 of each)
+% JURY IDENTIFICATION (at most 5 of each)
 %% [p] for president and [a] for referees 
+%% ---------------------------------------------------%%
 %% \jury[p|a]{Category and Name}
+%% ---------------------------------------------------%%
 %% where N i a number from 1 to 5
 \newcount\@thejurypcount	% number of presidents (must be one)
 \@thejurypcount 0\relax
@@ -719,21 +720,21 @@ de Mestre \\em \@majorfield}
 	}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% PAGE LAYOUT
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \synctex=1 % Uase synctex
 \brokenpenalty=10000
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Fonts
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand\quotefont{\normalfont\normalsize}
 \newcommand\quotefonti{\it\normalsize}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Including chapters and similars
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\newcommand{\reverseconcat}[3]{#3#2#1}
 \newcommand{\version}[1]{ 
 	\if\@language0
@@ -769,9 +770,11 @@ de Mestre \\em \@majorfield}
 
 \def\printacknowledgements{
 	\if\@degreetype0	
-	\else\if\@degreetype1	\@input@{Chapters/\@acknowledgementsfile}\global\let\@acknowledgementsfile\@empty
+	\else\if\@degreetype1			
+		\@input@{Chapters/\@acknowledgementsfile}\global\let\@acknowledgementsfile\@empty
 	\else\if\@degreetype2
-	\else\if\@degreetype3		\@input@{Chapters/\@acknowledgementsfile}\global\let\@acknowledgementsfile\@empty
+	\else\if\@degreetype3		
+		\@input@{Chapters/\@acknowledgementsfile}\global\let\@acknowledgementsfile\@empty
 	\fi\fi\fi\fi
 }
 
@@ -791,26 +794,27 @@ de Mestre \\em \@majorfield}
 \def\@enabstractfile{~enabstractfile \@notdefined}
 \fi\fi
 
-
-\def\printabstract{%
-	\if\@language0   % Sumário-PT + Abstract-EN for thesis in Portuguese
+\def\printabstract{%	
+	\ifx\@language0 % Sumário-PT + Abstract-EN for thesis in Portuguese
 		\selectlanguage{portuguese}
+		\if{\@degreetype1\@degreetype3}
 		\@input@{Chapters/\@ptabstractfile}\global\let\@ptabstractfile\@empty
 		\ifx\@enabstractfile\@empty
 		\else
 			\selectlanguage{english}
 			\@input@{Chapters/\@enabstractfile}\global\let\@enabstractfile\@empty
 			\selectlanguage{portuguese}
-		\fi
-	\else\if\@language1   % Abstract-EN + Sumário-PT for thesis in English
+		\fi\fi
+	\else\ifx\@language1   % Abstract-EN + Sumário-PT for thesis in English
 		\selectlanguage{english}
+		\if{\@degreetype1\@degreetype3}
 		\@input@{Chapters/\@enabstractfile}\global\let\@enabstractfile\@empty
 		\ifx\@ptabstractfile\@empty
 		\else
 			\selectlanguage{portuguese}
 			\@input@{Chapters/\@ptabstractfile}\global\let\@ptabstractfile\@empty
 			\selectlanguage{english}
-		\fi
+		\fi\fi
 	\fi\fi
 }
 
@@ -859,31 +863,75 @@ de Mestre \\em \@majorfield}
 	\endthesismainmatter
 }
 
-
-% Appendixes
-\newcount\@appxcount
-\@appxcount 0\relax
-
-\def\appendixfile#1{%
-	\advance\@appxcount 1\relax
-	\expandafter\gdef\csname @appendixfile\number\@appxcount\endcsname{Appendixes/#1}
-}
-
-\def\printappendixes{%	
-	\appendix
-	\newcount\@myi
-	\@myi 0\relax
-	\loop
-		\advance\@myi 1\relax
-		\def\@appxname{\expandafter\csname @appendixfile\number\@myi\endcsname}
-		\@input@{\@appxname}
-	\ifnum \@myi < \@appxcount
-	\repeat
-}
-
 % To process lists and other stuff
 \RequirePackage{etoolbox}
 %\usepackage{pgffor}%
+
+% Portuguese
+\if\@language0
+  	\gdef\@notdefined{NÃO DEFINIDO}
+  	\gdef\acknowledgementsname{Agradecimentos} 
+  	
+  	\addto\captionsportuguese{% Replace "english" with the language you use
+  		\renewcommand{\contentsname}{Índice}%
+	}
+	
+ 	\renewcommand*{\listtablename}{Lista de Tabelas}
+	\renewcommand*{\listfigurename}{Lista de Figuras}
+	
+  	\def\appendixname{Anexos}
+  	\addto{\captionsportuguese}{%
+  		\renewcommand{\bibname}{Referências}
+  	}
+  	
+  	\def\glossaryname{Main}
+ 		\addto{\captionsportuguese}{
+ 			\renewcommand*{\acronymname}{Lista de Abreviaturas e Siglas}
+ 			\renewcommand*{\glossaryname}{Glossário}
+ 			\renewcommand*{\pagelistname}{Páginas}
+ 			\renewcommand*{\entryname}{Notação}
+	}
+ 
+	\def\lstlistlistingname{Listagens}
+	  	\addto{\captionsportuguese}{%
+			%\renewcommand*{\lstlistingname}{Listagem}%
+			\renewcommand*{\lstlistingname}{Listagem}% Listing -> Algorithm
+			\renewcommand{\lstlistlistingname}{Lista de Listagens}% List of Listings -> List of Algorithms
+	}
+	
+	\renewcommand{\algorithmicrequire}{\textbf{Dados: }}
+	\renewcommand{\algorithmicensure}{\textbf{Resultado: }}
+
+	\def\backrefbrazil{%
+		\def\backrefpagesname{p\'aginas}%
+		\def\backrefsectionsname{se\c c\~oes}%
+		\def\backrefsep{, }%
+		\def\backreftwosep{ e~}%
+		\def\backreflastsep{, e~}%
+	}
+	
+% English
+\else\if\@language1
+  	\gdef\@notdefined{UNDEFINED}
+  	\gdef\acknowledgementsname{Acknowledgments}
+  	\def\appendixname{Appendix}
+
+	\def\lstlistlistingname{Listings}
+	  	\addto{\captionsenglish}{%
+			%\renewcommand*{\lstlistingname}{Listagem}%
+			\renewcommand*{\lstlistingname}{Listing}% Listing -> Algorithm
+			\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
+	}
+	  	
+  	\def\backrefenglish{%
+		\def\backrefpagesname{pages}%
+		\def\backrefsectionsname{sections}%
+		\def\backrefsep{, }%
+		\def\backreftwosep{ and~}%
+		\def\backreflastsep{, and~}%
+		}
+\fi\fi
+
 %====================================================================
 % PACKAGE listings
 %====================================================================
@@ -897,31 +945,45 @@ de Mestre \\em \@majorfield}
 %
 %====================================================================
 
-%\usepackage{fancyvrb}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Conditional list of figure, table, listings - listoffigures, listoftables and lstlistoflistings only if listings are present
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \usepackage{listings}
+%listings package provides a key called inputpath for specifying a path where \lstinputlisting should search for source files.
+\newcommand*\lstinputpath[1]{\lstset{inputpath=#1}}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+
 
 \renewcommand{\lstlistoflistings}{
 	\begingroup
 	\tocfile{\lstlistlistingname}{lol}
-	\endgroup}
-\usepackage[figure,table,lstlisting]{totalcount}
+	\endgroup
+	}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Conditional list of figure, table, listings - listoffigures, listoftables and lstlistoflistings only if listings are present
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% To aggregate multiple figures in a single one with subfigures
+\usepackage{subfigure}
+
+% To have text wrapping figures
+\usepackage{wrapfig}
+\usepackage{float}						% Improves the interface for defining floating objects such as figures and tables
+%
+%====================================================================
+ \usepackage[figure,table,lstlisting]{totalcount}
 
 \newcommand\conditionalLoF{%
   \iftotalfigures\listoffigures\fi}
 \newcommand\conditionalLoT{%
   \iftotaltables\listoftables\fi}
 \newcommand\conditionalLoL{%
-  \iftotallstlistings\lstlistoflistings\fi}  
-  
-  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \iftotallstlistings\lstlistoflistings\fi} 
+%\newcommand\conditionalLoA{%
+%  \iftotallstnomenclature\lstlistofnomenclature\fi}     
+%  \listofnomenclature{ll}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Deal with optional lists in the frontmatter: listoftables, listoffigures, etc.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\@printlist#1{ %
 		#1\cleardoublepage
 }
@@ -935,9 +997,25 @@ de Mestre \\em \@majorfield}
 		\forlistloop{\@printlist}{\@frontmatter@list} %
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Frontpage
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FRONTPAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\printcoverpage{
+\if\@degreetype0{
+	\Repeat{1}{\frontpage}
+	}
+\else\if\@degreetype1{
+	\Repeat{1}{\frontpage}
+	\Repeat{1}{\frontpageBSC}  
+}	
+\else\if\@degreetype2{
+	\Repeat{1}{\frontpage} 
+}	
+\else\if\@degreetype3{
+	\Repeat{2}{\frontpage}  
+}	
+\fi\fi\fi\fi
+}
 
 \def\frontpage{
 
@@ -975,6 +1053,7 @@ de Mestre \\em \@majorfield}
 	\selectfont
 	\textbf{\@title}\\[0.75cm]
 
+
 \vspace{0.2cm}	
 % Name of Candidate
 	\fontsize{16}{19.2}
@@ -987,8 +1066,8 @@ de Mestre \\em \@majorfield}
 			pos=h,
 			maxwidth=1\linewidth,
 			doinside=\hspace*{0.1cm},
-		]{rX}{}{ 
-			\printauthor[]{1}
+		]{rX}{}{ 			
+			\printauthor[]{1}			
 			\printauthor[]{2}
 			\printauthor[]{3}
 	}}
@@ -1041,9 +1120,9 @@ de Mestre \\em \@majorfield}
 \thispagestyle{empty}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Frontpage - Bachelor Project
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \def\frontpageBSC{
 
@@ -1068,6 +1147,12 @@ de Mestre \\em \@majorfield}
 	\selectfont
 	\textbf{\@department}
 
+% Put image
+	\ifx\@workimage\undefined
+	\noimage
+	\else
+	\image{\@workimage}
+	\fi
 
 \vspace{0.65cm}
 % Title of Dissertation
@@ -1088,7 +1173,7 @@ de Mestre \\em \@majorfield}
 			maxwidth=1\linewidth,
 			doinside=\hspace*{0.1cm},
 		]{rX}{}{ 
-		\toprule
+		\midrule	
 		\printauthor[]{1}\\
 		\ifnum \@theauthorcount > 1		
 		\midrule	
@@ -1121,9 +1206,9 @@ de Mestre \\em \@majorfield}
 \thispagestyle{empty}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Dedicatory
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\dedicatory{ %
 	\if @openright\cleardoublepage\else\clearpage\fi
 	\thispagestyle{empty}
@@ -1139,9 +1224,9 @@ de Mestre \\em \@majorfield}
 	\end{flushright}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Quote
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\quote{%
 	\if@openright\cleardoublepage\else\clearpage\fi
 	\thispagestyle{empty}
@@ -1157,53 +1242,53 @@ de Mestre \\em \@majorfield}
 	\end{flushright}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Acknowledgements
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\acknowledgements{%
   \chapter*{\acknowledgementsname}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Resumo
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\abstractPT{%
-  \selectlanguage{portuguese}
-  \gdef\@keywordsname{\@keywordsnamePT}
-  \chapter*{\@abstrnamePT}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Abstract
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\abstractEN{%
   \selectlanguage{english}
   \gdef\@keywordsname{\@keywordsnameEN}
   \chapter*{\@abstrnameEN}
 }
   
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Resumo (Abstract in Portuguese)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\abstractPT{%
+  \selectlanguage{portuguese}
+  \gdef\@keywordsname{\@keywordsnamePT}
+  \chapter*{\@abstrnamePT}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Keywords
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\@keywordsname{\@defaultkeywordsname}
 \def\keywords{%
   \par\vskip\baselineskip\noindent{\bf\@keywordsname: }}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Chapter files
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand*{\MaxNumOfChapters}{10}% Adjust these two settings for your needs.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Table of contents
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \setcounter{tocdepth}{2}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Sectioning
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \setcounter{secnumdepth}{3}
 
@@ -1219,170 +1304,50 @@ de Mestre \\em \@majorfield}
 ]
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Headers & footers
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Bibliography
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %http://tex.stackexchange.com/questions/15971/bibliography-with-page-numbers
+\usepackage{backref}
 \renewcommand*{\backref}[1]{}
-\renewcommand*{\backrefalt}[4]{%
-    \ifcase #1 (not cited)%
-    \or        (p.~#2)%
-    \else      (pp.~#2)%
-    \fi}
+%\renewcommand*{\backrefalt}[4]{%
+%    \ifcase #1  (not cited)%
+%    \or        (p.~#2)%
+%    \else      (pp.~#2)%
+%    \fi}
 
 % break long URLs in Bibtex
 %URL linebreak in footnote
-\usepackage{breakurl}
+%\usepackage{breakurl}
 \def\UrlBreaks{\do\/\do-}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Appendixes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcount\@appxcount
+\@appxcount 0\relax
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Common listing def: R and Java example
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% == Color Definitions ===
-\definecolor{olivegreen}    {cmyk}{0.64, 0 , 0.95, 0.40}
-\definecolor{dkgreen}{rgb}{0,0.6,0}	
-\definecolor{midnightblue}  {cmyk}{0.98, 0.13, 0 , 0.43}
-%%    
-\lstset{
-literate=%
-% Latin
-  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
-  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
-  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
-  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
-  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
-  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
-  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
-  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
-  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
-  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
-  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
-  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
-  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
-}  
-%% R     
-\lstset{ 
-	language = R, 					% the language of the code
-	basicstyle = \scriptsize\ttfamily,  % the size of the fonts that are used for the code
-	commentstyle = \ttfamily\color{dkgreen}, % comment style
-    numbers = left,     % where to put the line-numbers; possible values are (none, left, right)
-   	numberstyle = \ttfamily\color{gray}, 
-	stepnumber = 2,  % the step between two line-numbers. If it's 1, each line will be numbered
-    numbersep = 5pt, 				% how far the line-numbers are from the code	
-    xleftmargin = \parindent,
-    backgroundcolor = \color{white},  % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
-	showspaces = false,   % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
-  	showstringspaces = false,  % underline spaces within strings only
-  	showtabs = false,               % show tabs within strings adding particular underscores
-	stringstyle = \ttfamily, 		 % typewriter type for strings
-	frame = single, 					 % adds a frame around the code
-	rulesepcolor = \color{black},
-	columns = fullflexible,
-   	tabsize = 2,                       % sets default tabsize to 2 spaces
-   	captionpos = b, 				% sets the caption-position to bottom
-	breakatwhitespace = false,% sets if automatic breaks should only happen at whitespace
-  	breaklines = true,              % sets automatic line breaking
-   	title = \lstname                 % show the filename of files included with \lstinputlisting; also try caption instead of title
-    escapeinside = {},         		% if you want to add LaTeX within your code
-    keywordstyle = \ttfamily\color{midnightblue}\itshape, % keyword style
-	morekeywords = {},
-	inputencoding=latin1 
-	}	
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Common listing def - JAVA
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Listings
-%\usepackage{fancyvrb}
-\colorlet{lstKeywordsColor}{MidnightBlue}
-\colorlet{lstKeywordsAltColor}{BrickRed}
-\colorlet{lstCommentsColor}{ForestGreen}
-\colorlet{lstStringColor}{BrickRed}
-% Usage: \begin{javalst}[Caption]{Label}
-\lstnewenvironment{javalst}[2][]%
-{
-\lstset{
-	language = java,
-	basicstyle = \small\tt,
-	frame = tb,
-	captionpos = b,
-	caption = #1,
-	label = {lst:#2},
-	tabsize = 2}}%
-{}%
-
-\lstnewenvironment{xmllst}[2][]%
-{
-\lstset{
-	language = XML,
-	basicstyle = \small\tt,
-	frame = tb,
-	captionpos = b,
-	caption = #1,
-	label = {lst:#2},
-	tabsize = 2}}%
-{}%
-\lstnewenvironment{lst}[2][]%
-{
-\lstset{
-	basicstyle = \footnotesize\tt,
-	frame = tb,
-	captionpos = b,
-	caption = #1,
-	label = {lst:#2},
-	tabsize = 2}}%
-{}%
-
-% For inline code
-\newcommand{\codejava}[1]{
-	\lstinline[
-		basicstyle = \tt,%
-		keywordstyle = \color{lstKeywordsColor}\bfseries,%
-		commentstyle = \color{lstCommentsColor},%
-		stringstyle = \color{lstStringColor},% 		
-		language = Java]|#1|}
-
-%for code in file
-% usage \lstfromfile{language}{caption}{label}{path}
-\newcommand{\lstfromfile}[5]{				
-	\lstinputlisting[language=#1,
-	   basicstyle = \small\tt,
-		frame = tb,
-		captionpos = b,
-		commentstyle = \color{lstCommentsColor},
-		stringstyle = \color{lstStringColor},
-		keywordstyle = \color{lstKeywordsColor}\bfseries,
-		caption = #2,
-		label = {#3},
-		tabsize = 2,#5]{#4}
+\def\appendixfile#1{%
+	\advance\@appxcount 1\relax
+	\expandafter\gdef\csname @appendixfile\number\@appxcount\endcsname{Appendixes/#1}
 }
 
-%define java language
-\lstset{ %
-	language = java,            % choose the language of the code
-	basicstyle = \footnotesize\ttfamily,       % the size of the fonts that are used for the code
-	numbers = left,              % where to put the line-numbers
-	numberstyle = \tiny,      % the size of the fonts that are used for the line-numbers
-	stepnumber = 1,            % the step between two line-numbers. If it is 1 each line will be 		numbered
-	numbersep = 5pt,          % how far the line-numbers are from the code
-	backgroundcolor = \color{white},  % choose the background color. You must add 		\usepackage{color}
-	showspaces = false,       % show spaces adding particular underscores
-	showstringspaces = false,      % underline spaces within strings
-	showtabs = false,           % show tabs within strings adding particular underscores
-	frame = single,              % adds a frame around the code
-	tabsize = 2,                   % sets default tabsize to 2 spaces
-	captionpos = b,             % sets the caption-position to bottom
-	breaklines = true,          % sets automatic line breaking
-	breakatwhitespace = false,    % sets if automatic breaks should only happen at whitespace
-	escapeinside = {\%*}{*)},          % if you want to add a comment within your code
-	stringstyle = \color{lstStringColor},
-	keywordstyle = \color{lstKeywordsColor}\bfseries,
-	commentstyle = \color{lstCommentsColor}\itshape,
-}
+\ifx\@appendixfile\@empty
+	\def\printappendixes{}
+\else
+	\def\printappendixes{
+		\appendix
+		\newcount\@myi
+		\@myi 0\relax
+		\loop
+			\advance\@myi 1\relax
+			\def\@appxname{\expandafter\csname @appendixfile\number\@myi		\endcsname}
+		\@input@{\@appxname}
+		\ifnum \@myi < \@appxcount
+		\repeat
+	}
+\fi

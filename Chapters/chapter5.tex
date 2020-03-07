@@ -23,13 +23,13 @@ The CRISP-DM reference model for data mining provides an overview of the life cy
 mining project. It contains the phases of a project, their respective tasks, and their outputs.
 The life cycle of a data mining project is broken down into six phases, which are shown in Figure \ref{fig:crisp_dm}.
 The sequence of the phases is not strict. The arrows indicate only the most important and frequent
-dependencies between phases, but in a particular project, it depends on the outcome of each phase
+dependencies between phases, but in a particular project, it depends on the outcome of each phase,
 which phase, or which particular task of a phase, has to be performed next.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/crisp_dm.png}
-\caption{Complete CRISP-DM Approach.}
+\caption{Complete CRISP-DM Approach  \cite{WEBSITE:CRISPDM}.  }
 \label{fig:crisp_dm}
 \end{figure}
 
@@ -38,7 +38,7 @@ In the following, we outline each phase briefly:
 \item Business Understanding\\
 This initial phase focuses on understanding the project objectives and requirements from a
 business perspective, and then converting this knowledge into a data mining problem
-definition, and a preliminary project plan designed to achieve the objectives.
+definition, thus a preliminary project plan designed to achieve the objectives are drown.
 \item Data Understanding\\
 The data understanding phase starts with an initial data collection and proceeds with activities
 to get familiar with the data, to identify data quality problems, to discover first
@@ -58,7 +58,7 @@ calibrated to optimal values. Typically, there are several techniques for the sa
 problem type. Some techniques require specific data formats.
 There is a close link between Data Preparation and Modeling. Often, one realizes data
 problems while modeling, or one gets ideas for constructing new data.
-\item Evaluation
+\item Evaluation\\
 At this stage in the project, you have built one or more models that appear to have high quality,
 from a data analysis perspective. Before proceeding to the final deployment of the model, it is
 essential to more thoroughly evaluate the model, and review the steps executed to construct
@@ -83,7 +83,7 @@ the created models.
 \label{sub:business_understanding}
 
 In the fishing sector, vessels operating in the various fishing techniques must be licensed.
-The problem is that there is a likelihood that vessels will be fishing for which they are not licensed. The objective is to classify VMS data by fishing type. This way, we can try to confirm that each ship is performing a legal activity according to the license previously obtained.
+A common problem is that there is a likelihood that vessels will be fishing for which they are not licensed. The objective is to obtain a predictive model, capable of receiving VMS data and proceed to its classification in order to predict which type of fishing is being carried out by the vessel. In this way it will be possible to ascertain whether or not a given vessel is carrying out a legal fishing activity, that is, according to the license it has.
 
 
 
@@ -93,8 +93,7 @@ The problem is that there is a likelihood that vessels will be fishing for which
 \subsection{Data Understanding} % (fold)
 \label{sub:data_understanding}
 
-To answer this goal, the data used is the same VMS Records as used in chapter 4, and VMS Vessels explained in chapter 3.2.
-Initially, the analysis will be focused on the study of velocity. However, the other variables will not be discarded until their contribution to the adequate solution is verified.
+To answer this goal, the data used as input is the same VMS Records as used in chapter 4, initially presented in chapter 3, section 3.1 and VMS Vessels presented in chapter 3, section 3.2. The output variable, is a nominal variable whose categories correspond to the labels of the different licenses
 
 % section data_understanding (end)
 
@@ -102,7 +101,7 @@ Initially, the analysis will be focused on the study of velocity. However, the o
 
 \subsection{Data Preparation} % (fold)
 \label{sub:data_preparation}
-To use data mining models, we need a dataset with all the data needed to feed the models. So, it was created a dataset from VMS Vessels and VMS Records to end with Table \ref{table:vms_dataset}. 
+To use data mining models, a first step is to build a dataset with all the data needed to feed the models. So, it was created a dataset from VMS Vessels and VMS Records to end with Table \ref{table:vms_dataset}. 
 
 \begin {table}[H]
 \begin{center}
@@ -127,8 +126,8 @@ License & Vessel's Linceses & VMS Vessels & Objective
 \end {table}
 
 
-To analyze the existence of associations between the type of license and the remaining variables, Pearson correlation coefficient was obtained for all the pairs of variables. Pearson coefficient \cite{Benesty2009} measures the degree of correlation and the direction of this correlation - whether positive or negative) between two metric scale variables).In some cases, it was necessary to pre-process the data before calculating the association indicator. For example, in the case of the variables SOG and license. In Figure \ref{fig:data_coor1}, the results of the correlation coefficients were described.
-\begin{figure}[h]
+To analyze the existence of associations between the type of license and the remaining variables, Pearson correlation correlation coefficient was obtained for all the pairs of variables. Pearson coefficient \cite{Benesty2009} measures the degree of correlation and the direction of this correlation - whether positive or negative (between two metric scale variables). In some cases, it was necessary to pre-process the data before calculating the association indicator. For example, it happens in the case of the variables SOG and license. In Figure \ref{fig:data_coor1}, the results of the correlation coefficients were presented.
+\begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{Chapters/img/data_coor1.png}
 \caption{Data Correlation}
@@ -136,12 +135,11 @@ To analyze the existence of associations between the type of license and the rem
 \end{figure}
 
 
-
 We can see that we cannot use the data as it is because of the
 correlation between License and sog is very weak, so we need to do some pre-processing.
 The best way to achieve a higher correlation between fishing speeds and licenses was the transformation of data to storage fishing average, maximum, and minimum per day per vessel. This way, it presents the results shown in Figure \ref{fig:data_coor2}.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.7\linewidth]{Chapters/img/data_coor2.png}
 \caption{Data correlation after preprocessing}
@@ -158,13 +156,13 @@ The method used to transform the data consists of the following steps:
 With this data, we can also observe that the correlation between the license and the HP data (vessel power), Loa (Boat length) Gt (vessel weight) are quite significant. This is expected as different fishing activities require specific types of vessels. This does not mean that the type of vessel is only capable of entering a type of fishing activity.
 For these reasons, we will not use these variables in the model so as not to create a problem with bias.
 \\
-Regarding location data, we used clustering techniques to discretize the data.
-First, the best number of clusters is determined. For that, we used the same technique used in chapter 4.3, with the output in Figure \ref{fig:elbow_method_server}. The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 4.
+Regarding location data, clustering techniques to discretize the data were used.
+First, the best number of clusters is determined. For that, we used the same technique used in chapter 4.3, resulting the Figure \ref{fig:elbow_method_server}. The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 4.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/elbow_method_server.png}
-\caption{The elbow method showing the optinal k}
+\caption{The elbow method showing the optimal k}
 \label{fig:elbow_method_server}
 \end{figure}
 Now, is possible to create data mining models based on the location and on the velocity patterns. 
@@ -174,9 +172,9 @@ Now, is possible to create data mining models based on the location and on the v
 \newpage
 \subsection{Modeling} % (fold)
 \label{sub:modeling}
-Several data mining algorithms were obtained models capable of classifying a new license type with VMS data.
+In order to classify a new type of license using VMS data, several data mining algorithms were tested, which we now list:
 \begin{itemize}
-\item \textbf{ KMeans:} This model was used to classify GPS data in clusters to improve the result of the data mining algorithms. The operation of this algorithm is described in chapter 4.3.
+\item \textbf{ KMeans:} This model was used to classify GPS data in clusters to improve the result of the data mining algorithms. The operating mode of this algorithm has already been covered in the 4.3.
 
 \item \textbf{ Decision Trees: }
 While in data mining, a decision tree is a predictive model that can be used to represent both classifiers and regression models, in operations research decision trees refer to a hierarchical model of decisions and their consequences\cite{Rokach2014}. The decision-maker employs decision trees to identify the strategy which will most likely reach its goal. When a decision tree is used for classification tasks, it is most commonly referred to as a classification tree. When it is used for regression tasks, it is called a regression tree \cite{Rokach2014}.
@@ -195,7 +193,7 @@ Neural networks are a bio-inspired mechanism of data processing that enables com
 In this work, we will train models with different hidden layer sizes. The solver for weight optimization used is BFGS\cite{Dai2013} and Adam\cite{adamNN} for large sizes of hidden layers.
 
 \item \textbf{Support Vector Machine: }
-The folklore view of SVM is that they find a \"optimal\" hyperplane as the solution to the learning problem. The simplest formulation of SVM is the linear one, where the hyperplane lies in the space of the input data \(x\). In this case, the hypothesis space is a subset of all hyperplanes of the form:
+The folklore view of SVM is that they find a optimal hyperplane as the solution to the learning problem. The simplest formulation of SVM is the linear one, where the hyperplane lies in the space of the input data \(x\). In this case, the hypothesis space is a subset of all hyperplanes of the form:
 \(f(x) = w \cdotp x +b\).
 In their most general formulation, SVM finds a hyperplane in a space different from that of the input data x. It is a hyperplane in a feature space induced by a kernel K (the kernel defines a dot product in that space)\cite{SVMEvgeniou}.\\
 In this work, we will create models using the following kernel algorithms: Linear\cite{SVMTraining}, Polynomial\cite{SVMTraining}, and RBF\cite{SVMTraining}. 
@@ -212,7 +210,7 @@ In this work, we will create models using the following kernel algorithms: Linea
 \label{sub:evaluation}
 Cross \textendash validation \cite{CrossValidatory} provides a simple and effective method for both model selection and performance evaluation, widely employed by the machine learning community. Under k \textendash fold cross \textendash validation, the data are randomly partitioned to form k disjoint subsets of approximately equal size. In the ith fold of the cross-validation procedure, the ith subset is used to estimate the generalization performance of a model trained on the remaining k \textendash one subset. The average of the generalization performance observed overall k folds provides an estimate (with a slightly pessimistic bias) of the generalization performance of a model trained on the entire sample.
 The k used to test these models is 10.\\
-For the statistical classification, we will use the confusion matrix as in the table \ref{table:cm_ex}. 
+To evaluate the classification results customized with the different algorithms, a confusion matrix will be created and interpreted according ours goals as in the table \ref{table:cm_ex}. 
 
 \begin {table}[H]
 \begin{center}
@@ -231,7 +229,7 @@ For the statistical classification, we will use the confusion matrix as in the t
 \end{center}
 \end {table}
 
-The measures used in this work to evaluate the models are:\\
+In addition, the following performance indicators are used:\\
 Precision = \(\sum_{n=0}^{k-1}\frac{tp}{tp+fp} \) = precision of the model.\\
 Accuracy = \( \sqrt{precision} ^ 2\) = accuracy of the precision result.\\
 
@@ -279,7 +277,7 @@ Entropy&0.7776&0.1459&0.73&0.1319
 \end{center}
 \end {table}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/CM_DT.png}
 \caption{Confusion Matrix for Decision Tree using Entropy(C4.5)}

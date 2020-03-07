@@ -9,16 +9,24 @@
 %% Version 20170102 (Jan 2017) v2.1
 %% Version 20170330 (March 2017) v2.2
 %% Version 20170530 (May 2017) v2.3.1
-%% Version 20171207 (December 2017) v2.4
+%% Version 20190104 (January 2019) v2.4
+%% Version 20191217 (December 2019) v2.5
+%% Version 20200224 (February 2020) v2.5.1
+%% Version 20200301 (March 2020) v2.5.2
+%%
 %% Instituto Superior de Engenharia de Lisboa
 %% Instituto Politécnico de Lisboa
 %%
 %% Project web page at: https://github.com/matpato/thesisisel
 %%
-%% BUGS and SUGGESTIONS: please submit an issue at the project web page
+%% BUGS and SUGGESTIONS: please send email to "matilde.pato@isel.pt"
+%%     or sumit a ticket in the the project web page at
+%%     https://github.com/matpato/thesisisel
+%%
+%% CONTRIBUTERS are welcome. Please contact "matilde.pato@isel.pt"
 %%
 %% Authors / Contributors:
-%%     - Matilde Pós-de-Mina Pato (mpato@deetc.isel.pt)
+%%     - Matilde Pós-de-Mina Pato (matilde.pato@isel.pt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Main options (please read the manual for further details)
@@ -32,41 +40,31 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[
-	msc,			% (*) msc, prepmsc, bsc, prepbsc - degree
+	msc,		% (*) msc, prepmsc, bsc, prepbsc - degree
 					% prepbsc(msc) Preparation of BSc (MSc) dissertation
 					% bsc(msc) BSc graduation report/ MSc dissertation
-					% GO TO LINE 189
 	en,			% (*) pt, en - languages 
 	twoside,	% (*) twoside, oneside - single or double sided printing
 	12pt,		% (*) 12pt, 11pt, 10pt - use font size
 	a4paper,	% the paper size/format
 	utf8,			% (*) utf8, latin1	- Text encoding: Linux, Mac or Windows
+	onscreen, 	% (*) onpaper, onscreen Format your thesis in a way that presents well on paper and/or on screen
 	hyperref = true,  % Hyperlinks in citations: true(*) false
 	listof=totoc
-	]{thesisisel}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	]{thesisisel} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  BEGINING OF USER COSTUMIZATION
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %====================================================================
 % Additional packages you may want to use (comment those not needed)
 %====================================================================
-\usepackage{hyperref}
-\usepackage{url}
-% Beautiful simple tables
-\usepackage{booktabs}
-\usepackage[bottom]{footmisc}
-\usepackage{multirow}
-\DeclareUnicodeCharacter{2212}{-}
-
-% Use colors in background of table cells
 %\usepackage{colortbl}
 
 % Sort citations - ONLY if using "plain" style, otherwise keep commented
 %\usepackage[sort]{cite}
-
 
 % The contents of both files (acronyms and glossary) will be merged
 \InputIfFileExists{Chapters/acronyms}{%
@@ -74,6 +72,7 @@
 }{%
 % File glossary.tex is not found, ignore
 }
+
 \InputIfFileExists{Chapters/glossary}{%
 % File glossary.tex exists and is read
 }{%
@@ -84,15 +83,6 @@
 \usepackage[textsize=footnotesize]{todonotes}
 \setlength{\marginparwidth}{1.5cm}
 
-%====================================================================
-% To aggregate multiple figures in a single one with subfigures
-\usepackage{subfigure}
-
-% To have text wrapping figures
-\usepackage{wrapfig}
-\usepackage{float}						% Improves the interface for defining floating objects such as figures and tables
-%
-
 %
 % Define the nomenclature command that prints the symbol/abbreviation and generates a list entry at the same time.
 \newcommand*{\nom}[2]{#1\nomenclature{#1}{#2}}
@@ -100,20 +90,23 @@
 %====================================================================
 % Standard configuration for user included packages
 %====================================================================
-
+\DeclareUnicodeCharacter{2212}{-}
+\usepackage{sty/code}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{multirow}
 % Where to look for figures
 \graphicspath{{Logo/}{Chapters/img/}} 
 
 % Where to find code scripts files
-\newcommand{\codefiles}[1]{Chapters/scripts/#1}
-% syntax: \lstinputlisting[]{\rfile{name.r}}
+\lstinputpath{Chapters/scripts}
 
 % Where to find Chapters files
 \newcommand{\chapterfiles}[1]{Chapters/#1}
-% syntax: \include{\chapterfiles{name.tex}}
+% syntax: \chapterfiles{name.tex}
 
 % Force word hyphenation
-\hyphenation{do-cu-ment}
+\hyphenation{}
 
 %====================================================================
 % Some default values that you may whish to override
@@ -129,21 +122,24 @@
 %     for supervisor to inert revision notes and comments.
 % (*)\onehalfspacing
 % \doublespacing
-
-%%============================================================
-
-% Title of the dissertation/thesis
-% USe "\\" to break the title into two or more lines
-
+%
+%		
+%============================================================
 \input{personaldataofthesis}
-%% Title of Report + author(s) + professor + date
-
-
+% Title of Report + author(s) + professor + date
+\hypersetup{ a4paper=true,
+             pdftitle={ \thetitle},
+             pdfauthor={ \theauthor},
+             pdfsubject={ 
+             },
+             pdfkeywords={{ }, { }, { } }
+             }
+             
 %%------------------------------------------------------------
 %% All the names inside braces below sould correspond to a file
 %%     with extension ".tex" and located in the "Chapters" folder
 %%------------------------------------------------------------
-%\dedicatoryfile{dedicatory} 
+\dedicatoryfile{dedicatory} 
 
 % Acknowledgments text. Will only be considered for final documents,
 % i.e., "bsc", "msc" and "phd", otherwise, it will be silently ignored
@@ -162,9 +158,10 @@
 % Conditionally insert List of Figures, Tables and Code Listings
 \addlisttofrontmatter{\conditionalLoF} 	% The List of Figures. 
 \addlisttofrontmatter{\conditionalLoT} 	% The List of Tables. 
-\addlisttofrontmatter{\conditionalLoL}	% The List of Code Listings.
-%\addlisttofrontmatter{\printnoidxglossary} % The List if Abreviations / Glossary. Comment to omit.
-
+\addlisttofrontmatter{\conditionalLoL}		% The List of Code Listings.
+\addlisttofrontmatter{\printnoidxglossary[type=acronym]} % The List of Abreviations 
+\addlisttofrontmatter{\printnoidxglossary} %  default: type=main,  Glossary. Comment to omit.						
+%\printnoidxglossary[type=symbols] % only glossaries 
 % ---------------------------------------------------------------------------------
 % TEX CHAPTERS:
 % syntax: \chapterfile{file}
@@ -175,6 +172,7 @@
 \chapterfile{chapter5}
 \chapterfile{chapter6}
 \chapterfile{chapter7}
+
 
 % Text appendixes. Comment if not needed
 % sintax: \appendixfile{file}
@@ -187,22 +185,20 @@
 %%
 %%============================================================
 %
-%
 %%============================================================
 %% Please do not change below this point!!! :)
 %%============================================================
 %% Begining of document
 \begin{document}
-
+%\input{template.xmpdata}
 %%------------------------------------------------------------
 %% Before main text
 \frontmatter
 
 % The first front page. Repeats the front page twice 
 % \Repeat{n-times}{\command}
-\Repeat{2}{\frontpage} % insert only 1 for Bachelor report and 2 for Master Thesis
-%\frontpageBSC % comment this line if you write a Master Thesis 
-						   % and uncomment for Bachelor Report
+\printcoverpage
+%\InputIfFileExists{\jobname.xmpdata}{}{}
 
 %%------------------------------------------------------------
 %% All the names inside braces below sould correspond to a file
@@ -222,8 +218,6 @@
 % use the document main language and second the foreign language
 \printabstract
 %%------------------------------------------------------------
-%% The List of Symbols (Nomenclature). Comment to omit.
-\printnomenclature
 %
 %% Always print the table of contents
 \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
@@ -232,11 +226,14 @@
 %
 %% Print other lists of contents according to instructions given above
 \printotherlists 
+%% The List of Symbols (Nomenclature). Comment to omit.
+%\printnomenclature
 %
 % ----------------------------------------------------------------------
 %  Print Document Chapters
 % ----------------------------------------------------------------------
 %%
+% Title page: page (i)
 \printchapters
 %%
 % ----------------------------------------------------------------------
@@ -262,7 +259,6 @@
 
 % External bibliography database file in the BibTeX format
 \cleardoublepage
-\renewcommand{\bibname}{References}
 \bibliography{bibliography} % file "bibliography.bib"
 %\addcontentsline{toc}{chapter}{\bibname} % Add entry in the table of contents as chapter
 
@@ -279,4 +275,4 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% End of document
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\end{document}
+\end{document} 

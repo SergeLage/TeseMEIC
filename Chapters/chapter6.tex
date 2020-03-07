@@ -15,9 +15,9 @@ This chapter describes the process used to evaluate the work done in this thesis
 \section{Validation of Standalone Fishery Analysis} % (fold)
 \label{sec:val_SFA}
 
-The VMS data are not classified, for the validation and evaluation of SFALib presented in chapter \ref{cha:standalone_fishery_analysis}, the first step consists of the classification of the data.
+The VMS data are not classified, for the validation and evaluation of SFALib presented in chapter \ref{cha:standalone_fishery_analysis}, the first step consists in the classification of the data.
 
-The classification consists of 3 classes:
+The classification is realized using three categories, as follows:
 \begin{itemize}
 \item Class 0 = Fishing in a known area;
 \item Class 1 = Not Fishing;
@@ -27,7 +27,7 @@ The classification consists of 3 classes:
 
 It was chosen the vessel with id two because it has the most entries in the database provided to this work. In Figure \ref{fig:bi_2_all}, the circles represent locations given by the VMS data to vessel two, and the size of the circle, the velocity. This analysis was done using Windows Power Bi \cite{WEBSITE:PowerBi}.
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/2All.pdf}
 \caption{Representation of all VMS coordinates for vessel 2 }
@@ -39,14 +39,14 @@ To get data to test SFALib, we need to classify data into three classes.
 \item Class 0 (Fishing in a known area): To get data to classify as fishing in an area, the data was filtered with a SOG between 0 and 4. Number 4 was chosen because of the analysis made in chapter 3.3, which concludes that the fishing activity done by this vessel is at speeds below four nautical miles. With this, we end up with the data represented in Figure \ref{fig:bi_2_all}. To extract the text data, it was chosen the fishing spot near the island of Flores represented in Figure \ref{fig:bi_2_flores}. 500 random VMS entries were collected at this location without speed restriction. This means that we may have collected travel data, but no speed bias was passed to this test data. 
 
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/2fishingAll.pdf}
 \caption{Representation of VMS coordinates for vessel 2 with speeds inferior of 4 }
 \label{fig:bi_2_all}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/2fishing.pdf}
 \caption{Representation of VMS coordinates for vessel 2 with speeds inferior of 4 near Flores island }
@@ -55,7 +55,7 @@ To get data to test SFALib, we need to classify data into three classes.
 
 \item Class 1 (Not fishing): For with class, it was extracted 500 random VMS entries with the location near Terceira island represented in figure \ref{fig:bi_2_travel}. It was chosen this spot because most points appear to be on a well-defined trajectory. This pattern contrasts with the random-looking and under-lapping points in Figure \ref{fig:bi_2_flores}. 
 
-\begin{figure}[H]
+\begin{figure}[]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/2viagem.pdf}
 \caption{Representation of VMS coordinates for vessel 2 near Terceira island}
