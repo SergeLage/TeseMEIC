@@ -11,6 +11,7 @@
 %%% Version v2.5: December 2019
 %%% Version v2.5.1.: February 2020
 %%% Version v2.5.2.: March 2020
+%%% Version v2.5.3.: June 2020
 %%% 
 %%% This template is vaguely based on a template from the
 %%%     Universidade Nova de Lisboa (NOT OFFICIAL)
@@ -158,7 +159,6 @@
 
 \RequirePackage[T1]{fontenc}
 
-
 %====================================================================
 % PACKAGE amsmath, amsthm, amssymb, amsfonts:
 %====================================================================
@@ -218,35 +218,6 @@
 		\DeclareGraphicsExtensions{.eps, .png, .jpg}
 \fi
 
-% \def\PDF@FinishDoc{%
-%  \Hy@UseMaketitleInfos
-%  \pdfinfo{
-%     /Title(\xmpTitle)%
-%     /Author(\xmpAuthor)%
-%	 /Creator(\xmpProducer)%
-%     \ifx\@pdfcreationdate\@empty
-%    \else
-%      /CreationDate(\@pdfcreationdate)%
-%    \fi
-%    \ifx\@pdfmoddate\@empty
-%    \else
-%      /ModDate(\@pdfmoddate)%
-%    \fi
-%      /Producer(\xmpProducer)%
-%     /Trapped /False
-%     /GTS_PDFA1Version (PDF/A-1b:2005)%
-%  }%
-%  \Hy@EnableOption{pdfauthor}%
-%  \Hy@DisableOption{pdftitle}%
-%  \Hy@DisableOption{pdfsubject}%
-%  \Hy@DisableOption{pdfcreator}%
-%  \Hy@DisableOption{pdfcreationdate}%
-%  \Hy@DisableOption{pdfmoddate}%
-%  \Hy@DisableOption{pdfproducer}%
-%  \Hy@DisableOption{pdfkeywords}
-%  %\Hy@DisableOption{backref}
-%  }
-%  
 
 % Print on paper
 \if\@printable1
@@ -273,8 +244,8 @@
 \cs_new_eq:NN \Repeat \prg_replicate:nn
 \ExplSyntaxOff
 
-\usepackage[square, comma, sort&compress, numbers]{natbib}
-\usepackage{tocbibind} % Add bibliography/index/contents to Table of Contents. Automatically adds the bibliography and/or the index and/or the contents, etc., to the Table of Contents.
+%\usepackage[square, comma, sort&compress, numbers]{natbib}
+%\usepackage{tocbibind} % Add bibliography/index/contents to Table of Contents. Automatically adds the bibliography and/or the index and/or the contents, etc., to the Table of Contents.
 
 %====================================================================
 % PACKAGE algorithm and algpseudocode
@@ -794,30 +765,29 @@ de Mestre \\em \@majorfield}
 \def\@enabstractfile{~enabstractfile \@notdefined}
 \fi\fi
 
-\def\printabstract{%	
-	\ifx\@language0 % Sumário-PT + Abstract-EN for thesis in Portuguese
+\def\printabstract{%
+	\if\@language0   % Sumário-PT + Abstract-EN for thesis in Portuguese
 		\selectlanguage{portuguese}
-		\if{\@degreetype1\@degreetype3}
 		\@input@{Chapters/\@ptabstractfile}\global\let\@ptabstractfile\@empty
 		\ifx\@enabstractfile\@empty
 		\else
 			\selectlanguage{english}
 			\@input@{Chapters/\@enabstractfile}\global\let\@enabstractfile\@empty
 			\selectlanguage{portuguese}
-		\fi\fi
-	\else\ifx\@language1   % Abstract-EN + Sumário-PT for thesis in English
+		\fi
+	\else\if\@language1   % Abstract-EN + Sumário-PT for thesis in English
 		\selectlanguage{english}
-		\if{\@degreetype1\@degreetype3}
 		\@input@{Chapters/\@enabstractfile}\global\let\@enabstractfile\@empty
 		\ifx\@ptabstractfile\@empty
 		\else
 			\selectlanguage{portuguese}
 			\@input@{Chapters/\@ptabstractfile}\global\let\@ptabstractfile\@empty
 			\selectlanguage{english}
-		\fi\fi
+		\fi
 	\fi\fi
 }
 
+ 	
 \def\thesismainmatter{%
 	\mainmatter
 	\pagestyle{fancy}
@@ -880,10 +850,7 @@ de Mestre \\em \@majorfield}
 	\renewcommand*{\listfigurename}{Lista de Figuras}
 	
   	\def\appendixname{Anexos}
-  	\addto{\captionsportuguese}{%
-  		\renewcommand{\bibname}{Referências}
-  	}
-  	
+
   	\def\glossaryname{Main}
  		\addto{\captionsportuguese}{
  			\renewcommand*{\acronymname}{Lista de Abreviaturas e Siglas}
@@ -901,14 +868,6 @@ de Mestre \\em \@majorfield}
 	
 	\renewcommand{\algorithmicrequire}{\textbf{Dados: }}
 	\renewcommand{\algorithmicensure}{\textbf{Resultado: }}
-
-	\def\backrefbrazil{%
-		\def\backrefpagesname{p\'aginas}%
-		\def\backrefsectionsname{se\c c\~oes}%
-		\def\backrefsep{, }%
-		\def\backreftwosep{ e~}%
-		\def\backreflastsep{, e~}%
-	}
 	
 % English
 \else\if\@language1
@@ -923,13 +882,6 @@ de Mestre \\em \@majorfield}
 			\renewcommand{\lstlistlistingname}{List of \lstlistingname s}% List of Listings -> List of Algorithms
 	}
 	  	
-  	\def\backrefenglish{%
-		\def\backrefpagesname{pages}%
-		\def\backrefsectionsname{sections}%
-		\def\backrefsep{, }%
-		\def\backreftwosep{ and~}%
-		\def\backreflastsep{, and~}%
-		}
 \fi\fi
 
 %====================================================================
@@ -950,7 +902,6 @@ de Mestre \\em \@majorfield}
 \newcommand*\lstinputpath[1]{\lstset{inputpath=#1}}
 \usepackage{fancyvrb}
 \usepackage{fvextra}
-
 
 \renewcommand{\lstlistoflistings}{
 	\begingroup
@@ -997,214 +948,13 @@ de Mestre \\em \@majorfield}
 		\forlistloop{\@printlist}{\@frontmatter@list} %
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% FRONTPAGE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\printcoverpage{
-\if\@degreetype0{
-	\Repeat{1}{\frontpage}
-	}
-\else\if\@degreetype1{
-	\Repeat{1}{\frontpage}
-	\Repeat{1}{\frontpageBSC}  
-}	
-\else\if\@degreetype2{
-	\Repeat{1}{\frontpage} 
-}	
-\else\if\@degreetype3{
-	\Repeat{2}{\frontpage}  
-}	
-\fi\fi\fi\fi
-}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% FRONTPAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{thesisisel-files/frontpage.clo}
+\input{thesisisel-files/frontpageMSc.clo}
+\input{thesisisel-files/frontpageBSC.clo}
 
-\def\frontpage{
-
-\thispagestyle{empty}
-\newgeometry{tmargin=0.25cm,bmargin=0.5cm,lmargin=2cm,rmargin=2cm}
-
-\begin{center}
-% Put logo
-	\logo{\@universitylogo}{0.12}
-
-%Define font style (ptm=Times New Roman)
-	\fontfamily{ptm}
-
-% Name of Institute
-	\fontsize{16}{19.2}
-	\selectfont
-	\textbf{\@university}
-
-\vspace{0.25cm}	
-% Name of Department
-	\fontsize{14}{16.8}
-	\selectfont
-	\textbf{\@department}
-
-% Put image
-	\ifx\@workimage\undefined
-	\noimage
-	\else
-	\image{\@workimage}
-	\fi
-
-\vspace{0.65cm}
-% Title of Dissertation
-	\fontsize{18}{21.6}
-	\selectfont
-	\textbf{\@title}\\[0.75cm]
-
-
-\vspace{0.2cm}	
-% Name of Candidate
-	\fontsize{16}{19.2}
-	\selectfont
-	\textbf{
-		\ctable[
-			cap=,
-			caption=,
-			label=,
-			pos=h,
-			maxwidth=1\linewidth,
-			doinside=\hspace*{0.1cm},
-		]{rX}{}{ 			
-			\printauthor[]{1}			
-			\printauthor[]{2}
-			\printauthor[]{3}
-	}}
-
-\vspace{0.10cm}	
-% Academic qualifications
-	\fontsize{14}{16.8}
-	\selectfont
-	\@authordegree
-	
-\vspace{0.75cm}
-% Degree
-	\fontsize{12}{13}
-	\selectfont
-	\@presentationtext
-	
-	\vfill
-	% Advisers
-	\fontsize{11}{14.4}
-	\selectfont
-	\ctable[
-		cap=,
-		caption=,
-		label=,
-		pos=h,
-		maxwidth=1\linewidth,
-		doinside=\hspace*{0.1cm},
-	]{rX}{}{ 
-		\printadviser[]{1}
-		\printadviser[]{2}
-}
-
-
-\vfill\vfill
-% Referee board
-\if\@degreetype3
-\printthejury
-\fi
-
-\vfill\vfill\vfill
-
-% Date
-\fontsize{10}{12.2}
-\selectfont
-\textbf{\@themonth, \@theyear}
-	
-\end{center}
-\restoregeometry
-\cleardoublepage %\newpage
-\thispagestyle{empty}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Frontpage - Bachelor Project
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\def\frontpageBSC{
-
-\thispagestyle{empty}
-\newgeometry{tmargin=0.25cm,bmargin=0.5cm,lmargin=2cm,rmargin=2cm}
-
-\begin{center}
-% Put logo
-	\logo{\@universitylogo}{0.12}
-
-%Define font style (ptm=Times New Roman)
-	\fontfamily{ptm}
-
-% Name of Institute
-	\fontsize{16}{19.2}
-	\selectfont
-	\textbf{\@university}
-
-\vspace{0.25cm}	
-% Name of Department
-	\fontsize{14}{16.8}
-	\selectfont
-	\textbf{\@department}
-
-% Put image
-	\ifx\@workimage\undefined
-	\noimage
-	\else
-	\image{\@workimage}
-	\fi
-
-\vspace{0.65cm}
-% Title of Dissertation
-	\fontsize{18}{21.6}
-	\selectfont
-	\textbf{\@title}\\[0.75cm]
-
-\vspace{1.5cm}	
-% Name of Candidate
-	\fontsize{14}{16.8}
-	\selectfont
-	\textbf{
-		\ctable[
-			cap=,
-			caption=,
-			label=,
-			pos=h,
-			maxwidth=1\linewidth,
-			doinside=\hspace*{0.1cm},
-		]{rX}{}{ 
-		\midrule	
-		\printauthor[]{1}\\
-		\ifnum \@theauthorcount > 1		
-		\midrule	
-		\printauthor[]{2}\\
-		\ifnum \@theauthorcount > 2
-		\midrule	
-		\printauthor[]{3}
-		\fi\fi
-}}
-
-
-\vspace{0.75cm}
-% Degree
-	\fontsize{12}{13}
-	\selectfont
-	\@presentationtext
-	
-\vfill\vfill
-
-\vfill\vfill\vfill
-
-% Date
-\fontsize{10}{12.2}
-\selectfont
-\textbf{\@themonth, \@theyear}
-	
-\end{center}
-\restoregeometry
-\cleardoublepage %\newpage
-\thispagestyle{empty}
-}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Dedicatory
@@ -1312,18 +1062,57 @@ de Mestre \\em \@majorfield}
 %% Bibliography
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %http://tex.stackexchange.com/questions/15971/bibliography-with-page-numbers
-\usepackage{backref}
-\renewcommand*{\backref}[1]{}
-%\renewcommand*{\backrefalt}[4]{%
-%    \ifcase #1  (not cited)%
-%    \or        (p.~#2)%
-%    \else      (pp.~#2)%
-%    \fi}
-
-% break long URLs in Bibtex
 %URL linebreak in footnote
 %\usepackage{breakurl}
+\usepackage[
+	style=ieee, %{ieee, numeric, alphabetic, authoryear, authortitle, verbose, apa, chem-acs, chem-angew, mla, nature, science, nejm, phys},
+%defernumbers=true, 
+	backend=bibtex, %{bibtex, biber}
+	sorting=debug, %{none, nty, nyt, nyvt, anyt, anyvt, ynt, debug},
+	%dashed=false, 
+	maxnames=20,
+	maxcitenames=3,
+	giveninits=false,
+	citestyle=nature,
+	natbib=true,%
+	doi=true,%
+	%url=false,%
+	isbn=true,%
+	%urldate=long,
+	%uniquename=false,
+	%uniquelist=false
+]{biblatex}
+
+%%%% The important part:
+\DefineBibliographyStrings{portuguese}{%
+	bibliography = {Referências},
+    references = {Referências},
+    page={pág.},
+    pages={páginas},
+    and={\&},
+  	mathesis = {Tese de Mestrado},
+  	phdthesis = {Tese de Doutoramento}
+}
+
+\DefineBibliographyStrings{english}{%
+	bibliography = {References},
+    references = {References},
+    page={page},
+    pages={pages},
+    %and={\&}  	
+}
+
 \def\UrlBreaks{\do\/\do-}
+%\usepackage[square, comma, sort&compress, numbers]{natbib}
+
+\usepackage{tocbibind} % Add bibliography/index/contents to Table of Contents. Automatically adds the bibliography and/or the index and/or the contents, etc., to the Table of Contents.
+
+% If you want to break on URL numbers
+\setcounter{biburlnumpenalty}{9000}
+% If you want to break on URL lower case letters
+\setcounter{biburllcpenalty}{9000}
+% If you want to break on URL UPPER CASE letters
+\setcounter{biburlucpenalty}{9000}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Appendixes

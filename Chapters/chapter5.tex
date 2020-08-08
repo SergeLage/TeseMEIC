@@ -11,79 +11,18 @@
 \label{cha:server}
 This chapter explains the approach used to reach the second goal of this work. 
 
+In Section 4.1 we implement the methodology learn in Section \ref{sub:crisp_dm} to approach  goal 2.
 
-Data mining is the process of discovering interesting and useful patterns and relationships in large volumes of data. The field combines tools from statistics and artificial intelligence (such as neural networks and machine learning) with database management to analyze extensive digital collections, known as data sets. Data mining is widely used in business (insurance, banking, retail), science research (astronomy, medicine), and government security (detection of criminals and terrorists) \cite{Okonkwo2011COMBATINGCA}. 
 
-\section{CRISP-DM} % (fold)
-\label{sub:crisp_dm}
 
-In this work, it will be used the CRISP-DM (Cross Industry Standard Process for Data Mining) methodology \cite{CRISPDM}.
-The CRISP-DM project proposed a comprehensive process model for carrying out data mining projects. The process model is independent of both the industry sector and the technology used \cite{CRISPDM}. 
-The CRISP-DM reference model for data mining provides an overview of the life cycle of a data
-mining project. It contains the phases of a project, their respective tasks, and their outputs.
-The life cycle of a data mining project is broken down into six phases, which are shown in Figure \ref{fig:crisp_dm}.
-The sequence of the phases is not strict. The arrows indicate only the most important and frequent
-dependencies between phases, but in a particular project, it depends on the outcome of each phase,
-which phase, or which particular task of a phase, has to be performed next.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.8\linewidth]{Chapters/img/crisp_dm.png}
-\caption{Complete CRISP-DM Approach  \cite{WEBSITE:CRISPDM}.  }
-\label{fig:crisp_dm}
-\end{figure}
-
-In the following, we outline each phase briefly:
-\begin{itemize}
-\item Business Understanding\\
-This initial phase focuses on understanding the project objectives and requirements from a
-business perspective, and then converting this knowledge into a data mining problem
-definition, thus a preliminary project plan designed to achieve the objectives are drown.
-\item Data Understanding\\
-The data understanding phase starts with an initial data collection and proceeds with activities
-to get familiar with the data, to identify data quality problems, to discover first
-insights into the data, or to detect interesting subsets to form hypotheses for hidden
-information.
-There is a close link between Business Understanding and Data Understanding. The
-formulation of the data mining problem and the project plan require at least some
-understanding of the available data.
-\item Data Preparation\\
-The data preparation phase covers all activities to construct the final dataset (data that will be
-fed into the modeling tool(s)) from the initial raw data. Data preparation tasks are likely to be
-performed multiple times, and not in any prescribed order. Tasks include a table, record, and attribute selection, data cleaning, construction of new attributes, and transformation of data for
-modeling tools.
-\item Modeling\\
-In this phase, various modeling techniques are selected and applied, and their parameters are
-calibrated to optimal values. Typically, there are several techniques for the same data mining
-problem type. Some techniques require specific data formats.
-There is a close link between Data Preparation and Modeling. Often, one realizes data
-problems while modeling, or one gets ideas for constructing new data.
-\item Evaluation\\
-At this stage in the project, you have built one or more models that appear to have high quality,
-from a data analysis perspective. Before proceeding to the final deployment of the model, it is
-essential to more thoroughly evaluate the model, and review the steps executed to construct
-the model, to be sure it accurately achieves the business objectives. A key objective is to
-determine if there is some critical business issue that has not been sufficiently considered.
-At the end of this phase, a decision on the use of the data mining results should be reached.
-\item Deployment\\
-The creation of the model is generally not the end of the project. Usually, the knowledge gained
-will need to be organized and presented in a way that the customer can use it. Depending on
-the requirements, the deployment phase can be as simple as generating a report or as complex
-as implementing a repeatable data mining process. In many cases, it will be the user, not the
-data analyst, who will carry out the deployment steps. In any case, it is important to
-understand upfront what actions will need to be carried out to make use of
-the created models.
-\end{itemize}
-% section crisp_dm (end)
-
-\section{Implementation} % (fold)
+\section{Implementation of CRISP-DM} % (fold)
 \label{sub:implementation}
 
 \subsection{Business Understanding} % (fold)
 \label{sub:business_understanding}
 
 In the fishing sector, vessels operating in the various fishing techniques must be licensed.
-A common problem is that there is a likelihood that vessels will be fishing for which they are not licensed. The objective is to obtain a predictive model, capable of receiving VMS data and proceed to its classification in order to predict which type of fishing is being carried out by the vessel. In this way it will be possible to ascertain whether or not a given vessel is carrying out a legal fishing activity, that is, according to the license it has.
+A common problem is that there is a likelihood that vessels will be fishing for which they are not licensed. The objective is to obtain a predictive model, capable of receiving VMS data and proceed to its classification in order to predict which type of fishing is being carried out by the vessel. In this way, it will be possible to ascertain whether or not a given vessel is carrying out a legal fishing activity, that is, according to the license it has.
 
 
 
@@ -93,7 +32,7 @@ A common problem is that there is a likelihood that vessels will be fishing for 
 \subsection{Data Understanding} % (fold)
 \label{sub:data_understanding}
 
-To answer this goal, the data used as input is the same VMS Records as used in chapter 4, initially presented in chapter 3, section 3.1 and VMS Vessels presented in chapter 3, section 3.2. The output variable, is a nominal variable whose categories correspond to the labels of the different licenses
+To answer this goal, the data used as input are the same VMS Records as used in Chapter 3, initially presented in Chapter 1, Section 1.3.1 and VMS Vessels presented in Chapter 1, Section 1.3.2. The output variable is nominal whose categories correspond to the labels of the different fishing licenses.
 
 % section data_understanding (end)
 
@@ -102,8 +41,11 @@ To answer this goal, the data used as input is the same VMS Records as used in c
 \subsection{Data Preparation} % (fold)
 \label{sub:data_preparation}
 To use data mining models, a first step is to build a dataset with all the data needed to feed the models. So, it was created a dataset from VMS Vessels and VMS Records to end with Table \ref{table:vms_dataset}. 
+The correlation between the license and the HP data (vessel power), Loa (Boat length), Gt (vessel weight) are quite significant. This is expected as different fishing activities require specific types of vessels. This does not mean that the type of vessel is only capable of entering a type of fishing activity.
+For these reasons, we will not use these variables in the model so as not to create a problem with bias.
 
 \begin {table}[H]
+\caption {VMS Dataset}
 \begin{center}
 \begin{tabular}{c|c|c|c}
 \textbf{Name } & \textbf{Description} & \textbf{From} & \textbf{Why} \\
@@ -115,37 +57,49 @@ LAT & Latitude & VMS Records & Discriminated by fishing areas\\
 LON & Longitude & VMS Records & Discriminated by fishing areas\\
 COG & Direction & VMS Records & Course Over Ground\\
 SOG & Velocity & VMS Records & Discriminated by fishing velocity\\
-LOA & Length Overall & VMS Vessels & Discriminated by vessel type\\
-GT & Gross Tonnage & VMS Vessels & Discriminated by vessel type\\
-HP &Vessel Power & VMS Vessels & Discriminated by vessel type\\
+%LOA & Length Overall & VMS Vessels & Discriminated by vessel type\\
+%GT & Gross Tonnage & VMS Vessels & Discriminated by vessel type\\
+%HP &Vessel Power & VMS Vessels & Discriminated by vessel type\\
 License & Vessel's Linceses & VMS Vessels & Objective
 \label{table:vms_dataset}
 \end{tabular}
-\caption {VMS Dataset}
 \end{center}
 \end {table}
 
 
-To analyze the existence of associations between the type of license and the remaining variables, Pearson correlation correlation coefficient was obtained for all the pairs of variables. Pearson coefficient \cite{Benesty2009} measures the degree of correlation and the direction of this correlation - whether positive or negative (between two metric scale variables). In some cases, it was necessary to pre-process the data before calculating the association indicator. For example, it happens in the case of the variables SOG and license. In Figure \ref{fig:data_coor1}, the results of the correlation coefficients were presented.
+
+When analyzing the speed distribution by license, we can observe in Figure \ref{fig:sogall} that there is no obvious difference between licenses. For example the value 1 of SOG can be assigned to any license.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{Chapters/img/sog_all_2.png}
+\caption{SOG per license}
+\label{fig:sogall}
+\end{figure}
+
+To try to help the predictive model to have good results, some pre-processing is necessary. A simple and effective way is to group data by vessel and activity day. Then apply the SFA to the data to have, per day, per vessel, the minimum fishing speed, maximum fishing speed and also remove the average speed.
+With these three variables, it is possible to better distinguish the behavior of vessels by license through speed.
+
 \begin{figure}
 \centering
-\includegraphics[width=0.7\linewidth]{Chapters/img/data_coor1.png}
-\caption{Data Correlation}
-\label{fig:data_coor1}
+\includegraphics[width=0.5\linewidth]{Chapters/img/sog_min_2.png}
+\caption{SOG minimum per license}
+\label{fig:sogminall}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.5\linewidth]{Chapters/img/sog_avg_2.png}
+\caption{SOG average per license}
+\label{fig:sogavgall}
+\end{figure}
+\begin{figure}
+\centering
+\includegraphics[width=0.5\linewidth]{Chapters/img/sog_max_2.png}
+\caption{SOG maximum per license}
+\label{fig:sogmaxall}
 \end{figure}
 
 
-We can see that we cannot use the data as it is because of the
-correlation between License and sog is very weak, so we need to do some pre-processing.
-The best way to achieve a higher correlation between fishing speeds and licenses was the transformation of data to storage fishing average, maximum, and minimum per day per vessel. This way, it presents the results shown in Figure \ref{fig:data_coor2}.
-
-\begin{figure}
-\centering
-\includegraphics[width=0.7\linewidth]{Chapters/img/data_coor2.png}
-\caption{Data correlation after preprocessing}
-\label{fig:data_coor2}
-\end{figure}
-\newpage
 The method used to transform the data consists of the following steps:
 \begin{itemize}
 \item Create a dataset in which data are grouped per day, per vessel.
@@ -153,11 +107,9 @@ The method used to transform the data consists of the following steps:
 
 \end{itemize}
 
-With this data, we can also observe that the correlation between the license and the HP data (vessel power), Loa (Boat length) Gt (vessel weight) are quite significant. This is expected as different fishing activities require specific types of vessels. This does not mean that the type of vessel is only capable of entering a type of fishing activity.
-For these reasons, we will not use these variables in the model so as not to create a problem with bias.
-\\
+
 Regarding location data, clustering techniques to discretize the data were used.
-First, the best number of clusters is determined. For that, we used the same technique used in chapter 4.3, resulting the Figure \ref{fig:elbow_method_server}. The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 4.
+First, the best number of clusters is determined. For that, we used the same technique as in Section 4.3, resulting the Figure \ref{fig:elbow_method_server}. The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 6.
 
 \begin{figure}[H]
 \centering
@@ -174,45 +126,31 @@ Now, is possible to create data mining models based on the location and on the v
 \label{sub:modeling}
 In order to classify a new type of license using VMS data, several data mining algorithms were tested, which we now list:
 \begin{itemize}
-\item \textbf{ KMeans:} This model was used to classify GPS data in clusters to improve the result of the data mining algorithms. The operating mode of this algorithm has already been covered in the 4.3.
+\item \textbf{ KMeans-} This model was used to organize GPS data in clusters to improve the result of the data mining algorithms. The operating mode of this algorithm has already been covered in the Section \ref{sub:kmeans}.
+The implementation used was KMeans from the sklearn library \cite{WEBSITE:scikit}.
 
-\item \textbf{ Decision Trees: }
-While in data mining, a decision tree is a predictive model that can be used to represent both classifiers and regression models, in operations research decision trees refer to a hierarchical model of decisions and their consequences\cite{Rokach2014}. The decision-maker employs decision trees to identify the strategy which will most likely reach its goal. When a decision tree is used for classification tasks, it is most commonly referred to as a classification tree. When it is used for regression tasks, it is called a regression tree \cite{Rokach2014}.
-Algorithms for constructing decision trees usually work top-down, by choosing a variable at each step that best splits the set of items \cite{ApplicationsReviews}.\\
-In this work, it will be used to measure the quality of a split "gini" for the Gini impurity (CART)\cite{DTAnalysis} and "entropy" for the information gain (C4.5)\cite{DTAnalysis}.
-
-\item \textbf{ Random Forests: }
-Random forests are a combination of tree predictors such that each tree depends on the values of a random vector sampled independently and with the same distribution for all trees in the forest\cite{Breiman2001}. The generalization error for forests converges a.s. To a limit as the number of trees in the forest becomes large. The generalization error of a forest of tree classifiers depends on the strength of the individual trees in the forest and the correlation between them.
-A random forest is a classifier consisting of a collection of tree-structured
-classifiers \(\{h(\textbf{x}, \theta \textsubscript{k} ), k = 1,...\}\) where the \( \{ \theta \textsubscript{k} \}\) are independent identically distributed
-random vectors and each tree casts a unit vote for the most popular class at input \textbf{x}\cite{Breiman2001}.
+\item \textbf{ Decision Trees- } This model was used to classify the fishing license from VMS data. The operating mode of this algorithm has already been covered in the Section \ref{subsub:decision_trees}. The implementation used was DecisionTreeClassifier from the sklearn library.
 
 
-\item \textbf{Neural Network: }
-Neural networks are a bio-inspired mechanism of data processing that enables computers to learn technically similar to a brain and even generalize once solutions to enough problem instances are tough \cite{Kriesel2007NeuralNetworks}. A technical neural network consists of simple processing units, the neurons, and directed, weighted connections between those neurons. A neural network is a sorted triple \((N, V, \varpi )\) with two sets N, V and a function \(\varpi\), where N is the set of neurons and V a set \(\{ (i, j) i, j \in \mathbb{N} \}\) whose elements are called connections between neuron i and neuron j. The function \( \varpi : V \rightarrow \mathbb{R}\) defines the weights, where \(\varpi((i, j))\), the weight of the connection between neuron \(i$ and neuron \(j$, is shortened to \(\varpi \textsubscript{ i,j}\) . Depending on the point of view, it is either undefined or 0 for connections that do not exist in the network \cite{Kriesel2007NeuralNetworks}. \\
-In this work, we will train models with different hidden layer sizes. The solver for weight optimization used is BFGS\cite{Dai2013} and Adam\cite{adamNN} for large sizes of hidden layers.
+\item \textbf{ Random Forests- } This model was used to classify the fishing license from VMS data. The operating mode of this algorithm has already been covered in the Section \ref{subsub:random_forests}. The implementation used was RandomForestClassifier from the sklearn library.
 
-\item \textbf{Support Vector Machine: }
-The folklore view of SVM is that they find a optimal hyperplane as the solution to the learning problem. The simplest formulation of SVM is the linear one, where the hyperplane lies in the space of the input data \(x\). In this case, the hypothesis space is a subset of all hyperplanes of the form:
-\(f(x) = w \cdotp x +b\).
-In their most general formulation, SVM finds a hyperplane in a space different from that of the input data x. It is a hyperplane in a feature space induced by a kernel K (the kernel defines a dot product in that space)\cite{SVMEvgeniou}.\\
-In this work, we will create models using the following kernel algorithms: Linear\cite{SVMTraining}, Polynomial\cite{SVMTraining}, and RBF\cite{SVMTraining}. 
+
+\item \textbf{Neural Network- } This model was used to classify the fishing license from VMS data. The operating mode of this algorithm has already been covered in the Section \ref{subsub:neural_network}. The implementation used was MLPClassifier from the sklearn library.
+
+\item \textbf{Support Vector Machine- } This model was used to classify the fishing license from VMS data. The operating mode of this algorithm has already been covered in the Section \ref {subsub:svm}. The implementation used was SVC from the sklearn library.
 \end{itemize}
-
-
-
-
 
 
 % section modeling (end)
 
 \subsection{Evaluation} % (fold)
 \label{sub:evaluation}
-Cross \textendash validation \cite{CrossValidatory} provides a simple and effective method for both model selection and performance evaluation, widely employed by the machine learning community. Under k \textendash fold cross \textendash validation, the data are randomly partitioned to form k disjoint subsets of approximately equal size. In the ith fold of the cross-validation procedure, the ith subset is used to estimate the generalization performance of a model trained on the remaining k \textendash one subset. The average of the generalization performance observed overall k folds provides an estimate (with a slightly pessimistic bias) of the generalization performance of a model trained on the entire sample.
-The k used to test these models is 10.\\
-To evaluate the classification results customized with the different algorithms, a confusion matrix will be created and interpreted according ours goals as in the table \ref{table:cm_ex}. 
+Cross \textendash validation \cite{CrossValidatory} provides a simple and effective method for both model selection and performance evaluation, widely employed by the machine learning community. Under k \textendash fold cross \textendash validation, the data are randomly partitioned to form k disjoint subsets of approximately equal size. In the ith fold of the cross-validation procedure, the ith subset is used to estimate the generalization performance of a model trained on the remaining k \textendash 1 subset. The average of the generalization performance observed overall k folds provides an estimate (with a slightly pessimistic bias) of the generalization performance of a model trained on the entire sample.
+To evaluate these models a 10-fold, k=10, cross - validation was performed. \\
+To evaluate the classification results customized with the different algorithms, a confusion matrix, as described in table \ref{table:cm_ex} created and interpreted according ours goals. 
 
 \begin {table}[H]
+\caption {Confusion matrix}
 \begin{center}
 \begin{tabular}{cc|cc}
 \multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
@@ -225,21 +163,33 @@ To evaluate the classification results customized with the different algorithms,
 & Negative & False Positive(FP) & True Negative(TN) \\ \hline
 \label{table:cm_ex}
 \end{tabular}
-\caption {Confusion matrix}
 \end{center}
 \end {table}
 
-In addition, the following performance indicators are used:\\
-Precision = \(\sum_{n=0}^{k-1}\frac{tp}{tp+fp} \) = precision of the model.\\
-Accuracy = \( \sqrt{precision} ^ 2\) = accuracy of the precision result.\\
+In addition, the following performance indicators were used:\\
+Precision, also called as positive predictive value attempts to identify what proportion of positive identifications was actually correct, is given by \ref{eq:precision}. \\
+\begin{equation}
+\sum_{n=0}^{k-1}\frac{tp}{tp+fp} 
+\label{eq:precision}
+\end{equation}
+
+Recall, also called as sensitivity attempts to identify what proportion of actual positives was identified correctly \ref{eq:recall}. \\
+\begin{equation}
+\sum_{n=0}^{k-1}\frac{tp}{tp+fn} 
+\label{eq:recall}
+\end{equation}
+
+%Accuracy = \( \sqrt{precision} ^ 2\) = accuracy of the precision result.\\
+%Precision = \(\sum_{n=0}^{k-1}\frac{tp}{tp+fp} \) = precision of the model.\\
+%Recall = \(\sum_{n=0}^{k-1}\frac{tp}{tp+fn} \) = recall of the model.\\
 
 
 
-A confusion matrix \cite{CMPatil} illustrates the accuracy of the solution to a classification problem. Given n classes, a confusion matrix is a m x n matrix, where C\textsubscript{i,j} indicates the number of tuples from D that were assigned to class C\textsubscript{i,j}, but where the correct class is C\textsubscript{i}.
+A confusion matrix \cite{CMPatil} illustrates the accuracy of the solution to a classification problem. Given n classes, a confusion matrix has general element C\textsubscript{i,j} corresponding to the number of tuples from D that were assigned to class C\textsubscript{i,j}, but where the correct class is C\textsubscript{i}.
 The best solution will have only zero values outside the diagonal.
-A confusion matrix contains information about actual and predicted classifications done by a classification system. The performance of such systems is commonly evaluated using the data in the matrix. The following table shows the confusion matrix for a two-class classifier. 
+A confusion matrix contains information about actual and predicted classifications done by a classification system. The performance of such systems is commonly evaluated using the data in the matrix. Table \ref{table:cm_ex} shows the confusion matrix for a two-class classifier. 
 
-For the propose of this work, the classes are corresponding to the different types of licenses, are: 
+For the purpose of this work, the classes corresponding to the different types of licenses are: 
 
 0 Armadilhas / De abrigo / Alcatruzes \\
 1 Arrasto / De fundo de portas \\
@@ -256,54 +206,55 @@ For the propose of this work, the classes are corresponding to the different typ
 
 
 The model's test results are:
-\newpage
+
 \begin{itemize}
 \item \textbf{ Decision Trees: }
 
-We can observe in Table \ref{table:cross_val_dt} the usage of velocity parameters (SogMin, SogAVG, and SogMax) and location (clustering result of K-Means) have the best result. The algorithm with the best result is Entropy(C4.5), with a precision of 0.7776 and an accuracy of 0.1459. In Figure \ref{table:cross_val_dt} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. The max depth of the trees was tested as 200, 300, and 400, with 300 giving the best results.
+We can observe in Table \ref{table:cross_val_dt} the usage of velocity parameters (SogMin, SogAVG, and SogMax) and location (clustering result of K-Means) having the best result. The algorithm with the best result is Entropy(C4.5), with a precision of 0.8142 and an recall of 0.8142. In Figure \ref{table:cross_val_dt} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. The max depth of the trees was tested as 200, 300, and 400, with 300 giving the best results.
 
 
 \begin {table}[H]
+\caption {Cross-Validation results for Decision Trees models}
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
-\multicolumn{1}{c|}{\textbf{Algorithm } } &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
-&Precision & Accuracy & Precision & Accuracy \\
+\multicolumn{1}{c|}{\textbf{Splitting criteria } } &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
+&Precision & Recall & Precision & Recall \\
 \hline
-Gini &0.774&0.1481&0.7236&0.1349\\
-Entropy&0.7776&0.1459&0.73&0.1319
+Gini & 0.8047& 0.8047&0.7479&0.7479\\
+Entropy& 0.8142& 0.8142&0.7659&0.7659
 \label{table:cross_val_dt}
 \end{tabular}
-\caption {Cross-Validation results for Decision Trees models}
 \end{center}
 \end {table}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/CM_DT.png}
-\caption{Confusion Matrix for Decision Tree using Entropy(C4.5)}
+\caption{Confusion Matrix for Decision Tree using Entropy splitting criterion(C4.5)}
 \label{fig:cm_dt}
 \end{figure}
 
 
 \newpage
 \item \textbf{ Random Forest: }
-
-In this model, it was trained with the algorithms of Gini and Entropy(C4.5) with the same result of Decision trees, and the Entropy was a better precision. So the results mentioned in this document for Random Forest models are using Entropy(C4.5) as the algorithm to measure the quality of a split. The max depth of the trees was tested as 200, 300, and 400, with 300 giving the best results. In table \ref{table:cross_val_rf}, we can see that the model gave the best result with 200 estimators. Estimators are the number of trees in the forest. In Figure \ref{table:cross_val_rf} the confusion matrix shows that only the classes 0 and 7 have a low prediction rate. 
-
+Concerning Random forest use, the model was trained again considering Giny impurity and Entropy Information Gain as splitting criteria. 
+The results obtained in Decision Trees are confirmed in this model, being the usage of Entropy criteria the best results ( better precision). 
+So the results mentioned in this document for Random Forest models are using Entropy(C4.5) as the algorithm to measure the quality of a split. The max depth of the trees was tested with the values of 200, 300, and 400, being the best results attained with the max depth value of 300. Table \ref{table:cross_val_rf}, describes the cross-validation results obtained with the Random Forest model, for 200 number of estimators. 
+In Figure \ref{table:cross_val_rf} is shown the confusion matrix corresponding to the Random forest classifier. The results are satisfactory given that only the classes 0 and 7 have a lower correct prediction rate.
 
 \begin {table}[H]
+\caption {Cross-Validation results for Random Forest models}
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
 \multicolumn{1}{c|}{\textbf{No. of estimators } } &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
-&Precision & Accuracy & Precision & Accuracy \\
+&Precision & Recall & Precision & Recall \\
 \hline
-50 &0.8097&0.1355 &0.7649 &0.1315\\
-100 &0.8082&0.1332 &0.7684 &0.133\\
-200 &0.8101&0.1436 &0.767 &0.1337 \\
-300 &0.8075&0.1458 &0.771 &0.1339 
+50 &0.8389&0.8389 &0.8 &0.8\\
+100 &0.8398&0.8398 &0.7896 &0.7896\\
+200 &0.8474&0.8474 &0.7953 &0.7953 \\
+300 &0.8445&0.8445 &0.7943 &0.7943 
 \label{table:cross_val_rf}
 \end{tabular}
-\caption {Cross-Validation results for Random Forest models}
 \end{center}
 \end {table}
 
@@ -318,25 +269,25 @@ In this model, it was trained with the algorithms of Gini and Entropy(C4.5) with
 
 \newpage
 \item \textbf{Neural Network: }\\
-For these models, it was trained in various configurations of hidden layers. It was used from 1 to 8 hidden layers with 11, 250, 500, and 750 neurons. Some of the results are in Table \ref{table:cross_val_nn}. The best result, as we can observe in Table \ref{table:cross_val_nn} corresponds to the case with five layers with 500 neurons for which the confusion matrix is presented in Figure \ref{fig:cm_nn}.
-For some models, it was used the Adam solver and BFGS, but with BFGS having better results. So all results demonstrated are using BFGS solver.
+For these models, it was trained in various configurations of hidden layers. It was used from 1 to 8 hidden layers with 11, 100, 250, 500, and 750 neurons. Some of the results are in Table \ref{table:cross_val_nn}. The best result, as we can observe in Table \ref{table:cross_val_nn} corresponds to the case with five layers with 500 neurons for which the confusion matrix is presented in Figure \ref{fig:cm_nn}.
+For some models, it was used the Adam solver and BFGS, but with BFGS having better results. So all reported results are using BFGS solver.
 As in Decision Trees models, the usage of locations has a good impact on the results of the Neural Network models.
 
 
 \begin {table}[H]
+\caption {Cross-Validation results for Neural Network models}
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
 \multicolumn{1}{c|}{\textbf{Hidden Layers } } &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
-&Precision & Accuracy & Precision & Accuracy \\
+&Precision & Recall & Precision & Recall \\
 \hline
-None &0.6293&0.147 &0.5984 &0.1359\\
-11 & 0.6569&0.1531 &0.644 &0.1258\\
-4 500 &0.7054&0.1479 & 0.0657 & 0.1674\\
-5 500 & 0.7654&0.1535 &0.7309 & 0.1286\\
-6 500 &0.7642 &0.1421 &0.7299 &0.1291 
+11 &0.7175&0.7175&0.6730 &0.6730\\
+100 &0.7507&0.7507&0.70426 &0.7043\\
+4 500 &0.7536&0.7536&0.7715& 0.7715\\
+5 500 &0.7479&0.7479&0.7659& 0.7659\\
+6 500 &0.7867&0.7867&0.7583&0.7583
 \label{table:cross_val_nn}
 \end{tabular}
-\caption {Cross-Validation results for Neural Network models}
 \end{center}
 \end {table}
 
@@ -351,22 +302,22 @@ None &0.6293&0.147 &0.5984 &0.1359\\
 
 \newpage
 \item \textbf{Support Vector Machine: }\\
-For the built of support vector machine models, it was used the kernel coefficient of Polynomial, RBF, and linear. With the best result as we can observe in Table \ref{table:cross_val_svm} is the Polynomial, with its confusion matrix represented in Figure \ref{fig:cm_cvm}. 
+For the built of support vector machine models, it was used the type of kernel of Polynomial, RBF, and linear. With the best result as we can observe in Table \ref{table:cross_val_svm} is the Polynomial, with its confusion matrix represented in Figure \ref{fig:cm_cvm}. 
 
 
 
 \begin {table}[H]
+\caption {Cross-Validation results for Support Vector Machine models}
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
 \multicolumn{1}{c|}{\textbf{Kernel coefficient } } &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
-&Precision & Accuracy & Precision & Accuracy \\
+&Precision & Recall & Precision & Recall \\
 \hline
-Polynomial &0.702 &0.0848 & 0.6573&0.108\\
-RBF &0.697&0.1092 & 0.6611&0.12\\
-Linear &0.6018&0.0746 & 0.5192&0.0263
+Polynomial &0.7422&0.7422&0.672&0.672\\
+RBF &0.7374&0.7374&0.6986&0.6986\\
+Linear &0.6569&0.6568&0.545&0.545
 \label{table:cross_val_svm}
 \end{tabular}
-\caption {Cross-Validation results for Support Vector Machine models}
 \end{center}
 \end {table}
 
@@ -383,9 +334,9 @@ Linear &0.6018&0.0746 & 0.5192&0.0263
 \newpage
 
 
-The model with the best result corresponds to the use of a random forest method, with the configuration of 200 estimators. For this model was obtained a precision of 81.01\% (accuracy of the evaluation is 0.1436).
+The model with the best result corresponds to the use of a random forest method, with the configuration of 200 estimators. For this model was obtained a precision of 84.74\%.
 With this, we can determine that it is possible to create a good model to classify the VMS data as the fishing license. \\
-As seen in Figure \ref{fig:cm_rf}, the classes 0 and 7 have a low true positive rate. The usage of more data and data that are certified that the VMS data of a vessel is only for the propose of the fishing license can improve the precision of the model.
+As seen in Figure \ref{fig:cm_rf}, the classes 0 and 7 have a low true positive rate. The usage of more data and data that are certified that the VMS data of a vessel is only for the purpose of the fishing license can improve the precision of the model.
 
 
 %Determine Next Steps
@@ -403,16 +354,16 @@ To use the trained model, we separated JFA into 4 steps:
 \begin{enumerate}
 \item \textbf{ Receive VMS data and register in a BD.} JFA needs to be able to receive VMS data so it can classify it, but it is also important to persist the data in a way that we can update the model with more recent data. 
 
-\item \textbf{Pre process the data.} If SFA is installed in the blue box that is filling the VMS data, the data entries can be already classified as fishing or not fishing. If not, JFA needs to collect data and run its local SFA for each vessel that does not have SFA. If the data is received in one time when the vessel arrives at the port, convert all the data received, as explained in subchapter \ref{sub:data_preparation}. If the blue box is broadcasting data when the vessel is on activity, we can classify the data as fishing or not (if SFA not installed in the blue box) and have a subsystem that detects when a vessel fails to send data or have stooped fishing for more than some defined time. This will allow time as the competent authorities will prepare an inspection as marked vessels even before reaching the port.
+\item \textbf{Pre process the data.} If SFA is installed in the blue box that is filling the VMS data, the data entries can be already classified as fishing or not fishing. If not, JFA needs to collect data and run its local SFA for each vessel that does not have SFA. If the data is received in one time when the vessel arrives at the port, convert all the data received, as explained in Subsection \ref{sub:data_preparation}. If the blue box is broadcasting data when the vessel is on activity, we can classify the data as fishing or not (if SFA not installed in the blue box) and have a subsystem that detects when a vessel fails to send data or have stopped fishing for more than some defined time. This will allow time as the competent authorities will prepare an inspection as marked vessels even before reaching the port.
 
-\item \textbf{Use the model to classify.} With the data obtained in the last step, use the model tested chosen in subchapter \ref{sub:evaluation}.
+\item \textbf{Use the model to classify.} With the data obtained in the last step, use the model tested chosen in Subsection \ref{sub:evaluation}.
 
 \item \textbf{Validate vessel license comparison, send an alert.} Compare the class attributed by the model with the license of the vessel and, if different, register and send a message to the designated authority.
 
 \end{enumerate}
 
 %Plan Monitoring and Maintenance
-To keep the model up to date, it is essential to train a new model with recent data from time to time. If possible, to know that data is verified by a competent authority, when training the model gives more relevance to this verified data. This is important because the train data that is not verified can be given by vessels that are not respecting there fishing license and this way corrupting the model.
+To keep the model up to date, it is essential to train a new model with recent data from time to time. If possible, to know that data is verified by a competent authority, when training the model gives more relevance to this verified data. This is important because the train data that is not verified can be given by vessels that are not respecting their fishing license and this way corrupting the model.
 
 
 % section deployment (end)
