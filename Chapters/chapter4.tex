@@ -111,27 +111,26 @@ For the example in Figure \ref{fig:app_b_8}, the output corresponds to the follo
 
 \end{enumerate} 
 
-\begin{lstlisting}
-// Import Weka
-import weka.estimators.KernelEstimator;
+%\newpage
+%\begin{lstlisting}
+%// Import Weka
+%import weka.estimators.KernelEstimator;
 
-// Create KernelEstimator object with precision as 0.05
-//precision - the precision to which numeric values are given. For example, if the precision is stated to be 0.1, the values in the interval (0.25,0.35] are all treated as 0.3.
-KernelEstimator kernel = new KernelEstimator(0.05);
+%// Create KernelEstimator object with precision as 0.05
+%//precision - the precision to which numeric values are given. For example, %if the precision is stated to be 0.1, the values in the interval (0.25,0.35] %are all treated as 0.3.
+%KernelEstimator kernel = new KernelEstimator(0.05);
 
-// Add number of occurrences by velocity
-kernel.addValue(entry.getKey(), entry.getValue());
+%// Add number of occurrences by velocity
+%kernel.addValue(entry.getKey(), entry.getValue());
 
-// Get velocity keys
-double[] means = kernel.getMeans();
+%// Get velocity keys
+%double[] means = kernel.getMeans();
 
-//for each velocity key, get the probability of having occurrence 
-for (double d : means) {
- 	double prob = kernel.getProbability(d);
-}
-
-
-\end{lstlisting}
+%//for each velocity key, get the probability of having occurrence 
+%for (double d : means) {
+% 	double prob = kernel.getProbability(d);
+%}
+%\end{lstlisting}
 
 
 \begin{figure}[H]
@@ -215,40 +214,38 @@ The choice between K-Means and Density-Based Cluster algorithms was based on the
 \\
 
 
-\begin{lstlisting}
-// Import Weka
-import weka.clusterers.MakeDensityBasedClusterer;
-import weka.core.Instances;
-import weka.core.Instance;
-import weka.core.DenseInstance;
+%\begin{lstlisting}
+%// Import Weka
+%import weka.clusterers.MakeDensityBasedClusterer;
+%import weka.core.Instances;
+%import weka.core.Instance;
+%import weka.core.DenseInstance;
+%
+%// Create MakeDensityBasedClusterer object
+%MakeDensityBasedClusterer density = new MakeDensityBasedClusterer();
+%// Set number of clusters
+%this.density.setNumClusters(nClusters);
+%//Get GPS vessel data
+%Instances data = dbAcess.GetArea(this.limits);
+%//Create clusters
+%this.density.buildClusterer(data); 
+%		    	     
+%//Create object to get distributions 
+%//point is double[] {latitude, longitude}
+%Instance test = new DenseInstance(2, point); 
+%
+%//Returns the clusters probability distribution for an instance.
+%double[] distibutionI = this.density.distributionForInstance(test);
+%
+%//Computes the density for a given instance.  Bigger value, farthest from centroid
+%this.density.logDensityForInstance(test) 
+%
+%\end{lstlisting}
 
-// Create MakeDensityBasedClusterer object
-MakeDensityBasedClusterer density = new MakeDensityBasedClusterer();
-// Set number of clusters
-this.density.setNumClusters(nClusters);
-//Get GPS vessel data
-Instances data = dbAcess.GetArea(this.limits);
-//Create clusters
-this.density.buildClusterer(data); 
-		    	     
-//Create object to get distributions 
-//point is double[] {latitude, longitude}
-Instance test = new DenseInstance(2, point); 
 
-//Returns the clusters probability distribution for an instance.
-double[] distibutionI = this.density.distributionForInstance(test);
-
-//Computes the density for a given instance.  Bigger value, farthest from centroid
-this.density.logDensityForInstance(test) 
-
-\end{lstlisting}
+One of the important steps when performing the cluster analysis is the determination of the number groups. To fix the number of groups we can use some indicators such as: coefficient of Silhouette as seen in Sub Chapter \ref{subsub:silhouette}, the coefficient of Davies Bouldin, the coefficient of Calinski Harabasz and the Elbow method as seen in Sub Chapter \ref{subsub:elbow_method}. 
 
 
-One of the important steps when performing the cluster analysis is the determination of the number groups. To fix the number of groups we can use some indicators such as: coefficient of Silhouette, the coefficient of Davies Bouldin, the coefficient of Calinski Harabasz and the Elbow method. 
-
-The results of Elbow the elbow method \cite{Kodinariya2013ReviewOD}, for the within-cluster sum of squares, as it can be seen in Figure \ref{fig:elbow_method}. The within-cluster sum of squares refers to the distance between the vectors in each cluster are from their respective centroid. The goal is to get this number as small as possible. One approach to handle such an objective is to run the K-means clustering multiple times, raising the number of the clusters each time. Then, it is possible to compare the within-cluster sum of squares each time, stopping when the rate of improvement drops off. The better case corresponds to find a low withins while still keeping the number of clusters as small as possible.\\
-
-The elbow method is visual. The idea is to start with K=2 and keep increasing it in each step by one unit, calculating the clusters and the cost that comes with the training. At some value for K, the cost drops dramatically, and after that, it reaches a plateau when you increase it further. At this moment, the value of K we are looking for is reached.
 In Figure \ref{fig:elbow_method} is presented the value of the within sum of squares as function of the number of clusters, using the geographic coordinates data for vessel 2. As we can observe, six clusters seems to be a good number as the error is not decreasing much as the number of clusters increases. 
 
 
@@ -260,24 +257,29 @@ In Figure \ref{fig:elbow_method} is presented the value of the within sum of squ
 \end{figure}
 
 
-The Silhouette Coefficient is a metric based on the separation and compacting of the groups, starting this procedure by calculating the Silhouette index for the i th observation as in equation \ref{eq:silhouette}.
+The average value of the Silhouette coefficient for vessel 2 is as described in Table \ref{table:vessel2_silhouette} with nine and six having good values.
 
-\begin{equation}
-s(i) = \frac{b(i)-s(i)}{max\{a(i),b(i)\}}
-\label{eq:silhouette}
-\end{equation}
-where a (i) is the average distance between i\textsuperscript{th} observation and all other observations within the same group. 
-For the calculation of b (i) a distance is first calculated between the observation i and the observations belonging to a group in which i is not inserted. After this calculation, such an average is carried out in those distances. An identical calculation is made for all groups to which the observation does not belong. At the final, b (i) represents the minimum distance between the calculated average distances \cite{Roelofsen2018BusinessAT}.
+\begin {table}[h]
+\caption {The average value of the Silhouette coefficient for vessel 2}
+\begin{center}
+\begin{tabular}{c|c}
+\textbf{Number of clusters} & \textbf{Average silhouette coefficient}  \\
+\hline
+2 & 0.5933  \\
+3 & 0.5950  \\
+4 & 0.5510  \\
+5 & 0.6233  \\
+6 & 0.6635  \\
+7 & 0.6319  \\
+8 & 0.6514  \\
+9 & 0.6907  
+\label{table:vessel2_silhouette}
+\end{tabular}
+\end{center}
+\end {table}
 
-The denominator of equality (2.4) only serves to normalize the result, so the values s (i) are represented between [−1,1], where −1 or negative values refers to observations wrong placed in the group, whereas for coefficients with a value of 1 or positive represent observations well placed in the group \cite{Roelofsen2018BusinessAT}. 
-To obtain the performance index for a given number of groups in each indicated group, the average of all indexes of Silhouette is calculated in equation \ref{eq:silhouette2}.
 
-\begin{equation}
-SWC = \frac{1}{N}sum_{j=1}^{N}s(j)
-\label{eq:silhouette2}
-\end{equation}
-
-Finally, in order to decide which is the optimal number of groups to use, depending on the data, the criterion of choice favors the scenario that corresponds to the highest average value of the Silhouette coefficient \cite{Roelofsen2018BusinessAT}.
+Considering the two methods I chose six as the number of clusters for the vessel 2.
 
 % section fishing_spots (end)
 
@@ -286,7 +288,7 @@ Finally, in order to decide which is the optimal number of groups to use, depend
 \section{SFA Library} % (fold)
 \label{sub:sfa_library}
 
-It was created a software application called SFALib for (Standalone Fishery Analysis Library. In this application, were developed the solutions described in this chapter to help with the elaboration and tests for this project. For a market solution, this library could be used by the main application of a Blue Box, to send alerts to support decision making or to simply classify each VMS data entry into two categories:
+It was created a software application called SFALib for (Standalone Fishery Analysis Library) that can be find in a online repository \cite{sfagithub}. In this application, were developed the solutions described in this chapter to help with the elaboration and tests for this project. For a market solution, this library could be used by the main application of a Blue Box, to send alerts to support decision making or to simply classify each VMS data entry into two categories:
 \begin{enumerate}
 \item Is fishing (yes/no).
 \item Is fishing in a new area (yes/no).
@@ -306,8 +308,8 @@ This application allows to:
 \item Get limits \\ Request the velocity limits. Receive a tuple with two doubles (item1 = low-speed limit, item2 = high-speed limit). It can be used for analysis like described in Chapter 4.
 \end{itemize}
 
-To make this possible, it is necessary to configure the data access layer to get the VMS data from the local data repository.
-Currently, the application supports conection to SQL Server \cite{WEBSITE:SqlServer} and PostgreSQL \cite{WEBSITE:Postgresql}.
+To make this possible, it is necessary to configure the data access layer to get the VMS data from the local data repository. The data repository used in this work to save and access VMS data was a database but could be other type like text files. The type of data repository used by MONICAP was not revealed to me.
+Currently, the application supports connection to SQL Server \cite{WEBSITE:SqlServer} and PostgreSQL \cite{WEBSITE:Postgresql}.
 
 
 % subsection functionality (end)

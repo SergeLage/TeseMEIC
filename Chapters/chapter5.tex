@@ -72,7 +72,11 @@ When analyzing the speed distribution by license, we can observe in Figure \ref{
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\linewidth]{Chapters/img/sog_all_2.png}
+\begin{tikzpicture}
+	\node (img1) {\includegraphics[width=0.7\linewidth]{Chapters/img/sog_all_2.png}};
+	\node[below=of img1, node distance=0cm, yshift=1cm,font=\color{black}] {Nautical Knots};
+	\node[left=of img1, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {Classes};
+\end{tikzpicture}
 \caption{SOG per license}
 \label{fig:sogall}
 \end{figure}
@@ -82,19 +86,34 @@ With these three variables, it is possible to better distinguish the behavior of
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\linewidth]{Chapters/img/sog_min_2.png}
+\begin{tikzpicture}
+	\node (img1) {\includegraphics[width=0.7\linewidth]{Chapters/img/sog_min_2.png}};
+	\node[below=of img1, node distance=0cm, yshift=1cm,font=\color{black}] {Nautical Knots};
+	\node[left=of img1, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {Classes};
+\end{tikzpicture}
 \caption{SOG minimum per license}
 \label{fig:sogminall}
 \end{figure}
+
+
 \begin{figure}
 \centering
-\includegraphics[width=0.5\linewidth]{Chapters/img/sog_avg_2.png}
+\begin{tikzpicture}
+	\node (img1) {\includegraphics[width=0.7\linewidth]{Chapters/img/sog_avg_2.png}};
+	\node[below=of img1, node distance=0cm, yshift=1cm,font=\color{black}] {Nautical Knots};
+	\node[left=of img1, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {Classes};
+\end{tikzpicture}
 \caption{SOG average per license}
 \label{fig:sogavgall}
 \end{figure}
+
 \begin{figure}
 \centering
-\includegraphics[width=0.5\linewidth]{Chapters/img/sog_max_2.png}
+\begin{tikzpicture}
+	\node (img1) {\includegraphics[width=0.7\linewidth]{Chapters/img/sog_max_2.png}};
+	\node[below=of img1, node distance=0cm, yshift=1cm,font=\color{black}] {Nautical Knots};
+	\node[left=of img1, node distance=0cm, rotate=90, anchor=center,yshift=-0.7cm,font=\color{black}] {Classes};
+\end{tikzpicture}
 \caption{SOG maximum per license}
 \label{fig:sogmaxall}
 \end{figure}
@@ -109,7 +128,8 @@ The method used to transform the data consists of the following steps:
 
 
 Regarding location data, clustering techniques to discretize the data were used.
-First, the best number of clusters is determined. For that, we used the same technique as in Section 4.3, resulting the Figure \ref{fig:elbow_method_server}. The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 6.
+First, the best number of clusters is determined. For that, we used the same techniques as in Section 4.3, resulting the Figure \ref{fig:elbow_method_server} for the elbow method, for Silhouette method Table \ref{table:all_silhouette} and Figures \ref{fig:silhouette_all_4}, \ref{fig:silhouette_all_5} and \ref{fig:silhouette_all_6}.
+The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 6.
 
 \begin{figure}[H]
 \centering
@@ -117,6 +137,51 @@ First, the best number of clusters is determined. For that, we used the same tec
 \caption{The elbow method showing the optimal k}
 \label{fig:elbow_method_server}
 \end{figure}
+
+\begin {table}[h]
+\caption {The average value of the Silhouette coefficient for all vessels}
+\begin{center}
+\begin{tabular}{c|c}
+\textbf{Number of clusters} & \textbf{Average silhouette coefficient}  \\
+\hline
+2 & 0.8997  \\
+3 & 0.8301  \\
+4 & 0.8276  \\
+5 & 0.8078  \\
+6 & 0.7528  \\
+7 & 0.7527  \\
+8 & 0.7502  \\
+9 & 0.6947  
+\label{table:all_silhouette}
+\end{tabular}
+\end{center}
+\end {table}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]{Chapters/img/silhouette_all_4.png}
+\caption{Silhouette analysis with 4 clusters}
+\label{fig:silhouette_all_4}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]{Chapters/img/silhouette_all_5.png}
+\caption{Silhouette analysis with 5 clusters}
+\label{fig:silhouette_all_5}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]{Chapters/img/silhouette_all_6.png}
+\caption{Silhouette analysis with 6 clusters}
+\label{fig:silhouette_all_6}
+\end{figure}
+
+
 Now, is possible to create data mining models based on the location and on the velocity patterns. 
 
 
@@ -145,12 +210,12 @@ The implementation used was KMeans from the sklearn library \cite{WEBSITE:scikit
 
 \subsection{Evaluation} % (fold)
 \label{sub:evaluation}
-Cross \textendash validation \cite{CrossValidatory} provides a simple and effective method for both model selection and performance evaluation, widely employed by the machine learning community. Under k \textendash fold cross \textendash validation, the data are randomly partitioned to form k disjoint subsets of approximately equal size. In the ith fold of the cross-validation procedure, the ith subset is used to estimate the generalization performance of a model trained on the remaining k \textendash 1 subset. The average of the generalization performance observed overall k folds provides an estimate (with a slightly pessimistic bias) of the generalization performance of a model trained on the entire sample.
-To evaluate these models a 10-fold, k=10, cross - validation was performed. \\
-To evaluate the classification results customized with the different algorithms, a confusion matrix, as described in table \ref{table:cm_ex} created and interpreted according ours goals. 
+Cross \textendash validation \cite{CrossValidatory} provides a simple and effective method for both model selection and performance evaluation, widely employed by the machine learning community. Under f \textendash fold cross \textendash validation, the data are randomly partitioned to form f disjoint subsets of approximately equal size. In the ith fold of the cross-validation procedure, the ith subset is used to estimate the generalization performance of a model trained on the remaining f \textendash 1 subset. The average of the generalization performance observed overall f folds provides an estimate (with a slightly pessimistic bias) of the generalization performance of a model trained on the entire sample.
+To evaluate these models a 10-fold, f=10, cross - validation was performed. \\
+To evaluate the classification results customized with the different algorithms, a confusion matrix, as described in table \ref{table:cm_ex} were created and interpreted according ours goals. 
 
 \begin {table}[H]
-\caption {Confusion matrix}
+\caption {Confusion matrix for a two-class classifier}
 \begin{center}
 \begin{tabular}{cc|cc}
 \multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
@@ -167,15 +232,15 @@ To evaluate the classification results customized with the different algorithms,
 \end {table}
 
 In addition, the following performance indicators were used:\\
-Precision, also called as positive predictive value attempts to identify what proportion of positive identifications was actually correct, is given by \ref{eq:precision}. \\
+Precision, also called as positive predictive value attempts to identify what proportion of positive identifications was actually correct, is given by \ref{eq:precision}, being f the index corresponding the folds. \\
 \begin{equation}
-\sum_{n=0}^{k-1}\frac{tp}{tp+fp} 
+\sum_{n=0}^{f-1}\frac{TP}{TP+TF} 
 \label{eq:precision}
 \end{equation}
 
-Recall, also called as sensitivity attempts to identify what proportion of actual positives was identified correctly \ref{eq:recall}. \\
+Recall, also called as sensitivity attempts to identify what proportion of actual positives was identified correctly \ref{eq:recall}, being f the index corresponding the folds. \\
 \begin{equation}
-\sum_{n=0}^{k-1}\frac{tp}{tp+fn} 
+\sum_{n=0}^{f-1}\frac{TP}{TP+FN} 
 \label{eq:recall}
 \end{equation}
 
@@ -206,6 +271,7 @@ For the purpose of this work, the classes corresponding to the different types o
 
 
 The model's test results are:
+\newpage
 
 \begin{itemize}
 \item \textbf{ Decision Trees: }
@@ -238,8 +304,8 @@ Entropy& 0.8142& 0.8142&0.7659&0.7659
 \newpage
 \item \textbf{ Random Forest: }
 Concerning Random forest use, the model was trained again considering Giny impurity and Entropy Information Gain as splitting criteria. 
-The results obtained in Decision Trees are confirmed in this model, being the usage of Entropy criteria the best results ( better precision). 
-So the results mentioned in this document for Random Forest models are using Entropy(C4.5) as the algorithm to measure the quality of a split. The max depth of the trees was tested with the values of 200, 300, and 400, being the best results attained with the max depth value of 300. Table \ref{table:cross_val_rf}, describes the cross-validation results obtained with the Random Forest model, for 200 number of estimators. 
+%The results obtained in Decision Trees are confirmed in this model, being the usage of Entropy criteria the best results ( better precision). 
+The results mentioned in this document for Random Forest models are using Entropy(C4.5) as the algorithm to measure the quality of a split. The max depth of the trees was tested with the values of 200, 300, and 400, being the best results attained with the max depth value of 300. Table \ref{table:cross_val_rf}, describes the cross-validation results obtained with the number of estimators at 200. 
 In Figure \ref{table:cross_val_rf} is shown the confusion matrix corresponding to the Random forest classifier. The results are satisfactory given that only the classes 0 and 7 have a lower correct prediction rate.
 
 \begin {table}[H]
@@ -269,7 +335,7 @@ In Figure \ref{table:cross_val_rf} is shown the confusion matrix corresponding t
 
 \newpage
 \item \textbf{Neural Network: }\\
-For these models, it was trained in various configurations of hidden layers. It was used from 1 to 8 hidden layers with 11, 100, 250, 500, and 750 neurons. Some of the results are in Table \ref{table:cross_val_nn}. The best result, as we can observe in Table \ref{table:cross_val_nn} corresponds to the case with five layers with 500 neurons for which the confusion matrix is presented in Figure \ref{fig:cm_nn}.
+For these models, it was trained in various configurations of hidden layers. It was used from 1 to 8 hidden layers with 11, 100, 250, 500, and 750 neurons. Some of the results are in Table \ref{table:cross_val_nn}. The best result, as we can observe in Table \ref{table:cross_val_nn} corresponds to the case with six layers with 500 neurons for which the confusion matrix is presented in Figure \ref{fig:cm_nn}.
 For some models, it was used the Adam solver and BFGS, but with BFGS having better results. So all reported results are using BFGS solver.
 As in Decision Trees models, the usage of locations has a good impact on the results of the Neural Network models.
 
@@ -281,11 +347,11 @@ As in Decision Trees models, the usage of locations has a good impact on the res
 \multicolumn{1}{c|}{\textbf{Hidden Layers } } &\multicolumn{2}{c|}{\textbf{ Velocity and locations}}& \multicolumn{2}{c}{\textbf{ Velocity}}\\
 &Precision & Recall & Precision & Recall \\
 \hline
-11 &0.7175&0.7175&0.6730 &0.6730\\
+%11 &0.7175&0.7175&0.6730 &0.6730\\
 100 &0.7507&0.7507&0.70426 &0.7043\\
-4 500 &0.7536&0.7536&0.7715& 0.7715\\
-5 500 &0.7479&0.7479&0.7659& 0.7659\\
-6 500 &0.7867&0.7867&0.7583&0.7583
+4 (500) &0.7536&0.7536&0.7715& 0.7715\\
+5 (500) &0.7479&0.7479&0.7659& 0.7659\\
+6 (500) &0.7867&0.7867&0.7583&0.7583
 \label{table:cross_val_nn}
 \end{tabular}
 \end{center}
@@ -363,7 +429,7 @@ To use the trained model, we separated JFA into 4 steps:
 \end{enumerate}
 
 %Plan Monitoring and Maintenance
-To keep the model up to date, it is essential to train a new model with recent data from time to time. If possible, to know that data is verified by a competent authority, when training the model gives more relevance to this verified data. This is important because the train data that is not verified can be given by vessels that are not respecting their fishing license and this way corrupting the model.
+To keep the model up to date, it is essential to train a new model with recent data from time to time. If possible, to know that data is verified by a competent authority, when training the model gives more relevance to this verified data. This is important because the training data that is not verified, can be given by vessels that are not respecting their fishing license and this way corrupting the model.
 
 
 % section deployment (end)

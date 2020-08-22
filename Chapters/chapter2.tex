@@ -69,20 +69,17 @@ In terms of tools developed to analyze VMS data, we have two applications (VMSto
 \begin{itemize}
 \item VMStools: is a package of open-source software, build using the freeware environment R, specifically developed for the processing, analysis, and visualization of landings (logbooks with information of the caught fish) and vessel location data (VMS) from commercial fisheries. Embedded functionality handles erroneous data point detection and removal, linking logbook and VMS data together to distinguish fishing from other activities, provide high-resolution maps of both fishing effort and landings, interpolate vessel tracks, calculate indicators of fishing impact as listed under the Data Collection Framework at different Spatio-temporal scales \cite{DeporteVMStools}.
 
-
 \item VMSbase: is a R package derived to manage, process, and visualize information about fishing vessel activity (provided by the vessel monitoring system - VMS) and catches/landings (as reported in the logbooks).
 Standard analyses comprise: 1) tier identification (using a modified CLARA clustering approach on Logbook data or Artificial Neural
 Networks on VMS data); 2) linkage between VMS and Logbook records, with the former organized into fishing trips; 3)discrimination between steaming and fishing points; 4) computation of spatial effort concerning user-selected grids; 5) calculation of standard fishing effort indicators within Data Collection Framework; 6) a variety of mapping tools, including an interface for Google viewer; 7) estimation of trawled area \cite{RussoVMSbase}.
 \end{itemize}
 
-
 The main difference between the present work, and those previously mentioned is that they combine VMS data with the logbooks (data of the type of fish captured and quantity) or the number of fishing licenses considered. 
 In this work, we will use only VMS data. 
 The main advantage is that VMS data is less subject to malicious changes than  logbooks, taking into account that logbooks are filled by the ship owner. So, they are subject to misrepresentation of the truth. VMS data is generated automatically in a closed system like a black box. 
 In addition, another difference between the present work and those already mentioned is that the 1st objective -to derive an application to be installed in the MONICAP, which allows better describing the fishing zones is not a topic addressed in the literature.
+\raggedbottom
 %% section how_to_write_using_latex (end)
-
-
 
 \section{Data Analysis Methodologies}
 \label{sub:data_analysis_methodologies}
@@ -119,6 +116,36 @@ The key idea of density-based clustering is that for each instance of a cluster,
 \subsubsection{DBSCAN clustering algorithms}
 \label{subsub:dbscan}
 DBSCAN (for density-based spatial clustering of applications with noise) is a data clustering algorithm proposed by Martin Ester, Hans-Peter Kriegel, Jorge Sander and Xiaowei Xu in 1996. It is a density-based clustering algorithm because it finds several clusters starting from the estimated density distribution of corresponding nodes. DBSCAN \cite{Kisilevich2010PDBSCANAD} is one of the most common clustering algorithms and most cited in the scientific literature.
+
+\subsection{Optimal number of clusters}
+
+\subsubsection{Elbow method}
+\label{subsub:elbow_method}
+The results the elbow method \cite{Kodinariya2013ReviewOD}, for the within-cluster sum of squares. The within-cluster sum of squares refers to the distance between the vectors in each cluster are from their respective centroid. The goal is to get this number as small as possible. One approach to handle such an objective is to run the K-means clustering multiple times, raising the number of the clusters each time. Then, it is possible to compare the within-cluster sum of squares each time, stopping when the rate of improvement drops off. The better case corresponds to find a low withins while still keeping the number of clusters as small as possible.\\
+
+The elbow method is visual. The idea is to start with K=2 and keep increasing it in each step by one unit, calculating the clusters and the cost that comes with the training. At some value for K, the cost drops dramatically, and after that, it reaches a plateau when you increase it further. At this moment, the value of K we are looking for is reached.
+
+\subsubsection{The Silhouette Coefficient}
+\label{subsub:silhouette}
+The Silhouette Coefficient is a metric based on the separation and compacting of the groups, starting this procedure by calculating the Silhouette index for the i th observation as in equation \ref{eq:silhouette}.
+
+\begin{equation}
+s(i) = \frac{b(i)-s(i)}{max\{a(i),b(i)\}}
+\label{eq:silhouette}
+\end{equation}
+where a (i) is the average distance between i\textsuperscript{th} observation and all other observations within the same group. 
+For the calculation of b (i) a distance is first calculated between the observation i and the observations belonging to a group in which i is not inserted. After this calculation, such an average is carried out in those distances. An identical calculation is made for all groups to which the observation does not belong. At the final, b (i) represents the minimum distance between the calculated average distances \cite{Roelofsen2018BusinessAT}.
+
+The denominator of equality (2.4) only serves to normalize the result, so the values s (i) are represented between [−1,1], where −1 or negative values refers to observations wrong placed in the group, whereas for coefficients with a value of 1 or positive represent observations well placed in the group \cite{Roelofsen2018BusinessAT}. 
+To obtain the performance index for a given number of groups in each indicated group, the average of all indexes of Silhouette is calculated in equation \ref{eq:silhouette2}.
+
+\begin{equation}
+SWC = \frac{1}{N}\sum_{j=1}^{N}s(j)
+\label{eq:silhouette2}
+\end{equation}
+%Entropy = \sum_{i=1}^{n} -p_{i} log_{2}(p_{i})
+Finally, in order to decide which is the optimal number of groups to use, depending on the data, the criterion of choice favors the scenario that corresponds to the highest average value of the Silhouette coefficient \cite{Roelofsen2018BusinessAT}.
+
 
 \section{Data Mining techniques}
 
@@ -198,14 +225,16 @@ ID3,CART and C4.5 are basically most common decision tree algorithms in data min
 In this work, it will be used to measure the quality of a split "gini" \ref{eq:gini} for the Gini impurity (CART)\cite{DTAnalysis} and "entropy" \ref{eq:entropy} for the information gain (C4.5)\cite{DTAnalysis}.
 
 \begin{equation}
-Gini = 1 - \sum_{i=1}^{n} p^{2}(c_{i})
+Gini = 1 - \sum_{i=1}^{n} (P_{i})^{2}
 \label{eq:gini}
 \end{equation}
+Where ~$P_{i}$ denotes the probability of an element being classified for a distinct class.
 
 \begin{equation}
-Entropy = \sum_{i=1}^{n} -p(c_{i}) log_{2}(p(c_{i}))
+Entropy = \sum_{i=1}^{n} -p_{i} log_{2}(p_{i})
 \label{eq:entropy}
 \end{equation}
+Where ~$p$ denotes the probability that it is a function of entropy.
 
 
 \subsubsection{Random Forests}
@@ -214,7 +243,7 @@ Random forests are a combination of tree predictors such that each tree depends 
 A random forest is a classifier consisting of a collection of tree-structured
 classifiers \(\{h(\textbf{x}, \theta \textsubscript{k} ), k = 1,...\}\) where the \( \{ \theta \textsubscript{k} \}\) are independent identically distributed
 random vectors and each tree casts a unit vote for the most popular class at input \textbf{x}\cite{Breiman2001}.
-The number of trees in the forest are called estimators.
+The number of trees in the forest are called estimators, which the algorithm builds before taking the maximum voting or taking the averages of predictions. In general, a higher number of trees increases the performance and makes the predictions more stable, but it also slows down the computation.
 
 \subsubsection{Neural Network}
 \label{subsub:neural_network}
