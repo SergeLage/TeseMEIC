@@ -1,13 +1,17 @@
 \abstractPT  % Do NOT modify this line
 
-Portugal é um país historicamente ligado ao mar, sendo a pesca uma atividade muito importante para a economia portuguesa. Por outro lado, a fraude fiscal está muito presente na pesca, e outras atividades económicas, é um fenómeno prejudicial para Portugal. É necessário inspecionar essa atividade com maior eficiência. Com a constante evolução das novas tecnologias, essa necessidade está cada vez mais próxima de ser atendida de maneira concreta.
-Para contribuir com a solução deste problema, os objetivos desta dissertação são classificar quando os navios estão a pescar e quando pescam numa área não habitual, apenas com uso de dados de velocidade e localização como primeiro objetivo. O segundo objetivo é classificar a atividade de pesca com os mesmos dados, velocidade e localização, e comparar com a licença atribuída.
-Existem vários estudos nessa área em todo o mundo. O que torna esse trabalho único é o uso de dados criados por um dispositivo a bordo sem interferência humana. 
-Os dados utilizados por esta solução são produzidos pelo sistema MONICAP, um sistema bluebox, obrigatório para todos os navios com mais de 12 metros na União Europeia. Este sistema regista dados de velocidade, rumo e localização.
-Para o primeiro problema, criar um sistema de aprendizagem automatica para identificar se o navio está pescando usando velocidade e com algoritmos de agrupamento identificar se a zona de pesca é a habitual. Este sistema foi projetado para ser integrado no próprio MONICAP. Para o segundo problema, usamos métodos de mineração de dados para correlacionar os dados fornecidos pelo MONICAP e o tipo de pesca licença.
-Os modelos foram testados e avaliados usando técnicas de mineração de dados bem estabelecidas.
-O uso da velocidade acaba sendo suficiente para criar sistemas capazes de satisfazer
-objetivos propostos, para que todos os objetivos sejam alcançados.
+Portugal é um país historicamente ligado ao mar, sendo a pesca uma atividade muito importante para a economia portuguesa. Por outro lado, a fraude fiscal está presente tanto na pesca como noutra atividade económica e é um fenómeno nocivo para Portugal. Por isso, é necessário criar formas de fiscalizar esta atividade de forma mais eficiente.
+Com a motivação de contribuir para a resolução deste problema, os objetivos desta dissertação são analisar os dados de forma a derivar padrões que, quando comparados com dados reais, podem gerar alertas para a existência de atividades inusitadas. Concretamente, o primeiro objetivo visa inferir quando as embarcações estão a pescar e quando pescam numa zona diferente da habitual, utilizando apenas dados de velocidade e localização. O segundo objetivo consiste em classificar a licença de pesca tendo em conta os dados VMS, mais precisamente os dados de velocidade e posição.
+Existem vários estudos desenvolvidos nesta área. O que torna meu trabalho único é o uso de dados criados por um dispositivo de bordo, no qual não há interferência humana.
+Nesta solução os dados são produzidos pelo sistema MONICAP, um sistema bluebox, obrigatório para embarcações com mais de 12 metros na União Europeia. Este sistema registra dados de velocidade, direção e localização.
+Em relação ao primeiro objetivo, será utilizado um sistema de aprendizagem automática, utilizando dados de velocidade, para identificar se a embarcação está a pescar. A metodologia utilizada baseia-se em algoritmos de agrupamento, para identificar se a zona de pesca é habitual ou não. Além disso, o algoritmo Hill Climbing e o estimador de densidade do Kernel são usados para classificar os dados como pesca ou não.
+
+Este sistema foi projetado de forma que possa ser integrado no próprio MONICAP. Para o segundo objetivo, usaremos métodos de mineração de dados, como Random Forests, Neural Networks e outros, para analisar possíveis associações entre os dados fornecidos pelo MONICAP e a licença de pesca do navio.
+licença.
+Os modelos foram testados e avaliados usando técnicas de mineração de dados bem estabelecidas, seguindo os procedimentos do Processo Padrão de \textit{Cross Industry} para Data Mining.
+A segunda solução permitiu mostrar que é possível classificar a licença de pesca tendo em conta os dados VMS, mais precisamente dados de velocidade e posição.
+
+O uso da velocidade acaba por ser suficiente para criar sistemas capazes de satisfazer os objetivos propostos, concluindo-se que os objectivos propostos foram alcançados.
 
 % Keywords of abstract in Portuguese
 \begin{keywords}

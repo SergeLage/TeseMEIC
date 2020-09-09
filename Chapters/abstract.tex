@@ -1,16 +1,17 @@
 \abstractEN % Do NOT modify this line
 
-Portugal is a country historically linked to the sea, fishing being a very important activity for the Portuguese economy. On the other hand, tax fraud is usually present on fishery as other economic activity and harmful phenomenon for Portugal. For that reason there is a need to create ways to inspect this activity more efficiently. With the constant evolution of new technologies, this need is increasingly close to being met in a concrete way.
-With this motivation to contribute to the resolution of this problem the objectives of this dissertation analyze the data in order to derive patterns, which when compared to real data can generate alerts for the existence of unusual activities. Concretely, it will be possible to infer when the vessels are fishing, and when they fish in an area other than the usual one, this using only speed and location data as the first objective. The second objective is to classify the fishing activity with the same data, speed and location, and to compare with the vessel assigned license.
-There are several studies developed in this area all over the globe. What makes my work unique is the use of data created by a device on board, in which there is no human interference. 
-The data used by this solution is produced by the system MONICAP, a bluebox system, mandatory for all vessels over 12 meters in the European Union. This system records speed, heading and location data.
-Concerning the first objective, a machine learning system will be used to identify whether
-the vessel is fishing using speed and using clustering algorithms, to identify whether
-the fishing zone is usual or not. This using a Hill Climbing algorithm and a Karnel estimator. This system is designed so that it can be integrated into MONICAP itself. For the second objective, we will use data mining methods, as Random Forests, Neural Networks an others, to analyze possible associations between the data provided by MONICAP and the type of fishing
+Portugal is a country historically linked to the sea, fishing being a very important activity for the Portuguese economy. On the other hand, tax fraud is present on fishery as well as in other economic activity and it is a harmful phenomenon for Portugal. For that reason there is a need to create ways to inspect this activity more efficiently. 
+With the motivation to contribute to the resolution of this problem, the objectives of this dissertation are to analyze the data in order to derive patterns, which, when compared to real data can generate alerts for the existence of unusual activities. Concretely, the first objective seeks to infer when the vessels are fishing, and when they fish in an area other than the usual one, this using only speed and location data. The second objective consists in classify the fishing license by taking into account the VMS data, more precisely speed and position data.
+There are several studies developed in this area. What makes my work unique is the use of data created by a device on board, in which there is no human interference. 
+In the current developed solution  solution the data is produced by the system MONICAP, a bluebox system, mandatory for vessels over 12 meters in the European Union. This system records speed, heading and location data.
+Concerning the first objective, a machine learning system, using speed data, will be used to identify whether the vessel is fishing. The methodology used is based  in clustering algorithms, to identify whether the fishing zone is usual or not.  In addition the Hill Climbing algorithm and the Kernel density estimator are used to classify data as fishing or not.
+
+This system is designed so that it can be integrated into MONICAP itself. For the second objective, we will use data mining methods, as Random Forests, Neural Networks an others, to analyze possible associations between the data provided by MONICAP and the type of fishing
 license.
-The models were tested and evaluated using well-established data mining techniques.
-The use of velocity turns out to be enough to create systems capable of satisfying
-the proposed objectives, so goals are all achieved.
+The models were tested and evaluated using well-established data mining techniques following the procedures in Cross Industry Standard Process for Data Mining.
+The second solution allowed to show that it is possible to classify the fishing license by taking into account the VMS data, more precisely speed and position data.
+
+The use of velocity turns out to be enough to create systems capable of satisfying the proposed objectives, so goals are all achieved.
 
 
 

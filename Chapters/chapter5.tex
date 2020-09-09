@@ -11,7 +11,7 @@
 \label{cha:server}
 This chapter explains the approach used to reach the second goal of this work. 
 
-In Section 4.1 we implement the methodology learn in Section \ref{sub:crisp_dm} to approach  goal 2.
+In Section 4.1 we implement the methodology described in Section \ref{sub:crisp_dm}, used to answer the second goal of this work.
 
 
 
@@ -68,7 +68,7 @@ License & Vessel's Linceses & VMS Vessels & Objective
 
 
 
-When analyzing the speed distribution by license, we can observe in Figure \ref{fig:sogall} that there is no obvious difference between licenses. For example the value 1 of SOG can be assigned to any license.
+When analyzing the speed distribution by license, we can observe in Figure \ref{fig:sogall} that there is no obvious difference between licenses. For example, the value 1 of SOG can be assigned to any license.
 
 \begin{figure}[H]
 \centering
@@ -81,7 +81,7 @@ When analyzing the speed distribution by license, we can observe in Figure \ref{
 \label{fig:sogall}
 \end{figure}
 
-To try to help the predictive model to have good results, some pre-processing is necessary. A simple and effective way is to group data by vessel and activity day. Then apply the SFA to the data to have, per day, per vessel, the minimum fishing speed, maximum fishing speed and also remove the average speed.
+In order to improve the results obtained from the predictive model, after doing several experiences, we conclude the need of some pre-processing. A simple and effective way is to group data by vessel and activity day. Then apply the SFA to the data to have, per day, per vessel, the minimum fishing speed, maximum fishing speed and also remove the average speed.
 With these three variables, it is possible to better distinguish the behavior of vessels by license through speed.
 
 \begin{figure}
@@ -128,8 +128,8 @@ The method used to transform the data consists of the following steps:
 
 
 Regarding location data, clustering techniques to discretize the data were used.
-First, the best number of clusters is determined. For that, we used the same techniques as in Section 4.3, resulting the Figure \ref{fig:elbow_method_server} for the elbow method, for Silhouette method Table \ref{table:all_silhouette} and Figures \ref{fig:silhouette_all_4}, \ref{fig:silhouette_all_5} and \ref{fig:silhouette_all_6}.
-The data used was the dataset filtered, so we have only the positions of fishing. The chosen number of clusters was 6.
+First, the best number of clusters is determined. For that, we used the same techniques as in Section 4.3, resulting the Figure \ref{fig:elbow_method_server} for the elbow method and for Silhouette method Table \ref{table:all_silhouette} and Figures \ref{fig:silhouette_all_4}, \ref{fig:silhouette_all_5} and \ref{fig:silhouette_all_6}. In Table  \ref{table:all_silhouette} we can see that the smaller the number of clusters the bigger is the silhouette coefficient.
+The data used was the dataset filtered, so we have only the positions of fishing. For this case the chosen number of clusters was six.
 
 \begin{figure}[H]
 \centering
@@ -400,7 +400,7 @@ Linear &0.6569&0.6568&0.545&0.545
 \newpage
 
 
-The model with the best result corresponds to the use of a random forest method, with the configuration of 200 estimators. For this model was obtained a precision of 84.74\%.
+The model with the best result corresponds to the use of a random forest method, with the configuration of 200 estimators. For this model it was obtained a precision of 84.74\%.
 With this, we can determine that it is possible to create a good model to classify the VMS data as the fishing license. \\
 As seen in Figure \ref{fig:cm_rf}, the classes 0 and 7 have a low true positive rate. The usage of more data and data that are certified that the VMS data of a vessel is only for the purpose of the fishing license can improve the precision of the model.
 

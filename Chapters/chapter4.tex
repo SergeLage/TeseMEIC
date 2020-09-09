@@ -10,9 +10,9 @@
 \chapter{Standalone Fishery Analysis}
 \label{cha:standalone_fishery_analysis}
 This chapter explains the approach used to reach the first goal of this work. It describes an application that implements the work done in this chapter with respect to its functionality, architecture, implementation details and usage. \\
-In Section 4.1 we learn how can we obtain the fishing velocity patterns.\\
-In Section 4.2 we learn how can we obtain the fishing spots patterns. \\
-In Section 4.3 we demonstrate an approach to address goal 1.
+In Section 3.1 we learn how can we obtain the fishing velocity patterns.\\
+In Section 3.2 we learn how can we obtain the fishing spots patterns. \\
+In Section 3.3 we demonstrate an approach to address goal 1.
 
 The first objective is to develop a locally implemented tool that registers whether the vessel is engaged in fishing, and if so, whether the fishing area is new or is habitual. This solution must be implemented by the vessel. Therefore each vessel will only have access to its data. That is, each vessel only will know its own data. This data consists of VMS data described in Section \ref{sec:vms_records} VMS Records.
 
@@ -33,7 +33,7 @@ As MONICAP systems are installed on ships, they can, in real-time, send alerts t
 \section{Fishing Velocity Patterns} % (fold)
 \label{sub:fishing_velocity_patterns}
 
-To know whether a vessel is fishing, we can use its velocity patterns, given that the speed of the vessel differs when it is traveling or when it is fishing. We can verify this fact in the histogram shown in Figure \ref{fig:histogram_vessel2}, corresponding to a vessel velocity.
+To know whether a vessel is fishing, we can use its velocity patterns, given that the speed of the vessel differs when it is traveling or when it is fishing. We can verify this fact in the histogram shown in Figure \ref{fig:histogram_vessel2}, corresponding to the distribution of the vessel velocity.
 
 In Figure \ref{fig:histogram_vessel2}, the histogram allows us to recognize two different velocity patterns, identified by two distinct distributions. They are visible when we graphically represent the velocity's data of each of the vessels. The distribution characterized by lower average speeds corresponds to fishing activity, and the other speed distribution corresponds to the movement of the vessel between the port and the fishing sites \cite{MappingFishing}. \\
 So, it is needed to isolate the first distribution's range to be able to classify the upcoming future velocity's as being fishing associated or not.
@@ -60,7 +60,7 @@ With this algorithm, the first maximum is found, and then the algorithm identifi
 Then remove all the velocity occurrences that happen to be less than 10 \% of the maximum occurrence and isolating the occurrences that are followed. A clean distribution of the fishery speed for each vessel is derived. With this, the minimum and the maximum values of this distribution are used to classify the new inputs.
 \end{itemize}
 
-After the experiment and the study of all these different methods, the chosen procedure can be described in two steps: it starts by using the method based on the \textbf{Filter} to isolate the fishery speed occurrences from the remaining ones. Then ,the Kernel distribution method was applied.
+After the experiment and the study of all these different methods, the chosen procedure can be described in two steps: it starts by using the method based on the \textbf{Filter} to isolate the fishery speed occurrences from the remaining ones. Then, the Kernel distribution method was applied.
 \begin{enumerate}
 \item \textbf{Filter:} In the first step, it retrieves all velocity data from the database to create a histogram like it is shown in Figure \ref{fig:app_b_1}.
 
@@ -86,7 +86,7 @@ To obtain this solution, the algorithm searches for the first local maximum that
 \end{figure}
 
 In this way, we can find the maximum value of the fishing speed range. \\
-To find the end of the fishing speed range, the algorithm continues to sweep the histogram until the next three points are not lower than the current point as shown in Figure \ref{fig:app_b_4}.
+To find the end point of the fishing speed range, the algorithm continues to sweep the histogram until the next three points are not lower than the current point as is shown in Figure \ref{fig:app_b_4}.
 
 \begin{figure}
     \centering
@@ -95,7 +95,7 @@ To find the end of the fishing speed range, the algorithm continues to sweep the
     \label{fig:app_b_4}
 \end{figure}
 
-This way, we can end up with a histogram of the intended distribution, as we can observe in Figure \ref{fig:app_b_5}.
+This way, we can end up with a histogram of the intended distribution, as can be observe in Figure \ref{fig:app_b_5}.
 
 
 \begin{figure}
@@ -169,7 +169,7 @@ To discover whether the vessel is fishing in its fishing zone, or in a new locat
 Fishing in a new zone may mean that the vessel has changed its type of fishing or is engaging in an activity that is not licensed.
 
 
-\begin{figure}[]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.8\linewidth]{Chapters/img/gps_vessel2.png}
 \caption{Vessel 2 geographic coordinates}
@@ -196,7 +196,7 @@ For this purpose, several data mining algorithms were performed in order to choo
 After some tests, it was decided that Density-Based Cluster is the best approach for this case. It was excluded DBSCAN, because as we can observe in Table \ref{table:mill_per_moodle}, this model needs much processing power to estimate the clusters. These values were retrieved using a computer with an Intel i5 (2.5 GHz) processor and 8 GB of RAM. Considering that the Blue Box has a lot less processing power, it was decided that this model is not a good solution for this problem.
 \\
 
-\begin {table}[]
+\begin {table}[h]
 \caption {Time of processing in miliseconds per model}
 \begin{center}
 \begin{tabular}{c|c|c|c}
@@ -243,7 +243,7 @@ The choice between K-Means and Density-Based Cluster algorithms was based on the
 %\end{lstlisting}
 
 
-One of the important steps when performing the cluster analysis is the determination of the number groups. To fix the number of groups we can use some indicators such as: coefficient of Silhouette as seen in Sub Chapter \ref{subsub:silhouette}, the coefficient of Davies Bouldin, the coefficient of Calinski Harabasz and the Elbow method as seen in Sub Chapter \ref{subsub:elbow_method}. 
+One of the important steps when performing the cluster analysis is the determination of the number groups. To fix the number of groups we can use some indicators such as: coefficient of Silhouette as seen in Sub Chapter \ref{subsub:silhouette} and the Elbow method as seen in Sub Chapter \ref{subsub:elbow_method}. 
 
 
 In Figure \ref{fig:elbow_method} is presented the value of the within sum of squares as function of the number of clusters, using the geographic coordinates data for vessel 2. As we can observe, six clusters seems to be a good number as the error is not decreasing much as the number of clusters increases. 
@@ -259,7 +259,7 @@ In Figure \ref{fig:elbow_method} is presented the value of the within sum of squ
 
 The average value of the Silhouette coefficient for vessel 2 is as described in Table \ref{table:vessel2_silhouette} with nine and six having good values.
 
-\begin {table}[h]
+\begin {table}[H]
 \caption {The average value of the Silhouette coefficient for vessel 2}
 \begin{center}
 \begin{tabular}{c|c}
@@ -281,6 +281,7 @@ The average value of the Silhouette coefficient for vessel 2 is as described in 
 
 Considering the two methods I chose six as the number of clusters for the vessel 2.
 
+In Appendix \ref{appendix:anexo1} there is clustering analysis for other vessels.
 % section fishing_spots (end)
 
 
@@ -321,7 +322,7 @@ To develop the software, it was decided to use Java 8 \cite{WEBSITE:OraJava8} be
 The architecture is depicted in Figure \ref{fig:SFALib_Prof}. In this architecture, it is possible to distinguish three main modules: One that is the core of the SFALib, create the modules and use them. Another one is WEKA \cite{WEBSITE:Weka} that creates the cluster modules for locations and implements the Kernel density estimation  for velocity. The last one is the data access layer that is responsible for getting the VMS data from the local repository so SFALib can create the modules.
 
 
-\begin{figure}[]
+\begin{figure}[H]
 \centering
 \includegraphics[width=1.0\linewidth]{Chapters/img/SFALib_Prof.pdf}
 \caption{Representation of the SFALib architecture.}
@@ -351,10 +352,12 @@ The application starts by initializing two objects:
 \subsection{Deployment} % (fold)
 \label{sub:deployment}
 
-We start by initializing SFALib with the doubles \emph{limitVelocity} and \emph{limitArea}. These doubles range between 0 and 1:
+We start by initializing SFALib with the doubles \emph{limitVelocity} and \emph{limitArea} and with integer \emph{nClusters}:
+
 \begin{itemize}
-\item limitVelocity: used to get the maximum and minimum speed by reducing the speed range. This limit will reduce the maximum speed and increase the minimum speed by setting the maximum velocity as the velocity that as (1-limit) percentage of the cumulative kernel distribution and the minimum velocity as the velocity that has a (limit) percentage of the cumulative kernel distribution.
-\item limitArea: used to compare with the probability to belong in a cluster given to the new points. If the limit is smaller than the given probability, then the vessel is classified as fishing in a new area.
+\item limitVelocity: used to get the maximum and minimum speed by reducing the speed range. This limit will reduce the maximum speed and increase the minimum speed by setting the maximum velocity as the velocity that as (1-limit) percentage of the cumulative kernel distribution and the minimum velocity as the velocity that has a (limit) percentage of the cumulative kernel distribution. Range between 0 and 1.
+\item limitArea: used to compare with the probability to belong in a cluster given to the new points. If the limit is smaller than the given probability, then the vessel is classified as fishing in a new area. Range between 0 and 1.
+\item nClusters: used to set the number of clusters to be used in the clustering model.
 \end{itemize}
 These limits could be defined by the user. This possibility allows to configure the application according to the preference in obtaining more false positive or false negative classifications.
 A false positive (type I error) is when the classifier rejects a true hypothesis.

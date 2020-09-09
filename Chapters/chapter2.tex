@@ -84,7 +84,7 @@ In addition, another difference between the present work and those already menti
 \section{Data Analysis Methodologies}
 \label{sub:data_analysis_methodologies}
 
-\subsection{Distribution Fitting algoritms}
+\subsection{Distribution Fitting algorithms}
 
 \subsubsection{Kernel density estimation}
 \label{subsub:kernel_density}
@@ -119,9 +119,18 @@ DBSCAN (for density-based spatial clustering of applications with noise) is a da
 
 \subsection{Optimal number of clusters}
 
+Using partitioning clustering like K-means clustering metods implies  determining the optimal number of clusters. These methods  requires the user to specify the number of clusters k to be generated. The optimal number of clusters is subjective and depends on the method used for measuring similarities and the parameters used for partitioning.
+
+An direct approach consists of optimizing a criterion, such as the within cluster sums of squares or the average silhouette. The corresponding methods are named elbow and silhouette methods, respectively. Another approach     consists in using statistical testing methods. In this case the user  compares evidence against null hypothesis. An example is the use of gap statistic \cite{theGapStatistic}. 
+% The gap statistic has been published by R. Tibshirani, G. Walther, and T. Hastie (Standford University, 2001).
+This method  can be applied to any clustering method.
+The gap statistic compares the total within intra-cluster variation for different values of k with their expected values under null reference distribution of the data. The estimate of the optimal clusters will be value that maximize the gap statistic (i.e, that yields the largest gap statistic). This means that the clustering structure should be far away from the random uniform distribution of the points.
+
+
 \subsubsection{Elbow method}
 \label{subsub:elbow_method}
-The results the elbow method \cite{Kodinariya2013ReviewOD}, for the within-cluster sum of squares. The within-cluster sum of squares refers to the distance between the vectors in each cluster are from their respective centroid. The goal is to get this number as small as possible. One approach to handle such an objective is to run the K-means clustering multiple times, raising the number of the clusters each time. Then, it is possible to compare the within-cluster sum of squares each time, stopping when the rate of improvement drops off. The better case corresponds to find a low withins while still keeping the number of clusters as small as possible.\\
+The Elbow method \cite{Kodinariya2013ReviewOD} looks at the total within clusters sum of squares as a function of the number of clusters: one should choose a number of clusters so that adding another cluster doesn't improve much better the total within clusters sum of squares.
+The within-cluster sum of squares refers to the distance between the vectors in each cluster are from their respective centroid. The goal is to get this number as small as possible. One approach to handle such an objective is to run the K-means clustering multiple times, raising the number of the clusters each time. Then, it is possible to compare the within-cluster sum of squares each time, stopping when the rate of improvement drops off. The better case corresponds to find a low withins while still keeping the number of clusters as small as possible.\\
 
 The elbow method is visual. The idea is to start with K=2 and keep increasing it in each step by one unit, calculating the clusters and the cost that comes with the training. At some value for K, the cost drops dramatically, and after that, it reaches a plateau when you increase it further. At this moment, the value of K we are looking for is reached.
 
@@ -136,8 +145,8 @@ s(i) = \frac{b(i)-s(i)}{max\{a(i),b(i)\}}
 where a (i) is the average distance between i\textsuperscript{th} observation and all other observations within the same group. 
 For the calculation of b (i) a distance is first calculated between the observation i and the observations belonging to a group in which i is not inserted. After this calculation, such an average is carried out in those distances. An identical calculation is made for all groups to which the observation does not belong. At the final, b (i) represents the minimum distance between the calculated average distances \cite{Roelofsen2018BusinessAT}.
 
-The denominator of equality (2.4) only serves to normalize the result, so the values s (i) are represented between [−1,1], where −1 or negative values refers to observations wrong placed in the group, whereas for coefficients with a value of 1 or positive represent observations well placed in the group \cite{Roelofsen2018BusinessAT}. 
-To obtain the performance index for a given number of groups in each indicated group, the average of all indexes of Silhouette is calculated in equation \ref{eq:silhouette2}.
+The denominator of equality \ref{eq:silhouette} only serves to normalize the result, so the values s (i) are represented between [−1,1], where −1 or negative values refers to observations wrong placed in the group, whereas for coefficients with a value of 1 or positive represent observations well placed in the group \cite{Roelofsen2018BusinessAT}. 
+To obtain the performance index for a given number of groups in each indicated group, the average of all indexes of Silhouette is calculated as equation \ref{eq:silhouette2}.
 
 \begin{equation}
 SWC = \frac{1}{N}\sum_{j=1}^{N}s(j)
